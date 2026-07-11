@@ -7,10 +7,15 @@ import App from "./App.tsx";
 import "./main.scss";
 import { createTheme, StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+import "./stores/index";
 
 const theme = createTheme({
     typography: {
         fontFamily: ["Google Sans", "Roboto", "system-ui", "sans-serif"].join(","),
+    },
+    colorSchemes: {
+        light: true,
+        dark: true,
     },
 });
 

@@ -3,8 +3,9 @@ import Fab from "@mui/material/Fab";
 import cls from "./App.module.scss";
 import { Tooltip } from "@mui/material";
 import SupportIcon from "@mui/icons-material/Support";
+import MainView from "./views/Main";
 
-let lastTitle = document.title;
+const lastTitle = document.title;
 
 function App() {
     const [show, setShow] = useState(localStorage.getItem("bdn.show") === "1");
@@ -24,6 +25,7 @@ function App() {
 
     return (
         <>
+            {show && <MainView closeView={() => setShow(false)} />}
             <Tooltip title="betterDXnet" placement="right" arrow>
                 <Fab color="primary" size="large" className={cls.fabControl} onClick={toggle}>
                     <SupportIcon fontWeight="large" />

@@ -4,3 +4,7 @@
     left: 16px;
     z-index: 99999;
 }
+
+html[data-betterdxnet="727"] .fabControl {
+    display: none !important;
+}
