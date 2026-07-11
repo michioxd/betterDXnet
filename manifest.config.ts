@@ -1,28 +1,25 @@
-import { defineManifest } from '@crxjs/vite-plugin'
-import pkg from './package.json'
+import { defineManifest } from "@crxjs/vite-plugin";
+import pkg from "./package.json";
 
 export default defineManifest({
-  manifest_version: 3,
-  name: pkg.name,
-  version: pkg.version,
-  icons: {
-    48: 'public/logo.png',
-  },
-  action: {
-    default_icon: {
-      48: 'public/logo.png',
+    manifest_version: 3,
+    name: "betterDXnet",
+    description: "just an alternative UI for sinmaiDX :)",
+    version: pkg.version,
+    icons: {
+        48: "public/logo.png",
     },
-    default_popup: 'src/popup/index.html',
-  },
-  permissions: [
-    'sidePanel',
-    'contentSettings',
-  ],
-  content_scripts: [{
-    js: ['src/content/main.tsx'],
-    matches: ['https://*/*'],
-  }],
-  side_panel: {
-    default_path: 'src/sidepanel/index.html',
-  },
-})
+    permissions: ["contentSettings"],
+    content_scripts: [
+        {
+            js: ["src/main.tsx"],
+            matches: ["https://maimaidx-eng.com/maimai-mobile/*"],
+        },
+    ],
+    web_accessible_resources: [
+        {
+            resources: ["assets/*.woff2"],
+            matches: ["https://maimaidx-eng.com/maimai-mobile/*"],
+        },
+    ],
+});
