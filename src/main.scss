@@ -23,3 +23,86 @@ html[data-betterdxnet="727"] {
         display: none !important;
     }
 }
+
+:root {
+    --bdn-rank-base: #5b6573;
+    --bdn-rank-blue: #2563eb;
+    --bdn-rank-green: #16a34a;
+    --bdn-rank-yellow: #a16207;
+    --bdn-rank-red: #dc2626;
+    --bdn-rank-purple: #7c3aed;
+    --bdn-rank-bronze: #b45309;
+    --bdn-rank-silver: #6b7280;
+    --bdn-rank-gold: #b08900;
+    --bdn-rank-platinum: #0f766e;
+    --bdn-rank-rainbow: linear-gradient(90deg, #ef4444, #f59e0b, #eab308, #22c55e, #3b82f6, #8b5cf6);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bdn-rank-base: #cbd5e1;
+        --bdn-rank-blue: #93c5fd;
+        --bdn-rank-green: #86efac;
+        --bdn-rank-yellow: #facc15;
+        --bdn-rank-red: #fca5a5;
+        --bdn-rank-purple: #c4b5fd;
+        --bdn-rank-bronze: #fdba74;
+        --bdn-rank-silver: #e5e7eb;
+        --bdn-rank-gold: #fde68a;
+        --bdn-rank-platinum: #5eead4;
+        --bdn-rank-rainbow: linear-gradient(90deg, #fb7185, #fbbf24, #a3e635, #4ade80, #60a5fa, #c084fc);
+    }
+}
+
+*[data-ranking-color-type] {
+    color: var(--bdn-ranking-color, currentColor);
+}
+
+*[data-ranking-color-type="base"] {
+    --bdn-ranking-color: var(--bdn-rank-base);
+}
+
+*[data-ranking-color-type="blue"] {
+    --bdn-ranking-color: var(--bdn-rank-blue);
+}
+
+*[data-ranking-color-type="green"] {
+    --bdn-ranking-color: var(--bdn-rank-green);
+}
+
+*[data-ranking-color-type="yellow"] {
+    --bdn-ranking-color: var(--bdn-rank-yellow);
+}
+
+*[data-ranking-color-type="red"] {
+    --bdn-ranking-color: var(--bdn-rank-red);
+}
+
+*[data-ranking-color-type="purple"] {
+    --bdn-ranking-color: var(--bdn-rank-purple);
+}
+
+*[data-ranking-color-type="bronze"] {
+    --bdn-ranking-color: var(--bdn-rank-bronze);
+}
+
+*[data-ranking-color-type="silver"] {
+    --bdn-ranking-color: var(--bdn-rank-silver);
+}
+
+*[data-ranking-color-type="gold"] {
+    --bdn-ranking-color: var(--bdn-rank-gold);
+}
+
+*[data-ranking-color-type="platinum"] {
+    --bdn-ranking-color: var(--bdn-rank-platinum);
+}
+
+*[data-ranking-color-type="rainbow"] {
+    --bdn-ranking-color: var(--bdn-rank-rainbow);
+    background: var(--bdn-ranking-color);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}

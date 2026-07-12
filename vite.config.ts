@@ -14,8 +14,19 @@ export default defineConfig({
     },
     plugins: [react(), crx({ manifest }), zip({ outDir: "release", outFileName: `crx-${name}-${version}.zip` })],
     server: {
+        host: "127.0.0.1",
+        port: 5173,
+        strictPort: true,
+
         cors: {
-            origin: [/chrome-extension:\/\//],
+            origin: [/^chrome-extension:\/\//],
+        },
+
+        hmr: {
+            host: "127.0.0.1",
+            port: 5173,
+            clientPort: 5173,
+            protocol: "ws",
         },
     },
 });

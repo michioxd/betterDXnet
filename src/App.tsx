@@ -15,7 +15,6 @@ function App() {
         if (show) {
             document.documentElement.setAttribute("data-betterdxnet", "727");
             localStorage.setItem("bdn.show", "1");
-            document.title = "betterDXnet";
         } else {
             document.documentElement.removeAttribute("data-betterdxnet");
             localStorage.removeItem("bdn.show");

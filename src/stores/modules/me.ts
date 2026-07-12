@@ -25,6 +25,8 @@ export class MeStore {
         try {
             const me = await apiMe();
 
+            console.log("Fetched profile:", me);
+
             runInAction(() => {
                 this.me = me;
             });
@@ -37,5 +39,16 @@ export class MeStore {
                 this.loading = false;
             });
         }
+    }
+
+    getUserToken(): string | null {
+        const cookies = document.cookie.split(";").map((cookie) => cookie.trim());
+        const tokenCookie = cookies.find((cookie) => cookie.startsWith("_t="));
+
+        if (!tokenCookie) {
+            return null;
+        }
+
+        return tokenCookie.split("=")[1];
     }
 }

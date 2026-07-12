@@ -6,5 +6,6 @@
 }
 
 html[data-betterdxnet="727"] .fabControl {
-    display: none !important;
+    opacity: 0;
+    visibility: hidden;
 }

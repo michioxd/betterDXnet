@@ -14,12 +14,7 @@ export default defineManifest({
         {
             js: ["src/main.tsx"],
             matches: ["https://maimaidx-eng.com/maimai-mobile/*"],
-        },
-    ],
-    web_accessible_resources: [
-        {
-            resources: ["assets/*.woff2"],
-            matches: ["https://maimaidx-eng.com/maimai-mobile/*"],
+            run_at: "document_idle",
         },
     ],
 });

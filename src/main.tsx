@@ -24,12 +24,10 @@ container.id = "betterDXnet-app";
 document.body.appendChild(container);
 
 createRoot(container).render(
-    <StrictMode>
-        <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme} defaultMode="system">
-                <CssBaseline />
-                <App />
-            </ThemeProvider>
-        </StyledEngineProvider>
-    </StrictMode>,
+    <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme} defaultMode="system">
+            <CssBaseline />
+            <App />
+        </ThemeProvider>
+    </StyledEngineProvider>,
 );
