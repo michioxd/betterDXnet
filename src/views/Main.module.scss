@@ -20,7 +20,6 @@
     min-width: 300px;
     max-width: 86vw;
     height: calc(100dvh - 64px);
-    overflow: auto;
     border-right: 1px solid rgba(127, 127, 127, 0.18);
 }
 
@@ -34,6 +33,15 @@
 
 .sidebarHeader {
     padding: 16px;
+}
+
+.sidebarList {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 // .contentPanel {

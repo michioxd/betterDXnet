@@ -17,6 +17,7 @@ import {
     Typography,
     useMediaQuery,
     useTheme,
+    Link,
 } from "@mui/material";
 import cls from "./Main.module.scss";
 import CloseIcon from "@mui/icons-material/Close";
@@ -165,7 +166,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
 
                 <Divider />
 
-                <List disablePadding dense>
+                <List disablePadding dense className={cls.sidebarList}>
                     {sidebarSampleSections.map((item) => {
                         const isOpen = app.sidebarSectionsOpen[item.key] ?? false;
                         const SidebarIcon = item.icon;
@@ -232,6 +233,16 @@ function MainView({ closeView }: { closeView?: () => void }) {
                             </Box>
                         );
                     })}
+                    <Box sx={{ flex: "1", minWidth: 0 }}></Box>
+                    <Typography variant="body2" color="textSecondary" sx={{ p: 1, fontSize: 10 }}>
+                        <Link color="inherit" target="_blank" href="https://github.com/michioxd/betterDXnet">
+                            betterDXnet
+                        </Link>{" "}
+                        vX.X.X - by{" "}
+                        <Link color="inherit" target="_blank" href="https://github.com/michioxd">
+                            michioxd
+                        </Link>
+                    </Typography>
                 </List>
             </Box>
         );
@@ -285,6 +296,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
                                 aria-label="refresh"
                                 disabled={meLoading}
                                 onClick={() => void me.refresh()}
+                                loading={meLoading}
                             >
                                 <ReplayIcon fontWeight="medium" />
                             </IconButton>

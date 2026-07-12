@@ -48,7 +48,8 @@ function FadingToolbarTitle({
                     sx={{ gridArea: "1 / 1", minWidth: 0 }}
                     data-ranking-color-type={rankType ?? ""}
                 >
-                    {username} <Chip label={version} size="small" sx={{ fontSize: 10 }} />
+                    {username}{" "}
+                    <Chip label={version} size="small" sx={{ width: "fit-content", height: "fit-content" }} />
                 </Typography>
             </Fade>
             <Fade in={!username || !showUsername} timeout={500}>

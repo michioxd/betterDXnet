@@ -23,10 +23,16 @@
 }
 
 html[data-betterdxnet="727"] {
+    color-scheme: light dark;
     .wrapper,
     img#page-top,
     img#page-bottom {
         display: none !important;
+    }
+
+    body {
+        transition: background-color 0.2s;
+        background-color: transparent !important;
     }
 }
 
