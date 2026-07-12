@@ -121,7 +121,11 @@ const sidebarSampleSections: SidebarSection[] = [
         key: "settings",
         label: "Settings",
         icon: SettingsIcon,
-        to: "/settings",
+        items: [
+            { label: "Game options", to: "/settings/game" },
+            { label: "Player", to: "/settings/player" },
+            { label: "Favorite songs", to: "/settings/favorite-songs" },
+        ],
     },
 ];
 
@@ -142,6 +146,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
     const isLogin = me.isLogin;
     const username = me.me?.name;
     const rankType = me.me?.rankType;
+    const version = me.me?.version;
 
     useEffect(() => {
         app.ensureSidebarSectionsOpen(createSidebarSectionState());
@@ -265,7 +270,11 @@ function MainView({ closeView }: { closeView?: () => void }) {
                         </IconButton>
                     )}
 
-                    <FadingToolbarTitle username={isLogin ? username : undefined} rankType={rankType} />
+                    <FadingToolbarTitle
+                        username={isLogin ? username : undefined}
+                        rankType={rankType}
+                        version={version}
+                    />
 
                     <Tooltip title="Refresh profile" placement="bottom" arrow>
                         <span>
@@ -309,7 +318,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
                                 {renderSidebar()}
                             </Box>
                         )}
-                        <Container className={cls.contentPanel} maxWidth="xl">
+                        <Container className={cls.contentPanel} maxWidth="xl" sx={{ pt: 3 }}>
                             <AppRoutes />
                         </Container>
                     </Box>

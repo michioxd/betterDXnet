@@ -1,9 +1,17 @@
-import { Box, Fade, Typography } from "@mui/material";
+import { Box, Chip, Fade, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const randomFadeDelay = () => Math.floor(Math.random() * 4001) + 4000;
 
-function FadingToolbarTitle({ username, rankType }: { username?: string; rankType?: string }) {
+function FadingToolbarTitle({
+    username,
+    rankType,
+    version,
+}: {
+    username?: string;
+    rankType?: string;
+    version?: string;
+}) {
     const [showUsername, setShowUsername] = useState(false);
 
     useEffect(() => {
@@ -40,7 +48,7 @@ function FadingToolbarTitle({ username, rankType }: { username?: string; rankTyp
                     sx={{ gridArea: "1 / 1", minWidth: 0 }}
                     data-ranking-color-type={rankType ?? ""}
                 >
-                    {username}
+                    {username} <Chip label={version} size="small" sx={{ fontSize: 10 }} />
                 </Typography>
             </Fade>
             <Fade in={!username || !showUsername} timeout={500}>

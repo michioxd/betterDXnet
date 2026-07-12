@@ -22,6 +22,9 @@ import {
  * @property {number} rating - The user's rating.
  * @property {string} ratingImg - The URL of the rating image, for example: https://maimaidx-eng.com/maimai-mobile/img/rating_base_orange.png?ver=1.60
  * @property {string} primaryCharImg - The URL of the primary character image.
+ * @property {ApiMeRankType} rankType - The rank type of the user, which can be one of the following: Base, Blue, Green, Yellow, Red, Purple, Bronze, Silver, Gold, Platinum, or Rainbow.
+ * @property {string} version - The version of the game the user is playing.
+ * @property {object} collections - An object containing the user's collection data, including icon, frame, title, nameplate, and partner.
  */
 export interface ApiMe {
     name: string;
@@ -35,6 +38,7 @@ export interface ApiMe {
     ratingImg: string;
     rankType: ApiMeRankType;
     primaryCharImg: string;
+    version: string;
     collections: {
         icon: CurrentIconResponse;
         frame: CurrentFrameResponse;
@@ -120,6 +124,8 @@ export async function apiMe(): Promise<ApiMe> {
 
     const rankType = ratingImg.split("/").pop()?.split("_")[2]?.split(".")[0] ?? ApiMeRankType.Base;
 
+    const version = ratingImg.split("?ver=")[1] ?? "1.0";
+
     const primaryCharImg =
         res.document.querySelector("body div.wrapper .see_through_block img.w_120.m_t_10.f_r")?.getAttribute("src") ??
         "";
@@ -138,6 +144,7 @@ export async function apiMe(): Promise<ApiMe> {
         ratingImg,
         rankType: rankType as ApiMeRankType,
         primaryCharImg,
+        version,
         collections: {
             icon: fetchCollection[0],
             frame: fetchCollection[1],
