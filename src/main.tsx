@@ -11,7 +11,17 @@ import "./stores/index";
 
 const theme = createTheme({
     typography: {
-        fontFamily: ["Google Sans", "Roboto", "system-ui", "sans-serif"].join(","),
+        fontFamily: [
+            "Google Sans",
+            "Roboto",
+            "system-ui",
+            "ヒラギノ角ゴ Pro W3",
+            "メイリオ",
+            "Meiryo",
+            "ＭＳ Ｐゴシック",
+            "MS P Gothic",
+            "sans-serif",
+        ].join(","),
     },
     colorSchemes: {
         light: true,

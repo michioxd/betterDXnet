@@ -1,2 +1,189 @@
 .profileCard {
+    aspect-ratio: 19/6;
+    width: 100%;
+    border-radius: 8px;
+    background: #fff;
+    padding: 3%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+
+    .content {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        gap: 4%;
+
+        .userIcon {
+            aspect-ratio: 1/1;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .userInfo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            gap: 6%;
+            container-type: inline-size;
+
+            .trophyBlock {
+                aspect-ratio: 32/3;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-image: var(--trophy-bg);
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+                text-align: center;
+                container-type: inline-size;
+                position: relative;
+
+                .trophyText {
+                    display: inline-block;
+                    color: #fff;
+                    text-shadow:
+                        black 1px 1px 0,
+                        black -1px -1px 0,
+                        black -1px 1px 0,
+                        black 1px -1px 0,
+                        black 0px 1px 0,
+                        black 0 -1px 0,
+                        black -1px 0 0,
+                        black 1px 0 0;
+                    font-size: 5cqw;
+                }
+            }
+
+            .info {
+                display: flex;
+                width: 100%;
+                align-items: center;
+                gap: 3%;
+                container-type: inline-size;
+
+                .nameBlock {
+                    width: 100%;
+                    aspect-ratio: 158 / 27;
+                    border: 0.63cqw solid #dedede;
+                    border-radius: 3.16cqw;
+                    background-color: #fff;
+                    background-size: 21.52cqw;
+                    box-shadow: 0.63cqw 1.9cqw 0 rgba(0, 0, 0, 0.4);
+                    container-type: inline-size;
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    span {
+                        font-size: 11cqw;
+                        color: #000;
+                    }
+                }
+
+                .ratingBlock {
+                    width: 70%;
+                    aspect-ratio: 31/9;
+                    background-image: var(--rating-bg);
+                    background-size: contain;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    container-type: inline-size;
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+
+                    .ratingText {
+                        display: inline-flex;
+                        justify-content: flex-end;
+                        color: #fff;
+                        font-size: 13cqw;
+                        margin-right: 6%;
+                        margin-top: 1%;
+
+                        .ratingDigit {
+                            display: inline-flex;
+                            width: 10.3cqw;
+                            justify-content: center;
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+
+            .divider {
+                width: 100%;
+                height: 0.9cqw;
+
+                background-image: radial-gradient(circle, #aaa 0.35cqw, transparent 0.4cqw);
+                background-size: 1.6cqw 100%;
+                background-repeat: repeat-x;
+                background-position: left center;
+                flex: none;
+            }
+
+            .badge {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                height: 100%;
+                align-items: center;
+                position: relative;
+                overflow: hidden;
+                gap: 3%;
+
+                .badgeImg {
+                    height: 100%;
+                    object-fit: contain;
+                }
+
+                .stars {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    container-type: inline-size;
+                    gap: 4%;
+
+                    .starImg {
+                        height: 100%;
+                        object-fit: contain;
+                        aspect-ratio: 1 / 1;
+                        flex: none;
+                    }
+
+                    .starText {
+                        font-size: 10cqw;
+                        color: #000;
+                    }
+                }
+            }
+        }
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: var(--frame-bg);
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+        opacity: 0.2;
+        filter: blur(10px);
+    }
 }

@@ -58,6 +58,8 @@ export enum ApiMeRankType {
     Rainbow = "rainbow",
 }
 
+export const ratingBgBaseUrl = "/maimai-mobile/img/rating_base_{}.png";
+
 export async function apiMe(): Promise<ApiMe> {
     const res = await apiHelperFetchDoc("/maimai-mobile/home");
 

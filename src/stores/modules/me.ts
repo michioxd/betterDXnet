@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, observable, runInAction } from "mobx";
 
 import type { RootStore } from "../root";
 import { apiMe, type ApiMe } from "@/api/me";
@@ -12,7 +12,10 @@ export class MeStore {
 
     constructor(root: RootStore) {
         this.root = root;
-        makeAutoObservable(this);
+        makeAutoObservable(this, {
+            root: false,
+            me: observable.ref,
+        });
     }
 
     get isLogin() {
@@ -24,8 +27,6 @@ export class MeStore {
 
         try {
             const me = await apiMe();
-
-            console.log("Fetched profile:", me);
 
             runInAction(() => {
                 this.me = me;

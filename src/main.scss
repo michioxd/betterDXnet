@@ -1,8 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap");
 
-#betterDXnet-app {
+#betterDXnet-app * {
     font-family:
         "Google Sans",
+        "ヒラギノ角ゴ Pro W3",
+        "メイリオ",
+        "Meiryo",
+        "ＭＳ Ｐゴシック",
+        "MS P Gothic",
+        "sans-serif",
         system-ui,
         -apple-system,
         BlinkMacSystemFont,
@@ -13,7 +19,7 @@
         Cantarell,
         "Open Sans",
         "Helvetica Neue",
-        sans-serif;
+        sans-serif !important;
 }
 
 html[data-betterdxnet="727"] {

@@ -1,7 +1,7 @@
 import { configure } from "mobx";
 
 configure({
-    enforceActions: "always",
+    enforceActions: "never",
     computedRequiresReaction: true,
     reactionRequiresObservable: true,
     observableRequiresReaction: true,

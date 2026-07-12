@@ -23,54 +23,111 @@ import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CollectionsIcon from "@mui/icons-material/Collections";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { observer } from "mobx-react-lite";
 import { rootStore } from "@/stores/root";
 import { useEffect } from "react";
 import LoadingView from "./Loading";
+import ProfileCard from "@/components/ProfileCard";
+import FadingToolbarTitle from "@/components/FadingToolbarTitle";
+import HomeIcon from "@mui/icons-material/Home";
+import PersonIcon from "@mui/icons-material/Person";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import EventIcon from "@mui/icons-material/Event";
+import CollectionsIcon from "@mui/icons-material/Collections";
+import SettingsIcon from "@mui/icons-material/Settings";
+import type { SvgIconComponent } from "@mui/icons-material";
+import { HashRouter, NavLink } from "react-router-dom";
+import AppRoutes from "@/pages/routes";
 
-const sidebarSampleSections = [
+type SidebarSection = {
+    key: string;
+    label: string;
+    icon: SvgIconComponent;
+    title?: string;
+    description?: string;
+    to?: string;
+    items?: {
+        label: string;
+        to: string;
+        icon?: SvgIconComponent;
+    }[];
+};
+
+const sidebarSampleSections: SidebarSection[] = [
     {
-        key: "nameplate",
-        label: "Nameplate",
-        title: "Sample current nameplate",
-        description: "Placeholder content for later implementation.",
-        items: ["Current nameplate", "Available list", "Change history"],
+        key: "home",
+        label: "Home",
+        icon: HomeIcon,
+        items: [
+            { label: "Overview", to: "/" },
+            { label: "DX Rating", to: "/dx-rating" },
+            { label: "Record of maimai", to: "/maimai-record" },
+        ],
     },
     {
-        key: "icon",
-        label: "Icon",
-        title: "Sample current icon",
-        description: "Placeholder content for later implementation.",
-        items: ["Current icon", "Available list", "Favorites"],
+        key: "playdata",
+        label: "Player Data",
+        icon: PersonIcon,
+        items: [
+            { label: "Player data", to: "/playdata" },
+            { label: "Stamp card", to: "/playdata/stamp-card" },
+            { label: "Album", to: "/playdata/album" },
+        ],
     },
     {
-        key: "frame",
-        label: "Frame",
-        title: "Sample current frame",
-        description: "Placeholder content for later implementation.",
-        items: ["Current frame", "Available list", "History"],
+        key: "shop",
+        label: "maimile Shop",
+        icon: StorefrontIcon,
+        to: "/shop",
     },
     {
         key: "title",
-        label: "Title",
-        title: "Sample current title",
-        description: "Placeholder content for later implementation.",
-        items: ["Current title", "Available list", "Ranks"],
+        label: "Records",
+        icon: AssessmentIcon,
+        items: [
+            { label: "Game records", to: "/records/game" },
+            { label: "Song scores", to: "/records/songs" },
+            { label: "Courses", to: "/records/courses" },
+            { label: "World stats", to: "/records/worldstats" },
+        ],
     },
     {
-        key: "partner",
-        label: "Partner",
-        title: "Sample current partner",
-        description: "Placeholder content for later implementation.",
-        items: ["Current partner", "Available list", "Settings"],
+        key: "event",
+        label: "Events",
+        icon: EventIcon,
+        items: [
+            { label: "Area", to: "/events/area" },
+            { label: "Event area", to: "/events/event-area" },
+            { label: "End event area", to: "/events/end-event-area" },
+            { label: "Season info", to: "/events/season-info" },
+        ],
+    },
+    {
+        key: "collections",
+        label: "Collections",
+        icon: CollectionsIcon,
+        items: [
+            { label: "Icon", to: "/collections/icon" },
+            { label: "Nameplate", to: "/collections/nameplate" },
+            { label: "Frame", to: "/collections/frame" },
+            { label: "Title", to: "/collections/title" },
+            { label: "Tour member", to: "/collections/tour-member" },
+            { label: "Partner", to: "/collections/partner" },
+        ],
+    },
+    {
+        key: "settings",
+        label: "Settings",
+        icon: SettingsIcon,
+        to: "/settings",
     },
 ];
 
 function createSidebarSectionState() {
     return sidebarSampleSections.reduce<Record<string, boolean>>((state, section) => {
-        state[section.key] = true;
+        state[section.key] = false;
         return state;
     }, {});
 }
@@ -80,9 +137,11 @@ function MainView({ closeView }: { closeView?: () => void }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-    const isLoading = me.loading || app.isAppLoading;
+    const meLoading = me.loading;
+    const isLoading = meLoading || app.isAppLoading;
     const isLogin = me.isLogin;
     const username = me.me?.name;
+    const rankType = me.me?.rankType;
 
     useEffect(() => {
         app.ensureSidebarSectionsOpen(createSidebarSectionState());
@@ -92,51 +151,88 @@ function MainView({ closeView }: { closeView?: () => void }) {
         app.toggleSidebarSection(key);
     };
 
-    const renderSidebar = () => (
-        <Box className={cls.sidebarContent}>
-            <Box className={cls.sidebarHeader}></Box>
+    const renderSidebar = () =>
+        me.me && (
+            <Box className={cls.sidebarContent}>
+                <Box className={cls.sidebarHeader}>
+                    <ProfileCard d={me.me} />
+                </Box>
 
-            <Divider />
+                <Divider />
 
-            <List disablePadding dense>
-                {sidebarSampleSections.map((item) => {
-                    const isOpen = app.sidebarSectionsOpen[item.key] ?? false;
+                <List disablePadding dense>
+                    {sidebarSampleSections.map((item) => {
+                        const isOpen = app.sidebarSectionsOpen[item.key] ?? false;
+                        const SidebarIcon = item.icon;
 
-                    return (
-                        <Box key={item.key}>
-                            <ListItemButton onClick={() => toggleSection(item.key)}>
-                                <ListItemIcon sx={{ minWidth: 40 }}>
-                                    <CollectionsIcon fontSize="small" />
-                                </ListItemIcon>
-                                <ListItemText primary={item.label} secondary={item.title} />
-                                {isOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                            </ListItemButton>
+                        if (!item.items) {
+                            return (
+                                <Box key={item.key}>
+                                    <ListItemButton component={NavLink} to={item.to ?? "/"}>
+                                        <ListItemIcon sx={{ minWidth: 40 }}>
+                                            <SidebarIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary={item.label} secondary={item.title} />
+                                    </ListItemButton>
+                                </Box>
+                            );
+                        }
 
-                            <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                                <List disablePadding dense sx={{ pl: 2 }}>
-                                    <Box sx={{ px: 2, py: 1 }}>
-                                        <Typography variant="subtitle2">{item.title}</Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {item.description}
-                                        </Typography>
-                                    </Box>
+                        return (
+                            <Box key={item.key}>
+                                <ListItemButton onClick={() => toggleSection(item.key)}>
+                                    <ListItemIcon sx={{ minWidth: 40 }}>
+                                        <SidebarIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={item.label} secondary={item.title} />
+                                    {isOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                </ListItemButton>
 
-                                    {item.items.map((subItem) => (
-                                        <ListItemButton key={subItem} sx={{ pl: 4 }}>
-                                            <ListItemText primary={subItem} />
-                                        </ListItemButton>
-                                    ))}
-                                </List>
-                            </Collapse>
-                        </Box>
-                    );
-                })}
-            </List>
-        </Box>
-    );
+                                <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                                    <List disablePadding dense sx={{ pl: 2 }}>
+                                        {(item.title || item.description) && (
+                                            <Box sx={{ px: 2, py: 1 }}>
+                                                {item.title && (
+                                                    <Typography variant="subtitle2">{item.title}</Typography>
+                                                )}
+                                                {item.description && (
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        {item.description}
+                                                    </Typography>
+                                                )}
+                                            </Box>
+                                        )}
+
+                                        {item.items.map((subItem) => {
+                                            const SubItemIcon = subItem.icon;
+
+                                            return (
+                                                <ListItemButton
+                                                    key={subItem.to}
+                                                    component={NavLink}
+                                                    to={subItem.to}
+                                                    sx={{ pl: 4 }}
+                                                >
+                                                    {SubItemIcon && (
+                                                        <ListItemIcon sx={{ minWidth: 40 }}>
+                                                            <SubItemIcon fontSize="small" />
+                                                        </ListItemIcon>
+                                                    )}
+                                                    <ListItemText primary={subItem.label} />
+                                                </ListItemButton>
+                                            );
+                                        })}
+                                    </List>
+                                </Collapse>
+                            </Box>
+                        );
+                    })}
+                </List>
+            </Box>
+        );
 
     useEffect(() => {
-        if (me.loading) return;
+        if (meLoading) return;
 
         if (isLogin) {
             document.title = `${username} - betterDXnet`;
@@ -144,7 +240,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
             document.title = "betterDXnet";
             void me.refresh();
         }
-    }, [me, me.loading, isLogin, username]);
+    }, [me, meLoading, isLogin, username]);
 
     useEffect(() => {
         if (!isMobile) {
@@ -169,26 +265,21 @@ function MainView({ closeView }: { closeView?: () => void }) {
                         </IconButton>
                     )}
 
-                    <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{ flexGrow: 1 }}
-                        data-ranking-color-type={me.me?.rankType ?? ""}
-                    >
-                        {isLogin ? `${username}` : "betterDXnet"}
-                    </Typography>
+                    <FadingToolbarTitle username={isLogin ? username : undefined} rankType={rankType} />
 
                     <Tooltip title="Refresh profile" placement="bottom" arrow>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            color="inherit"
-                            aria-label="refresh"
-                            disabled={me.loading}
-                            onClick={() => void me.refresh()}
-                        >
-                            <ReplayIcon fontWeight="medium" />
-                        </IconButton>
+                        <span>
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                color="inherit"
+                                aria-label="refresh"
+                                disabled={meLoading}
+                                onClick={() => void me.refresh()}
+                            >
+                                <ReplayIcon fontWeight="medium" />
+                            </IconButton>
+                        </span>
                     </Tooltip>
 
                     <Tooltip title="Unload betterDXnet" placement="bottom" arrow>
@@ -210,15 +301,17 @@ function MainView({ closeView }: { closeView?: () => void }) {
                 />
             </AppBar>
 
-            {isLogin ? (
-                <>
+            {isLogin && me.me ? (
+                <HashRouter>
                     <Box className={cls.contentLayout}>
                         {!isMobile && (
                             <Box className={cls.sidebarPanel} component="aside">
                                 {renderSidebar()}
                             </Box>
                         )}
-                        <Container className={cls.contentPanel}>{isLogin ? <></> : <LoadingView />}</Container>
+                        <Container className={cls.contentPanel} maxWidth="xl">
+                            <AppRoutes />
+                        </Container>
                     </Box>
 
                     <Drawer
@@ -236,7 +329,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
                         <Divider />
                         {renderSidebar()}
                     </Drawer>
-                </>
+                </HashRouter>
             ) : (
                 <Container>
                     <LoadingView />
