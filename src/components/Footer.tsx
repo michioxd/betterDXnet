@@ -1,4 +1,5 @@
 import { Link, Tooltip, Typography } from "@mui/material";
+import { version as ReactVersion } from "react";
 
 export default function Footer() {
     return (
@@ -12,20 +13,28 @@ export default function Footer() {
                 <Link color="inherit" target="_blank" href="https://github.com/michioxd/betterDXnet">
                     betterDXnet
                 </Link>{" "}
-                v
+                by{" "}
+                <Link color="inherit" target="_blank" href="https://github.com/michioxd">
+                    michioxd
+                </Link>{" "}
+                with{" "}
                 <Link
                     color="inherit"
                     target="_blank"
-                    href={`https://github.com/michioxd/betterDXnet/releases/tag/${import.meta.env.VITE_VERSION}`}
+                    href="https://github.com/michioxd/betterDXnet/graphs/contributors"
                 >
-                    {import.meta.env.VITE_VERSION}
+                    contributors
+                </Link>{" "}
+                - version{" "}
+                <Link
+                    color="inherit"
+                    target="_blank"
+                    href={`https://github.com/michioxd/betterDXnet/releases/tag/${import.meta.env.VITE_APP_VERSION}`}
+                >
+                    {import.meta.env.VITE_APP_VERSION}
                 </Link>{" "}
                 -{" "}
-                <Tooltip
-                    title={`Build date: ${new Date(import.meta.env.VITE_BUILD_TIME).toLocaleTimeString()} ${new Date(import.meta.env.VITE_BUILD_TIME).toLocaleDateString()} - Full Git commit hash: ${import.meta.env.VITE_GIT_COMMIT_FULL}`}
-                    placement="top"
-                    arrow
-                >
+                <Tooltip title={`${import.meta.env.VITE_GIT_COMMIT_FULL}`} arrow>
                     <Link
                         href={`https://github.com/michioxd/betterDXnet/commit/${import.meta.env.VITE_GIT_COMMIT_FULL}`}
                         target="_blank"
@@ -33,20 +42,13 @@ export default function Footer() {
                     >
                         {import.meta.env.VITE_GIT_CURRENT_BRANCH}.{import.meta.env.VITE_GIT_COMMIT}
                     </Link>
-                </Tooltip>{" "}
-                - by{" "}
-                <Link color="inherit" target="_blank" href="https://github.com/michioxd">
-                    michioxd
-                </Link>{" "}
-                and thanks to{" "}
-                <Link
-                    color="inherit"
-                    target="_blank"
-                    href="https://github.com/michioxd/betterDXnet/graphs/contributors"
-                >
-                    contributors
-                </Link>
-                .
+                </Tooltip>
+                <br />
+                {import.meta.env.VITE_VITE_VERSION} - React {ReactVersion} - TypeScript{" "}
+                {import.meta.env.VITE_TYPESCRIPT_VERSION}
+                <br />
+                Build date: {new Date(import.meta.env.VITE_BUILD_TIME).toLocaleTimeString()}{" "}
+                {new Date(import.meta.env.VITE_BUILD_TIME).toLocaleDateString()}
             </Typography>
         </>
     );

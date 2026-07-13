@@ -13,6 +13,8 @@ const buildDate = new Date(buildTime).toISOString();
 const gitCommit = execSync("git rev-parse --short HEAD").toString().trim();
 const gitCommitFull = execSync("git rev-parse HEAD").toString().trim();
 const gitCurrentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
+const viteVersion = execSync("vite --version").toString().trim();
+const typescriptVersion = execSync("tsc --version").toString().trim();
 
 export default defineConfig({
     resolve: {
@@ -26,7 +28,9 @@ export default defineConfig({
         "import.meta.env.VITE_GIT_COMMIT": JSON.stringify(gitCommit),
         "import.meta.env.VITE_GIT_COMMIT_FULL": JSON.stringify(gitCommitFull),
         "import.meta.env.VITE_GIT_CURRENT_BRANCH": JSON.stringify(gitCurrentBranch),
-        "import.meta.env.VITE_VERSION": JSON.stringify(version),
+        "import.meta.env.VITE_APP_VERSION": JSON.stringify(version),
+        "import.meta.env.VITE_VITE_VERSION": JSON.stringify(viteVersion),
+        "import.meta.env.VITE_TYPESCRIPT_VERSION": JSON.stringify(typescriptVersion).replaceAll("Version ", ""),
     },
     plugins: [react(), crx({ manifest }), zip({ outDir: "release", outFileName: `betterDXnet-${version}.zip` })],
     server: {
