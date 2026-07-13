@@ -36,7 +36,7 @@
 }
 
 .sidebarList {
-    width: 100%;
+    width: 300px;
     height: 100%;
     overflow: auto;
     display: flex;
@@ -44,13 +44,10 @@
     min-height: 0;
 }
 
-// .contentPanel {
-//     flex: 1;
-//     min-width: 0;
-//     width: 0;
-//     padding-top: 16px;
-//     padding-bottom: 16px;
-// }
+.contentPanel {
+    display: flex;
+    flex-direction: column;
+}
 
 @keyframes openMainView {
     from {

@@ -33,7 +33,25 @@ import ProfileCard from "@/components/ProfileCard";
 import FadingToolbarTitle from "@/components/FadingToolbarTitle";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
-import StorefrontIcon from "@mui/icons-material/Storefront";
+import BadgeIcon from "@mui/icons-material/Badge";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import CasinoIcon from "@mui/icons-material/Casino";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FlagIcon from "@mui/icons-material/Flag";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import GroupIcon from "@mui/icons-material/Group";
+import GroupsIcon from "@mui/icons-material/Groups";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import PublicIcon from "@mui/icons-material/Public";
+import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import StarIcon from "@mui/icons-material/Star";
+import StyleIcon from "@mui/icons-material/Style";
+import TodayIcon from "@mui/icons-material/Today";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import EventIcon from "@mui/icons-material/Event";
 import CollectionsIcon from "@mui/icons-material/Collections";
@@ -41,6 +59,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import type { SvgIconComponent } from "@mui/icons-material";
 import { HashRouter, NavLink } from "react-router-dom";
 import AppRoutes from "@/pages/routes";
+import Footer from "@/components/Footer";
 
 type SidebarSection = {
     key: string;
@@ -62,9 +81,9 @@ const sidebarSampleSections: SidebarSection[] = [
         label: "Home",
         icon: HomeIcon,
         items: [
-            { label: "Overview", to: "/" },
-            { label: "DX Rating", to: "/dx-rating" },
-            { label: "Record of maimai", to: "/maimai-record" },
+            { label: "Overview", to: "/", icon: HomeIcon },
+            { label: "DX Rating", to: "/dx-rating", icon: StarIcon },
+            { label: "Record of maimai", to: "/maimai-record", icon: FormatListNumberedIcon },
         ],
     },
     {
@@ -72,15 +91,24 @@ const sidebarSampleSections: SidebarSection[] = [
         label: "Player Data",
         icon: PersonIcon,
         items: [
-            { label: "Player data", to: "/playdata" },
-            { label: "Stamp card", to: "/playdata/stamp-card" },
-            { label: "Album", to: "/playdata/album" },
+            { label: "Player data", to: "/playdata", icon: BadgeIcon },
+            { label: "Stamp card", to: "/playdata/stamp-card", icon: StyleIcon },
+            { label: "Album", to: "/playdata/album", icon: CameraAltIcon },
+        ],
+    },
+    {
+        key: "friends",
+        label: "Friends and Circles",
+        icon: GroupIcon,
+        items: [
+            { label: "Friends", to: "/friends", icon: GroupIcon },
+            { label: "Circles", to: "/circles", icon: GroupsIcon },
         ],
     },
     {
         key: "shop",
         label: "maimile Shop",
-        icon: StorefrontIcon,
+        icon: ShoppingBagIcon,
         to: "/shop",
     },
     {
@@ -88,10 +116,10 @@ const sidebarSampleSections: SidebarSection[] = [
         label: "Records",
         icon: AssessmentIcon,
         items: [
-            { label: "Game records", to: "/records/game" },
-            { label: "Song scores", to: "/records/songs" },
-            { label: "Courses", to: "/records/courses" },
-            { label: "World stats", to: "/records/worldstats" },
+            { label: "Game records", to: "/records/game", icon: FormatListNumberedIcon },
+            { label: "Song scores", to: "/records/songs", icon: MusicNoteIcon },
+            { label: "Courses", to: "/records/courses", icon: FlagIcon },
+            { label: "World stats", to: "/records/worldstats", icon: PublicIcon },
         ],
     },
     {
@@ -99,10 +127,10 @@ const sidebarSampleSections: SidebarSection[] = [
         label: "Events",
         icon: EventIcon,
         items: [
-            { label: "Area", to: "/events/area" },
-            { label: "Event area", to: "/events/event-area" },
-            { label: "End event area", to: "/events/end-event-area" },
-            { label: "Season info", to: "/events/season-info" },
+            { label: "Area", to: "/events/area", icon: FlagIcon },
+            { label: "Event area", to: "/events/event-area", icon: EventIcon },
+            { label: "End event area", to: "/events/end-event-area", icon: TodayIcon },
+            { label: "Season info", to: "/events/season-info", icon: CalendarMonthIcon },
         ],
     },
     {
@@ -110,12 +138,25 @@ const sidebarSampleSections: SidebarSection[] = [
         label: "Collections",
         icon: CollectionsIcon,
         items: [
-            { label: "Icon", to: "/collections/icon" },
-            { label: "Nameplate", to: "/collections/nameplate" },
-            { label: "Frame", to: "/collections/frame" },
-            { label: "Title", to: "/collections/title" },
-            { label: "Tour member", to: "/collections/tour-member" },
-            { label: "Partner", to: "/collections/partner" },
+            { label: "Icon", to: "/collections/icon", icon: CollectionsIcon },
+            { label: "Nameplate", to: "/collections/nameplate", icon: BadgeIcon },
+            { label: "Frame", to: "/collections/frame", icon: StyleIcon },
+            { label: "Title", to: "/collections/title", icon: MilitaryTechIcon },
+            { label: "Tour member", to: "/collections/tour-member", icon: GroupIcon },
+            { label: "Partner", to: "/collections/partner", icon: FavoriteIcon },
+        ],
+    },
+    {
+        key: "ranking",
+        label: "Ranking",
+        icon: LeaderboardIcon,
+        items: [
+            { label: "Song", to: "/ranking/song", icon: MusicNoteIcon },
+            { label: "Course", to: "/ranking/course", icon: FlagIcon },
+            { label: "Session", to: "/ranking/session", icon: CasinoIcon },
+            { label: "DX", to: "/ranking/dx", icon: StarIcon },
+            { label: "Total", to: "/ranking/total", icon: EmojiEventsIcon },
+            { label: "Partner", to: "/ranking/partner", icon: FavoriteIcon },
         ],
     },
     {
@@ -123,9 +164,9 @@ const sidebarSampleSections: SidebarSection[] = [
         label: "Settings",
         icon: SettingsIcon,
         items: [
-            { label: "Game options", to: "/settings/game" },
-            { label: "Player", to: "/settings/player" },
-            { label: "Favorite songs", to: "/settings/favorite-songs" },
+            { label: "Game options", to: "/settings/game", icon: SettingsApplicationsIcon },
+            { label: "Player", to: "/settings/player", icon: PersonIcon },
+            { label: "Favorite songs", to: "/settings/favorite-songs", icon: FavoriteIcon },
         ],
     },
 ];
@@ -234,15 +275,6 @@ function MainView({ closeView }: { closeView?: () => void }) {
                         );
                     })}
                     <Box sx={{ flex: "1", minWidth: 0 }}></Box>
-                    <Typography variant="body2" color="textSecondary" sx={{ p: 1, fontSize: 10 }}>
-                        <Link color="inherit" target="_blank" href="https://github.com/michioxd/betterDXnet">
-                            betterDXnet
-                        </Link>{" "}
-                        vX.X.X - by{" "}
-                        <Link color="inherit" target="_blank" href="https://github.com/michioxd">
-                            michioxd
-                        </Link>
-                    </Typography>
                 </List>
             </Box>
         );
@@ -332,6 +364,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
                         )}
                         <Container className={cls.contentPanel} maxWidth="xl" sx={{ pt: 3 }}>
                             <AppRoutes />
+                            <Footer />
                         </Container>
                     </Box>
 
@@ -352,8 +385,9 @@ function MainView({ closeView }: { closeView?: () => void }) {
                     </Drawer>
                 </HashRouter>
             ) : (
-                <Container>
+                <Container className={cls.contentPanel}>
                     <LoadingView />
+                    <Footer />
                 </Container>
             )}
         </Paper>
