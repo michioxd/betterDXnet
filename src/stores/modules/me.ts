@@ -52,4 +52,14 @@ export class MeStore {
 
         return tokenCookie.split("=")[1];
     }
+
+    fullyReload() {
+        runInAction(() => {
+            this.me = null;
+            this.loading = false;
+            this.error = null;
+        });
+
+        return this.refresh();
+    }
 }

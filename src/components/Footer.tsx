@@ -1,9 +1,10 @@
-import { Link, Tooltip, Typography } from "@mui/material";
+import { Box, Link, Tooltip, Typography } from "@mui/material";
 import { version as ReactVersion } from "react";
 
 export default function Footer() {
     return (
         <>
+            <Box sx={{ flex: "1", minWidth: 0 }}></Box>
             <Typography
                 variant="body2"
                 color="textSecondary"
@@ -32,8 +33,8 @@ export default function Footer() {
                     href={`https://github.com/michioxd/betterDXnet/releases/tag/${import.meta.env.VITE_APP_VERSION}`}
                 >
                     {import.meta.env.VITE_APP_VERSION}
-                </Link>{" "}
-                -{" "}
+                </Link>
+                {" ("}
                 <Tooltip title={`${import.meta.env.VITE_GIT_COMMIT_FULL}`} arrow>
                     <Link
                         href={`https://github.com/michioxd/betterDXnet/commit/${import.meta.env.VITE_GIT_COMMIT_FULL}`}
@@ -43,12 +44,16 @@ export default function Footer() {
                         {import.meta.env.VITE_GIT_CURRENT_BRANCH}.{import.meta.env.VITE_GIT_COMMIT}
                     </Link>
                 </Tooltip>
+                {")"}
                 <br />
                 {import.meta.env.VITE_VITE_VERSION} - React {ReactVersion} - TypeScript{" "}
                 {import.meta.env.VITE_TYPESCRIPT_VERSION}
                 <br />
                 Build date: {new Date(import.meta.env.VITE_BUILD_TIME).toLocaleTimeString()}{" "}
                 {new Date(import.meta.env.VITE_BUILD_TIME).toLocaleDateString()}
+                <br />
+                SEGA and maimai are registered trademarks of SEGA. This extension is unofficial and is not affiliated
+                with, endorsed by, sponsored by, or approved by SEGA.
             </Typography>
         </>
     );

@@ -19,7 +19,7 @@
         Cantarell,
         "Open Sans",
         "Helvetica Neue",
-        sans-serif !important;
+        sans-serif;
 }
 
 html[data-betterdxnet="727"] {
@@ -117,4 +117,8 @@ html[data-betterdxnet="727"] {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+}
+
+.Mui-disabled:disabled {
+    background-color: unset;
 }

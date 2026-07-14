@@ -1,4 +1,4 @@
-import { Box, Chip, Fade, Typography } from "@mui/material";
+import { Box, Chip, Fade, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const randomFadeDelay = () => Math.floor(Math.random() * 4001) + 4000;
@@ -49,7 +49,9 @@ function FadingToolbarTitle({
                     data-ranking-color-type={rankType ?? ""}
                 >
                     {username}{" "}
-                    <Chip label={version} size="small" sx={{ width: "fit-content", height: "fit-content" }} />
+                    <Tooltip title={`DX Version: ${version ?? "unknown"}`} arrow>
+                        <Chip label={version} size="small" sx={{ width: "fit-content", height: "fit-content" }} />
+                    </Tooltip>
                 </Typography>
             </Fade>
             <Fade in={!username || !showUsername} timeout={500}>

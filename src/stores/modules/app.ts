@@ -1,8 +1,8 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, observable, runInAction } from "mobx";
 
 import type { RootStore } from "../root";
 
-const SIDEBAR_SECTIONS_OPEN_STORAGE_KEY = "betterDXnet.sidebarSectionsOpen";
+const SIDEBAR_SECTIONS_OPEN_STORAGE_KEY = "bdn.sidebar";
 
 function loadSidebarSectionsOpen() {
     try {
@@ -31,7 +31,10 @@ export class AppStore {
 
     constructor(root: RootStore) {
         this.root = root;
-        makeAutoObservable(this);
+        makeAutoObservable(this, {
+            root: false,
+            sidebarSectionsOpen: observable.ref,
+        });
     }
 
     get isAppLoading() {
@@ -58,29 +61,35 @@ export class AppStore {
 
     setSidebarSectionsOpen(sectionsOpen: Record<string, boolean>) {
         runInAction(() => {
-            this.sidebarSectionsOpen = sectionsOpen;
-            saveSidebarSectionsOpen(this.sidebarSectionsOpen);
+            const nextSidebarSectionsOpen = { ...sectionsOpen };
+
+            this.sidebarSectionsOpen = nextSidebarSectionsOpen;
+            saveSidebarSectionsOpen(nextSidebarSectionsOpen);
         });
     }
 
     ensureSidebarSectionsOpen(defaultSectionsOpen: Record<string, boolean>) {
         runInAction(() => {
-            this.sidebarSectionsOpen = {
+            const nextSidebarSectionsOpen = {
                 ...defaultSectionsOpen,
                 ...loadSidebarSectionsOpen(),
                 ...this.sidebarSectionsOpen,
             };
-            saveSidebarSectionsOpen(this.sidebarSectionsOpen);
+
+            this.sidebarSectionsOpen = nextSidebarSectionsOpen;
+            saveSidebarSectionsOpen(nextSidebarSectionsOpen);
         });
     }
 
     toggleSidebarSection(sectionKey: string) {
         runInAction(() => {
-            this.sidebarSectionsOpen = {
+            const nextSidebarSectionsOpen = {
                 ...this.sidebarSectionsOpen,
                 [sectionKey]: !this.sidebarSectionsOpen[sectionKey],
             };
-            saveSidebarSectionsOpen(this.sidebarSectionsOpen);
+
+            this.sidebarSectionsOpen = nextSidebarSectionsOpen;
+            saveSidebarSectionsOpen(nextSidebarSectionsOpen);
         });
     }
 }

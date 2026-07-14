@@ -21,6 +21,9 @@
     max-width: 86vw;
     height: calc(100dvh - 64px);
     border-right: 1px solid rgba(127, 127, 127, 0.18);
+    position: sticky;
+    left: 0;
+    top: 64px;
 }
 
 .sidebarContent {
@@ -47,6 +50,7 @@
 .contentPanel {
     display: flex;
     flex-direction: column;
+    min-height: calc(100dvh - 64px);
 }
 
 @keyframes openMainView {

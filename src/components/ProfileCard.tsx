@@ -1,12 +1,14 @@
 import { ApiMe, ratingBgBaseUrl } from "@/api/me";
 import cls from "./ProfileCard.module.scss";
+import clsx from "clsx";
 
-function ProfileCard({ d }: { d: ApiMe }) {
+function ProfileCard({ d, cardProps }: { d: ApiMe; cardProps?: React.HTMLAttributes<HTMLDivElement> }) {
     return (
         <>
             <div
-                className={cls.profileCard}
-                style={{ "--frame-bg": `url(${d.collections.frame.url})` } as React.CSSProperties}
+                {...cardProps}
+                className={clsx(cls.profileCard, cardProps?.className)}
+                style={{ ...cardProps?.style, "--frame-bg": `url(${d.collections.frame.url})` } as React.CSSProperties}
             >
                 <div className={cls.content}>
                     <img src={d.collections.icon.url} alt="icon" className={cls.userIcon} />
