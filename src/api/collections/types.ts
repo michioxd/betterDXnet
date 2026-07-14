@@ -22,6 +22,7 @@ export interface NameplateAvailableListResponse {
     genereId: string;
     genereName: string;
     using: boolean;
+    favorite: boolean;
     available: boolean;
     formValue: string;
 }
@@ -47,6 +48,7 @@ export interface FrameAvailableListResponse {
     genereId: string;
     genereName: string;
     using: boolean;
+    favorite: boolean;
     available: boolean;
     formValue: string;
 }
@@ -58,6 +60,7 @@ export interface IconAvailableListResponse {
     genereId: string;
     genereName: string;
     using: boolean;
+    favorite: boolean;
     available: boolean;
     formValue: string;
 }
@@ -67,6 +70,8 @@ export interface CurrentIconResponse {
     title: string;
     description: string;
     url: string;
+    isRandomFromAll: boolean;
+    isRandomFromFavorite: boolean;
 }
 
 export interface PartnerAvailableListResponse {
@@ -90,6 +95,7 @@ export interface TitleAvailableListResponse {
     description: string;
     type: TrophyType;
     using: boolean;
+    favorite: boolean;
     available: boolean;
     formValue: string;
 }

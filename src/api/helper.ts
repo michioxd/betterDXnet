@@ -19,10 +19,44 @@ export async function apiHelperFetchDoc(path: string): Promise<ApiFetchDocRespon
 
     const html = await res.text();
 
+    const errorCode = html.match(/ERROR CODE\uFF1A\s*(\d+)/)?.[1];
+
+    if (errorCode) {
+        throw new Error(
+            `Error code ${errorCode}. You may need to log in again. If it have Back button, please click it to go back and try again.`,
+        );
+    }
+
     return {
         document: new DOMParser().parseFromString(html, "text/html"),
         headers: res.headers,
         status: res.status,
         statusText: res.statusText,
     };
+}
+
+function createCollectionFormBody(formValue: string, token: string, selectGenre?: string) {
+    const body = new URLSearchParams();
+
+    body.set("idx", formValue);
+    if (selectGenre !== undefined) {
+        body.set("selectGenre", selectGenre);
+    }
+    body.set("token", token);
+
+    return body;
+}
+
+export async function postCollectionAction(path: string, formValue: string, token: string, selectGenre?: string) {
+    const res = await fetch(path, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: createCollectionFormBody(formValue, token, selectGenre),
+    });
+
+    if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`);
+    }
 }

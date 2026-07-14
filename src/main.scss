@@ -122,3 +122,21 @@ html[data-betterdxnet="727"] {
 .Mui-disabled:disabled {
     background-color: unset;
 }
+
+#betterDXnet-app {
+    input[type="text"],
+    input[type="password"] {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 16.5px 14px;
+        border: 0;
+        box-shadow: unset;
+        -webkit-appearance: unset;
+        background-image: unset;
+        border-radius: unset;
+    }
+    span.MuiFormControlLabel-label {
+        padding: 0;
+    }
+}

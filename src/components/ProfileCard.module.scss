@@ -47,6 +47,8 @@
                 text-align: center;
                 container-type: inline-size;
                 position: relative;
+                overflow: hidden;
+                padding: 4.8%;
 
                 .trophyText {
                     display: inline-block;
@@ -61,6 +63,7 @@
                         black -1px 0 0,
                         black 1px 0 0;
                     font-size: 5cqw;
+                    text-wrap: nowrap;
                 }
             }
 
@@ -185,5 +188,6 @@
         z-index: 0;
         opacity: 0.2;
         filter: blur(10px);
+        transition: 0.4s;
     }
 }

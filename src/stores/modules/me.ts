@@ -32,6 +32,7 @@ export class MeStore {
                 this.me = me;
             });
         } catch (error) {
+            console.error("Failed to refresh me:", error);
             runInAction(() => {
                 this.error = error as Error;
             });

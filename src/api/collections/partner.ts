@@ -1,11 +1,11 @@
-import { apiHelperFetchDoc } from "../helper";
+import { apiHelperFetchDoc, postCollectionAction } from "../helper";
 import { CurrentPartnerResponse, PartnerAvailableListResponse } from "./types";
 
 export async function partnerAvailableList(): Promise<PartnerAvailableListResponse[]> {
     const res = await apiHelperFetchDoc("/maimai-mobile/collection/partner");
 
     const partnerList: PartnerAvailableListResponse[] = [
-        ...res.document.querySelectorAll<HTMLElement>("body .town_block .see_through_block"),
+        ...res.document.querySelectorAll<HTMLElement>("body .town_block.m_15.m_t_0.p_15.t_l .see_through_block"),
     ].map((item) => {
         const partnerImage = item.querySelector<HTMLImageElement>('img[src*="/img/Partner/"]');
         const setForm = item.querySelector<HTMLFormElement>('form[action$="/collection/partner/set/"]');
@@ -38,4 +38,8 @@ export async function currentPartner(): Promise<CurrentPartnerResponse> {
             currentPartnerBlock?.querySelector<HTMLImageElement>('img[src*="/img/Partner/"]')?.getAttribute("src") ??
             "",
     };
+}
+
+export function setPartner(formValue: string, token: string): Promise<void> {
+    return postCollectionAction("/maimai-mobile/collection/partner/set/", formValue, token);
 }

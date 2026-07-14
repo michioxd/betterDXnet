@@ -1,0 +1,280 @@
+import { apiCollections, TrophyType, trophyBgBasePath, type TitleAvailableListResponse } from "@/api/collections";
+import { rootStore } from "@/stores/root";
+import {
+    Alert,
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    Checkbox,
+    Chip,
+    CircularProgress,
+    FormControl,
+    FormControlLabel,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack,
+    TextField,
+    Typography,
+} from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+const trophyTypes = Object.values(TrophyType);
+
+function getTrophyBg(type: TrophyType) {
+    return trophyBgBasePath.replace("{}", type.toLowerCase());
+}
+
+function PageCollectionsTitle() {
+    const { app, me } = rootStore;
+    const [selectedType, setSelectedType] = useState<TrophyType>(TrophyType.Normal);
+    const [titles, setTitles] = useState<TitleAvailableListResponse[]>([]);
+    const [searchText, setSearchText] = useState("");
+    const [favoriteOnly, setFavoriteOnly] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [backgroundLoading, setBackgroundLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+    const disposedRef = useRef(false);
+
+    const loadTitles = useCallback(async (showPageLoading: boolean, type: TrophyType) => {
+        if (showPageLoading) {
+            setLoading(true);
+        } else {
+            setBackgroundLoading(true);
+        }
+        setError(null);
+
+        try {
+            const titleList = await apiCollections.title.listAvailable(type);
+
+            if (disposedRef.current) return;
+
+            setTitles(titleList);
+        } catch (error) {
+            if (disposedRef.current) return;
+
+            setError(error as Error);
+        } finally {
+            if (disposedRef.current) return;
+
+            if (showPageLoading) {
+                setLoading(false);
+            } else {
+                setBackgroundLoading(false);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        disposedRef.current = false;
+        void loadTitles(true, selectedType);
+
+        return () => {
+            disposedRef.current = true;
+        };
+    }, [loadTitles, selectedType]);
+
+    useEffect(() => {
+        if (loading || backgroundLoading) app.setGlobalLoading(true);
+        else app.setGlobalLoading(false);
+    }, [loading, backgroundLoading, app]);
+
+    const getRequiredUserToken = () => {
+        const token = me.getUserToken();
+
+        if (!token) {
+            throw new Error("User token not found");
+        }
+
+        return token;
+    };
+
+    const handleSetTitle = async (title: TitleAvailableListResponse) => {
+        setBackgroundLoading(true);
+        setError(null);
+
+        try {
+            await apiCollections.title.set(title.formValue, getRequiredUserToken());
+            await loadTitles(false, selectedType);
+            me.refresh();
+        } catch (error) {
+            setError(error as Error);
+            setBackgroundLoading(false);
+        }
+    };
+
+    const handleToggleFavoriteTitle = async (title: TitleAvailableListResponse) => {
+        setBackgroundLoading(true);
+        setError(null);
+
+        try {
+            const token = getRequiredUserToken();
+
+            if (title.favorite) {
+                await apiCollections.title.unfavorite(title.formValue, token);
+            } else {
+                await apiCollections.title.favorite(title.formValue, token);
+            }
+
+            await loadTitles(false, selectedType);
+        } catch (error) {
+            setError(error as Error);
+            setBackgroundLoading(false);
+        }
+    };
+
+    const filteredTitles = useMemo(() => {
+        const normalizedSearchText = searchText.trim().toLowerCase();
+
+        return titles.filter((title) => {
+            const matchesFavorite = !favoriteOnly || title.favorite;
+            const matchesText =
+                normalizedSearchText.length === 0 ||
+                title.title.toLowerCase().includes(normalizedSearchText) ||
+                title.description.toLowerCase().includes(normalizedSearchText);
+
+            return matchesFavorite && matchesText;
+        });
+    }, [favoriteOnly, searchText, titles]);
+
+    return (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Box>
+                <Typography variant="h5">Collections / Title</Typography>
+                <Typography color="textSecondary">Change titles for your profile.</Typography>
+            </Box>
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                <FormControl fullWidth>
+                    <InputLabel id="title-type-filter-label">Type</InputLabel>
+                    <Select
+                        labelId="title-type-filter-label"
+                        label="Type"
+                        value={selectedType}
+                        onChange={(event) => setSelectedType(event.target.value as TrophyType)}
+                    >
+                        {trophyTypes.map((type) => (
+                            <MenuItem key={type} value={type}>
+                                {type}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <TextField
+                    fullWidth
+                    label="Search"
+                    placeholder="Filter by title or description"
+                    value={searchText}
+                    onChange={(event) => setSearchText(event.target.value)}
+                />
+
+                <FormControlLabel
+                    sx={{ flexShrink: 0 }}
+                    control={
+                        <Checkbox checked={favoriteOnly} onChange={(event) => setFavoriteOnly(event.target.checked)} />
+                    }
+                    label="Favorite only"
+                />
+            </Stack>
+
+            {loading && (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
+                    <CircularProgress />
+                </Box>
+            )}
+
+            {error && <Alert severity="error">{error.message}</Alert>}
+
+            {!loading && !error && (
+                <>
+                    <Typography color="textSecondary">
+                        Showing {filteredTitles.length} of {titles.length} titles
+                    </Typography>
+
+                    <Grid container spacing={2}>
+                        {filteredTitles.map((title) => (
+                            <Grid
+                                key={`${title.type}-${title.formValue}-${title.title}`}
+                                size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
+                            >
+                                <Card
+                                    variant="outlined"
+                                    sx={{
+                                        height: "100%",
+                                        opacity: title.available ? 1 : 0.55,
+                                        borderColor: title.using ? "primary.main" : undefined,
+                                    }}
+                                >
+                                    <CardContent>
+                                        <Box
+                                            sx={{
+                                                backgroundImage: `url(${getTrophyBg(title.type)})`,
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundSize: "100% 100%",
+                                                minHeight: 42,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                px: 2,
+                                                mb: 2,
+                                                color: " #fff",
+                                                textShadow:
+                                                    "black 1px 1px 0, black -1px -1px 0, black -1px 1px 0, black 1px -1px 0, black 0px 1px 0, black 0 -1px 0, black -1px 0 0, black 1px 0 0;",
+                                            }}
+                                        >
+                                            <Typography variant="subtitle1" noWrap title={title.title}>
+                                                {title.title || "Untitled"}
+                                            </Typography>
+                                        </Box>
+                                        <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                            noWrap
+                                            title={title.description}
+                                        >
+                                            {title.description || "No description"}
+                                        </Typography>
+                                        <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}>
+                                            <Chip size="small" label={title.type} />
+                                            {title.using && <Chip size="small" color="primary" label="In-use" />}
+                                            {title.favorite && <Chip size="small" color="error" label="Favorite" />}
+                                            {!title.available && <Chip size="small" color="default" label="Locked" />}
+                                        </Stack>
+                                    </CardContent>
+                                    <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
+                                        <Button
+                                            size="small"
+                                            startIcon={title.favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                                            disabled={!title.available || backgroundLoading}
+                                            onClick={() => void handleToggleFavoriteTitle(title)}
+                                        >
+                                            {title.favorite ? "Unfavorite" : "Favorite"}
+                                        </Button>
+                                        <Button
+                                            size="small"
+                                            variant="contained"
+                                            startIcon={<CheckCircleIcon />}
+                                            disabled={!title.available || title.using || backgroundLoading}
+                                            onClick={() => void handleSetTitle(title)}
+                                        >
+                                            Set
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </>
+            )}
+        </Box>
+    );
+}
+
+export default PageCollectionsTitle;

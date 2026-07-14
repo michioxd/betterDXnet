@@ -1,14 +1,34 @@
-import { currentIcon, iconAvailableList } from "./icon";
-import { currentFrame, frameAvailableList } from "./frame";
-import { currentNameplate, nameplateAvailableList } from "./nameplate";
-import { currentPartner, partnerAvailableList } from "./partner";
-import { currentTitle, titleAvailableList } from "./title";
+import { currentIcon, favoriteIcon, iconAvailableList, setIcon, unfavoriteIcon } from "./icon";
+import { currentFrame, favoriteFrame, frameAvailableList, setFrame, unfavoriteFrame } from "./frame";
+import {
+    currentNameplate,
+    favoriteNameplate,
+    nameplateAvailableList,
+    setNameplate,
+    unfavoriteNameplate,
+} from "./nameplate";
+import { currentPartner, partnerAvailableList, setPartner } from "./partner";
+import { currentTitle, favoriteTitle, setTitle, titleAvailableList, unfavoriteTitle } from "./title";
 
-export { currentIcon, iconAvailableList } from "./icon";
-export { currentFrame, frameAvailableList } from "./frame";
-export { currentNameplate, nameplateAvailableList } from "./nameplate";
-export { currentPartner, partnerAvailableList } from "./partner";
-export { currentTitle, titleAvailableList } from "./title";
+export { currentIcon, favoriteIcon, iconAvailableList, setIcon, unfavoriteIcon } from "./icon";
+export { currentFrame, favoriteFrame, frameAvailableList, setFrame, unfavoriteFrame } from "./frame";
+export {
+    currentNameplate,
+    favoriteNameplate,
+    nameplateAvailableList,
+    setNameplate,
+    unfavoriteNameplate,
+} from "./nameplate";
+export { currentPartner, partnerAvailableList, setPartner } from "./partner";
+export {
+    currentTitle,
+    favoriteTitle,
+    setTitle,
+    titleAvailableList,
+    TrophyType,
+    trophyBgBasePath,
+    unfavoriteTitle,
+} from "./title";
 export * from "./types";
 
 export const apiCollections = {
@@ -23,6 +43,9 @@ export const apiCollections = {
          * @returns {Promise<CurrentNameplateResponse>} A promise resolving to the current nameplate details.
          */
         current: currentNameplate,
+        set: setNameplate,
+        favorite: favoriteNameplate,
+        unfavorite: unfavoriteNameplate,
     },
     icon: {
         /**
@@ -35,6 +58,9 @@ export const apiCollections = {
          * @returns {Promise<CurrentIconResponse>} A promise resolving to the current icon details.
          */
         current: currentIcon,
+        set: setIcon,
+        favorite: favoriteIcon,
+        unfavorite: unfavoriteIcon,
     },
     frame: {
         /**
@@ -47,6 +73,9 @@ export const apiCollections = {
          * @returns {Promise<CurrentFrameResponse>} A promise resolving to the current frame details.
          */
         current: currentFrame,
+        set: setFrame,
+        favorite: favoriteFrame,
+        unfavorite: unfavoriteFrame,
     },
     partner: {
         /**
@@ -59,6 +88,7 @@ export const apiCollections = {
          * @returns {Promise<CurrentPartnerResponse>} A promise resolving to the current partner details.
          */
         current: currentPartner,
+        set: setPartner,
     },
     title: {
         /**
@@ -72,5 +102,8 @@ export const apiCollections = {
          * @returns {Promise<CurrentTitleResponse>} A promise resolving to the current title details.
          */
         current: currentTitle,
+        set: setTitle,
+        favorite: favoriteTitle,
+        unfavorite: unfavoriteTitle,
     },
 };

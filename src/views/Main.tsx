@@ -36,6 +36,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
     const meLoading = me.loading;
     const isLoading = meLoading || app.isAppLoading;
     const isLogin = me.isLogin;
+    const isError = me.error !== null;
     const username = me.me?.name;
     const rankType = me.me?.rankType;
     const version = me.me?.version;
@@ -49,11 +50,11 @@ function MainView({ closeView }: { closeView?: () => void }) {
 
         if (isLogin) {
             document.title = `${username} - betterDXnet`;
-        } else {
+        } else if (!isError) {
             document.title = "betterDXnet";
             void me.refresh();
         }
-    }, [me, meLoading, isLogin, username]);
+    }, [me, meLoading, isLogin, username, isError]);
 
     useEffect(() => {
         if (!isMobile) {
@@ -152,49 +153,58 @@ function MainView({ closeView }: { closeView?: () => void }) {
                 />
             </AppBar>
 
-            {isLogin && me.me ? (
-                <HashRouter>
-                    <Box className={cls.contentLayout}>
-                        {!isMobile && (
-                            <Box className={cls.sidebarPanel} component="aside">
+            {isError ? (
+                <Box className={cls.contentPanel}>
+                    <LoadingView error={me.error} closeView={closeView} />
+                    <Footer />
+                </Box>
+            ) : (
+                <>
+                    {isLogin && me.me ? (
+                        <HashRouter>
+                            <Box className={cls.contentLayout}>
+                                {!isMobile && (
+                                    <Box className={cls.sidebarPanel} component="aside">
+                                        <Sidebar
+                                            profile={me.me}
+                                            sectionsOpen={app.sidebarSectionsOpen}
+                                            onToggleSection={(key) => app.toggleSidebarSection(key)}
+                                        />
+                                    </Box>
+                                )}
+                                <Container className={cls.contentPanel} maxWidth="xl" sx={{ pt: 3 }}>
+                                    <AppRoutes />
+                                    <Footer />
+                                </Container>
+                            </Box>
+
+                            <Drawer
+                                open={app.sidebarOpen}
+                                onClose={() => app.setSidebarOpen(false)}
+                                variant="temporary"
+                                ModalProps={{ keepMounted: true }}
+                                slotProps={{ paper: { className: cls.sidebarDrawerPaper } }}
+                            >
+                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", p: 1 }}>
+                                    <IconButton onClick={() => app.setSidebarOpen(false)} aria-label="close sidebar">
+                                        <CloseIcon />
+                                    </IconButton>
+                                </Box>
+                                <Divider />
                                 <Sidebar
                                     profile={me.me}
                                     sectionsOpen={app.sidebarSectionsOpen}
                                     onToggleSection={(key) => app.toggleSidebarSection(key)}
                                 />
-                            </Box>
-                        )}
-                        <Container className={cls.contentPanel} maxWidth="xl" sx={{ pt: 3 }}>
-                            <AppRoutes />
+                            </Drawer>
+                        </HashRouter>
+                    ) : (
+                        <Container className={cls.contentPanel}>
+                            <LoadingView />
                             <Footer />
                         </Container>
-                    </Box>
-
-                    <Drawer
-                        open={app.sidebarOpen}
-                        onClose={() => app.setSidebarOpen(false)}
-                        variant="temporary"
-                        ModalProps={{ keepMounted: true }}
-                        slotProps={{ paper: { className: cls.sidebarDrawerPaper } }}
-                    >
-                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", p: 1 }}>
-                            <IconButton onClick={() => app.setSidebarOpen(false)} aria-label="close sidebar">
-                                <CloseIcon />
-                            </IconButton>
-                        </Box>
-                        <Divider />
-                        <Sidebar
-                            profile={me.me}
-                            sectionsOpen={app.sidebarSectionsOpen}
-                            onToggleSection={(key) => app.toggleSidebarSection(key)}
-                        />
-                    </Drawer>
-                </HashRouter>
-            ) : (
-                <Container className={cls.contentPanel}>
-                    <LoadingView />
-                    <Footer />
-                </Container>
+                    )}
+                </>
             )}
         </Paper>
     );
