@@ -39,10 +39,12 @@ type SidebarSection = {
     title?: string;
     description?: string;
     to?: string;
+    disabled?: boolean;
     items?: {
         label: string;
         to: string;
         icon?: SvgIconComponent;
+        disabled?: boolean;
     }[];
 };
 
@@ -53,55 +55,60 @@ const sidebarSections: SidebarSection[] = [
         icon: HomeIcon,
         items: [
             { label: "Overview", to: "/", icon: HomeIcon },
-            { label: "DX Rating", to: "/dx-rating", icon: StarIcon },
-            { label: "Record of maimai", to: "/maimai-record", icon: FormatListNumberedIcon },
+            { label: "DX Rating", to: "/dx-rating", icon: StarIcon, disabled: true },
+            { label: "Record of maimai", to: "/maimai-record", icon: FormatListNumberedIcon, disabled: true },
         ],
     },
     {
         key: "playdata",
         label: "Player Data",
         icon: PersonIcon,
+        disabled: true,
         items: [
-            { label: "Player data", to: "/playdata", icon: BadgeIcon },
-            { label: "Stamp card", to: "/playdata/stamp-card", icon: StyleIcon },
-            { label: "Album", to: "/playdata/album", icon: CameraAltIcon },
+            { label: "Player data", to: "/playdata", icon: BadgeIcon, disabled: true },
+            { label: "Stamp card", to: "/playdata/stamp-card", icon: StyleIcon, disabled: true },
+            { label: "Album", to: "/playdata/album", icon: CameraAltIcon, disabled: true },
         ],
     },
     {
         key: "friends",
         label: "Friends and Circles",
         icon: GroupIcon,
+        disabled: true,
         items: [
-            { label: "Friends", to: "/friends", icon: GroupIcon },
-            { label: "Circles", to: "/circles", icon: GroupsIcon },
+            { label: "Friends", to: "/friends", icon: GroupIcon, disabled: true },
+            { label: "Circles", to: "/circles", icon: GroupsIcon, disabled: true },
         ],
     },
     {
         key: "shop",
         label: "maimile Shop",
         icon: ShoppingBagIcon,
+        disabled: true,
         to: "/shop",
     },
     {
         key: "title",
         label: "Records",
         icon: AssessmentIcon,
+        disabled: true,
         items: [
-            { label: "Game records", to: "/records/game", icon: FormatListNumberedIcon },
-            { label: "Song scores", to: "/records/songs", icon: MusicNoteIcon },
-            { label: "Courses", to: "/records/courses", icon: FlagIcon },
-            { label: "World stats", to: "/records/worldstats", icon: PublicIcon },
+            { label: "Game records", to: "/records/game", icon: FormatListNumberedIcon, disabled: true },
+            { label: "Song scores", to: "/records/songs", icon: MusicNoteIcon, disabled: true },
+            { label: "Courses", to: "/records/courses", icon: FlagIcon, disabled: true },
+            { label: "World stats", to: "/records/worldstats", icon: PublicIcon, disabled: true },
         ],
     },
     {
         key: "event",
         label: "Events",
         icon: EventIcon,
+        disabled: true,
         items: [
-            { label: "Area", to: "/events/area", icon: FlagIcon },
-            { label: "Event area", to: "/events/event-area", icon: EventIcon },
-            { label: "End event area", to: "/events/end-event-area", icon: TodayIcon },
-            { label: "Season info", to: "/events/season-info", icon: CalendarMonthIcon },
+            { label: "Area", to: "/events/area", icon: FlagIcon, disabled: true },
+            { label: "Event area", to: "/events/event-area", icon: EventIcon, disabled: true },
+            { label: "End event area", to: "/events/end-event-area", icon: TodayIcon, disabled: true },
+            { label: "Season info", to: "/events/season-info", icon: CalendarMonthIcon, disabled: true },
         ],
     },
     {
@@ -113,7 +120,7 @@ const sidebarSections: SidebarSection[] = [
             { label: "Nameplate", to: "/collections/nameplate", icon: BadgeIcon },
             { label: "Frame", to: "/collections/frame", icon: StyleIcon },
             { label: "Title", to: "/collections/title", icon: MilitaryTechIcon },
-            { label: "Tour member", to: "/collections/tour-member", icon: GroupIcon },
+            { label: "Tour member", to: "/collections/tour-member", icon: GroupIcon, disabled: true },
             { label: "Partner", to: "/collections/partner", icon: FavoriteIcon },
         ],
     },
@@ -121,13 +128,14 @@ const sidebarSections: SidebarSection[] = [
         key: "ranking",
         label: "Ranking",
         icon: LeaderboardIcon,
+        disabled: true,
         items: [
-            { label: "Song", to: "/ranking/song", icon: MusicNoteIcon },
-            { label: "Course", to: "/ranking/course", icon: FlagIcon },
-            { label: "Session", to: "/ranking/session", icon: CasinoIcon },
-            { label: "DX", to: "/ranking/dx", icon: StarIcon },
-            { label: "Total", to: "/ranking/total", icon: EmojiEventsIcon },
-            { label: "Partner", to: "/ranking/partner", icon: FavoriteIcon },
+            { label: "Song", to: "/ranking/song", icon: MusicNoteIcon, disabled: true },
+            { label: "Course", to: "/ranking/course", icon: FlagIcon, disabled: true },
+            { label: "Session", to: "/ranking/session", icon: CasinoIcon, disabled: true },
+            { label: "DX", to: "/ranking/dx", icon: StarIcon, disabled: true },
+            { label: "Total", to: "/ranking/total", icon: EmojiEventsIcon, disabled: true },
+            { label: "Partner", to: "/ranking/partner", icon: FavoriteIcon, disabled: true },
         ],
     },
     {
@@ -137,7 +145,7 @@ const sidebarSections: SidebarSection[] = [
         items: [
             { label: "Game options", to: "/settings/game", icon: SettingsApplicationsIcon },
             { label: "Player", to: "/settings/player", icon: PersonIcon },
-            { label: "Favorite songs", to: "/settings/favorite-songs", icon: FavoriteIcon },
+            { label: "Favorite songs", to: "/settings/favorite-songs", icon: FavoriteIcon, disabled: true },
         ],
     },
 ];
@@ -172,7 +180,7 @@ function Sidebar({ profile, sectionsOpen, onToggleSection }: SidebarProps) {
                     if (!item.items) {
                         return (
                             <Box key={item.key}>
-                                <ListItemButton component={NavLink} to={item.to ?? "/"}>
+                                <ListItemButton component={NavLink} to={item.to ?? "/"} disabled={item.disabled}>
                                     <ListItemIcon sx={{ minWidth: 40 }}>
                                         <SidebarIcon />
                                     </ListItemIcon>
@@ -184,7 +192,7 @@ function Sidebar({ profile, sectionsOpen, onToggleSection }: SidebarProps) {
 
                     return (
                         <Box key={item.key}>
-                            <ListItemButton onClick={() => onToggleSection(item.key)}>
+                            <ListItemButton onClick={() => onToggleSection(item.key)} disabled={item.disabled}>
                                 <ListItemIcon sx={{ minWidth: 40 }}>
                                     <SidebarIcon />
                                 </ListItemIcon>
@@ -214,6 +222,7 @@ function Sidebar({ profile, sectionsOpen, onToggleSection }: SidebarProps) {
                                                 component={NavLink}
                                                 to={subItem.to}
                                                 sx={{ pl: 4 }}
+                                                disabled={subItem.disabled}
                                             >
                                                 {SubItemIcon && (
                                                     <ListItemIcon sx={{ minWidth: 40 }}>
