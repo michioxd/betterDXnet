@@ -25,8 +25,11 @@ import { HashRouter } from "react-router-dom";
 import AppRoutes from "@/pages/routes";
 import Footer from "@/components/Footer";
 import Sidebar, { createSidebarSectionState } from "./Sidebar";
+import { LangSelectorComponent } from "@/components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 function MainView({ closeView }: { closeView?: () => void }) {
+    const { t } = useTranslation("layout");
     const { me, app } = rootStore;
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -100,7 +103,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
                             size="large"
                             edge="start"
                             color="inherit"
-                            aria-label="open sidebar"
+                            aria-label={t("toolbar.openSidebar")}
                             onClick={() => app.setSidebarOpen(true)}
                             sx={{ mr: 1 }}
                         >
@@ -114,13 +117,15 @@ function MainView({ closeView }: { closeView?: () => void }) {
                         version={version}
                     />
 
-                    <Tooltip title="Refresh profile. Hold to fully reload." placement="bottom" arrow>
+                    <LangSelectorComponent minimal />
+
+                    <Tooltip title={t("toolbar.refreshProfile")} placement="bottom" arrow>
                         <span>
                             <IconButton
                                 size="large"
                                 edge="end"
                                 color="inherit"
-                                aria-label="refresh"
+                                aria-label={t("toolbar.refresh")}
                                 disabled={meLoading}
                                 onPointerDown={startRefreshHold}
                                 onPointerUp={clearRefreshHoldTimeout}
@@ -134,8 +139,14 @@ function MainView({ closeView }: { closeView?: () => void }) {
                         </span>
                     </Tooltip>
 
-                    <Tooltip title="Unload betterDXnet" placement="bottom" arrow>
-                        <IconButton size="large" edge="end" color="inherit" aria-label="close" onClick={closeView}>
+                    <Tooltip title={t("toolbar.unload")} placement="bottom" arrow>
+                        <IconButton
+                            size="large"
+                            edge="end"
+                            color="inherit"
+                            aria-label={t("toolbar.close")}
+                            onClick={closeView}
+                        >
                             <CloseIcon fontWeight="medium" />
                         </IconButton>
                     </Tooltip>
@@ -186,7 +197,10 @@ function MainView({ closeView }: { closeView?: () => void }) {
                                 slotProps={{ paper: { className: cls.sidebarDrawerPaper } }}
                             >
                                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", p: 1 }}>
-                                    <IconButton onClick={() => app.setSidebarOpen(false)} aria-label="close sidebar">
+                                    <IconButton
+                                        onClick={() => app.setSidebarOpen(false)}
+                                        aria-label={t("toolbar.closeSidebar")}
+                                    >
                                         <CloseIcon />
                                     </IconButton>
                                 </Box>

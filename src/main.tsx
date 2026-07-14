@@ -4,6 +4,7 @@ import "./main.scss";
 import { createTheme, StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import "./stores/index";
+import "./locales/i18n";
 
 const theme = createTheme({
     typography: {

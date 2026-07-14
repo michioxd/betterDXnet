@@ -29,6 +29,7 @@ import {
 } from "@mui/material";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type OptionSelectProps = {
     name: GameOptionName;
@@ -74,9 +75,6 @@ type OptionKindCardSelectorProps = {
 };
 
 type OptionKindPreset = {
-    title: string;
-    recommendation: string;
-    summary: string;
     tone: "success" | "warning" | "error" | "secondary";
 };
 
@@ -84,27 +82,15 @@ type GameOptionChoices = Partial<Record<GameOptionName, GameOptionSelectOption[]
 
 const optionKindPresets: Record<string, OptionKindPreset> = {
     "0": {
-        title: "BASIC",
-        recommendation: "Recommended for comfortable casual play.",
-        summary: "Balanced defaults",
         tone: "success",
     },
     "1": {
-        title: "ADVANCED",
-        recommendation: "For players who want more readable notes.",
-        summary: "Faster preset",
         tone: "warning",
     },
     "2": {
-        title: "EXPERT",
-        recommendation: "For experienced players who prefer speed.",
-        summary: "High-speed preset",
         tone: "error",
     },
     "3": {
-        title: "DETAILS / CUSTOM",
-        recommendation: "Unlock every option and tune settings manually.",
-        summary: "Full custom control",
         tone: "secondary",
     },
 };
@@ -277,6 +263,8 @@ function OptionImagePicker({ name, label, description, options, disabled, value,
 }
 
 function OptionKindCardSelector({ name, options, disabled, value, onChange }: OptionKindCardSelectorProps) {
+    const { t } = useTranslation("settings");
+
     return (
         <Box sx={{ gridColumn: "1 / -1" }}>
             <Box
@@ -320,11 +308,11 @@ function OptionKindCardSelector({ name, options, disabled, value, onChange }: Op
                                             sx={{ alignItems: "center", justifyContent: "space-between" }}
                                         >
                                             <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                                                {preset.title}
+                                                {t(`game.presets.${selectOption.value}.title`)}
                                             </Typography>
                                         </Stack>
                                         <Typography variant="body2" color="textSecondary">
-                                            {preset.recommendation}
+                                            {t(`game.presets.${selectOption.value}.recommendation`)}
                                         </Typography>
                                         <Box sx={{ flexGrow: 1 }} />
                                     </Stack>
@@ -389,6 +377,7 @@ function getOptionChoices(choices: GameOptionChoices, name: GameOptionName) {
 }
 
 function PageSettingsGame() {
+    const { t } = useTranslation("settings");
     const { app } = rootStore;
     const [values, setValues] = useState<GameOptionValues>(defaultGameOptionValues);
     const [initialValues, setInitialValues] = useState<GameOptionValues>(defaultGameOptionValues);
@@ -467,12 +456,12 @@ function PageSettingsGame() {
 
         try {
             if (!token) {
-                throw new Error("Game option token not found");
+                throw new Error(t("game.tokenNotFound"));
             }
 
             await updateGameOptions(values, token);
             setInitialValues(values);
-            setSuccessMessage("Game options updated.");
+            setSuccessMessage(t("game.updated"));
         } catch (error) {
             setError(error as Error);
         } finally {
@@ -485,8 +474,8 @@ function PageSettingsGame() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
-                <Typography variant="h5">Settings / Game options</Typography>
-                <Typography color="textSecondary">Change speed, display, design, sound, and play options.</Typography>
+                <Typography variant="h5">{t("game.title")}</Typography>
+                <Typography color="textSecondary">{t("game.description")}</Typography>
             </Box>
 
             {error && <Alert severity="error">{error.message}</Alert>}
@@ -497,7 +486,7 @@ function PageSettingsGame() {
                     <Stack spacing={2}>
                         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                             <SettingsApplicationsIcon color="primary" />
-                            <Typography variant="h6">Game options</Typography>
+                            <Typography variant="h6">{t("game.cardTitle")}</Typography>
                             {(loading || saving) && <CircularProgress size={18} />}
                         </Stack>
 
@@ -506,11 +495,11 @@ function PageSettingsGame() {
                         {loading ? (
                             <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                                 <CircularProgress size={20} />
-                                <Typography color="textSecondary">Loading game options...</Typography>
+                                <Typography color="textSecondary">{t("game.loading")}</Typography>
                             </Stack>
                         ) : (
                             <Stack spacing={1.5}>
-                                <OptionSection title="Presets">
+                                <OptionSection title={t("game.sections.presets")}>
                                     <OptionKindCardSelector
                                         name="optionKind"
                                         options={getOptionChoices(choices, "optionKind")}
@@ -522,11 +511,11 @@ function PageSettingsGame() {
 
                                 {isDetailsMode && (
                                     <>
-                                        <OptionSection title="Speed">
+                                        <OptionSection title={t("game.sections.speed")}>
                                             <OptionSlider
                                                 name="noteSpeed"
-                                                label="TAP SPEED"
-                                                description="Setting of the TAP-Ring speed"
+                                                label={t("game.options.noteSpeed.label")}
+                                                description={t("game.options.noteSpeed.description")}
                                                 options={getOptionChoices(choices, "noteSpeed")}
                                                 disabled={saving}
                                                 value={values.noteSpeed ?? "23"}
@@ -534,8 +523,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="touchSpeed"
-                                                label="TOUCH SPEED"
-                                                description="Setting of the TOUCH speed"
+                                                label={t("game.options.touchSpeed.label")}
+                                                description={t("game.options.touchSpeed.description")}
                                                 options={getOptionChoices(choices, "touchSpeed")}
                                                 disabled={saving}
                                                 value={values.touchSpeed ?? "22"}
@@ -543,8 +532,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="slideSpeed"
-                                                label="SLIDE TIMING"
-                                                description="Setting of the SLIDE display timing"
+                                                label={t("game.options.slideSpeed.label")}
+                                                description={t("game.options.slideSpeed.description")}
                                                 options={getOptionChoices(choices, "slideSpeed")}
                                                 disabled={saving}
                                                 value={values.slideSpeed ?? "16"}
@@ -552,11 +541,11 @@ function PageSettingsGame() {
                                             />
                                         </OptionSection>
 
-                                        <OptionSection title="Game">
+                                        <OptionSection title={t("game.sections.game")}>
                                             <OptionSelect
                                                 name="trackSkip"
-                                                label="TRACK SKIP"
-                                                description="Interrupt the song and move on to the result"
+                                                label={t("game.options.trackSkip.label")}
+                                                description={t("game.options.trackSkip.description")}
                                                 options={getOptionChoices(choices, "trackSkip")}
                                                 disabled={saving}
                                                 value={values.trackSkip ?? "1"}
@@ -564,8 +553,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="mirrorMode"
-                                                label="MIRROR MODE"
-                                                description="Reverse left and right and/or up and down"
+                                                label={t("game.options.mirrorMode.label")}
+                                                description={t("game.options.mirrorMode.description")}
                                                 options={getOptionChoices(choices, "mirrorMode")}
                                                 disabled={saving}
                                                 value={values.mirrorMode ?? "0"}
@@ -573,8 +562,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="starRotate"
-                                                label="SLIDE ROTATION"
-                                                description="Rotation setting : ★"
+                                                label={t("game.options.starRotate.label")}
+                                                description={t("game.options.starRotate.description")}
                                                 options={getOptionChoices(choices, "starRotate")}
                                                 disabled={saving}
                                                 value={values.starRotate ?? "0"}
@@ -582,8 +571,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="adjustTiming"
-                                                label="JUDGMENT TIMING A"
-                                                description="For who judge the timing by listening Adjust the timing of ring-and-line overlap"
+                                                label={t("game.options.adjustTiming.label")}
+                                                description={t("game.options.adjustTiming.description")}
                                                 options={getOptionChoices(choices, "adjustTiming")}
                                                 disabled={saving}
                                                 value={values.adjustTiming ?? "22"}
@@ -591,8 +580,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="judgeTiming"
-                                                label="JUDGMENT TIMING B"
-                                                description="For who judge the timing by notes Adjust the timing of judgment"
+                                                label={t("game.options.judgeTiming.label")}
+                                                description={t("game.options.judgeTiming.description")}
                                                 options={getOptionChoices(choices, "judgeTiming")}
                                                 disabled={saving}
                                                 value={values.judgeTiming ?? "33"}
@@ -600,8 +589,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="brightness"
-                                                label="MOVIE BRIGHTNESS"
-                                                description="Adjust brightness of background movie during the game"
+                                                label={t("game.options.brightness.label")}
+                                                description={t("game.options.brightness.description")}
                                                 options={getOptionChoices(choices, "brightness")}
                                                 disabled={saving}
                                                 value={values.brightness ?? "0"}
@@ -609,8 +598,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="touchEffect"
-                                                label="REACTION EFFECT"
-                                                description="Switch the reaction effect displayed when you touch the screen"
+                                                label={t("game.options.touchEffect.label")}
+                                                description={t("game.options.touchEffect.description")}
                                                 options={getOptionChoices(choices, "touchEffect")}
                                                 disabled={saving}
                                                 value={values.touchEffect ?? "2"}
@@ -618,11 +607,11 @@ function PageSettingsGame() {
                                             />
                                         </OptionSection>
 
-                                        <OptionSection title="Display">
+                                        <OptionSection title={t("game.sections.display")}>
                                             <OptionSelect
                                                 name="dispCenter"
-                                                label="DISPLAY AT CENTER"
-                                                description="Switch the information display at the center during the game"
+                                                label={t("game.options.dispCenter.label")}
+                                                description={t("game.options.dispCenter.description")}
                                                 options={getOptionChoices(choices, "dispCenter")}
                                                 disabled={saving}
                                                 value={values.dispCenter ?? "0"}
@@ -630,8 +619,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="outFrameType"
-                                                label="DISPLAY OUTSIDE THE BOX"
-                                                description="Switch the information display at the top of the screen"
+                                                label={t("game.options.outFrameType.label")}
+                                                description={t("game.options.outFrameType.description")}
                                                 options={getOptionChoices(choices, "outFrameType")}
                                                 disabled={saving}
                                                 value={values.outFrameType ?? "3"}
@@ -639,8 +628,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="dispJudgePos"
-                                                label="POSITION OF JUDGMENT TAP"
-                                                description="Set the position of Judgment(e.g.PERFECT) displayed when hitting the TAP ring"
+                                                label={t("game.options.dispJudgePos.label")}
+                                                description={t("game.options.dispJudgePos.description")}
                                                 options={getOptionChoices(choices, "dispJudgePos")}
                                                 disabled={saving}
                                                 value={values.dispJudgePos ?? "5"}
@@ -648,8 +637,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="dispJudgeTouchPos"
-                                                label="POSITION OF JUDGMENT TOUCH"
-                                                description="Set the position of Judgment(e.g.PERFECT) displayed when hitting the TOUCH"
+                                                label={t("game.options.dispJudgeTouchPos.label")}
+                                                description={t("game.options.dispJudgeTouchPos.description")}
                                                 options={getOptionChoices(choices, "dispJudgeTouchPos")}
                                                 disabled={saving}
                                                 value={values.dispJudgeTouchPos ?? "1"}
@@ -657,8 +646,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="dispChain"
-                                                label="SYNC/VS"
-                                                description="Displayed when you play with other players"
+                                                label={t("game.options.dispChain.label")}
+                                                description={t("game.options.dispChain.description")}
                                                 options={getOptionChoices(choices, "dispChain")}
                                                 disabled={saving}
                                                 value={values.dispChain ?? "1"}
@@ -666,8 +655,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="submonitorAchieve"
-                                                label="ACHIEVEMENT TYPE(UPPER MONITOR)"
-                                                description="Switch the achievement type displayed on the upper monitor"
+                                                label={t("game.options.submonitorAchieve.label")}
+                                                description={t("game.options.submonitorAchieve.description")}
                                                 options={getOptionChoices(choices, "submonitorAchieve")}
                                                 disabled={saving}
                                                 value={values.submonitorAchieve ?? "1"}
@@ -675,8 +664,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="dispRate"
-                                                label="RATING・GRADE・CLASS"
-                                                description="Switch the RATING/GRADE/CLASS type"
+                                                label={t("game.options.dispRate.label")}
+                                                description={t("game.options.dispRate.description")}
                                                 options={getOptionChoices(choices, "dispRate")}
                                                 disabled={saving}
                                                 value={values.dispRate ?? "7"}
@@ -684,8 +673,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="submonitorAppeal"
-                                                label="MESSAGE"
-                                                description="Comment is displayed on the upper monitor"
+                                                label={t("game.options.submonitorAppeal.label")}
+                                                description={t("game.options.submonitorAppeal.description")}
                                                 options={getOptionChoices(choices, "submonitorAppeal")}
                                                 disabled={saving}
                                                 value={values.submonitorAppeal ?? "0"}
@@ -693,8 +682,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionImagePicker
                                                 name="dispJudge"
-                                                label="DISPLAY OF JUDGMENT"
-                                                description="Switch the judgment type"
+                                                label={t("game.options.dispJudge.label")}
+                                                description={t("game.options.dispJudge.description")}
                                                 options={getOptionChoices(choices, "dispJudge")}
                                                 disabled={saving}
                                                 value={values.dispJudge ?? "11"}
@@ -702,11 +691,11 @@ function PageSettingsGame() {
                                             />
                                         </OptionSection>
 
-                                        <OptionSection title="Design">
+                                        <OptionSection title={t("game.sections.design")}>
                                             <OptionSelect
                                                 name="tapDesign"
-                                                label="TAP DESIGN"
-                                                description="Switch the TAP design"
+                                                label={t("game.options.tapDesign.label")}
+                                                description={t("game.options.tapDesign.description")}
                                                 options={getOptionChoices(choices, "tapDesign")}
                                                 disabled={saving}
                                                 value={values.tapDesign ?? "0"}
@@ -714,8 +703,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="holdDesign"
-                                                label="HOLD DESIGN"
-                                                description="Switch the HOLD design"
+                                                label={t("game.options.holdDesign.label")}
+                                                description={t("game.options.holdDesign.description")}
                                                 options={getOptionChoices(choices, "holdDesign")}
                                                 disabled={saving}
                                                 value={values.holdDesign ?? "0"}
@@ -723,8 +712,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="slideDesign"
-                                                label="SLIDE DESIGN"
-                                                description="Switch the SLIDE design"
+                                                label={t("game.options.slideDesign.label")}
+                                                description={t("game.options.slideDesign.description")}
                                                 options={getOptionChoices(choices, "slideDesign")}
                                                 disabled={saving}
                                                 value={values.slideDesign ?? "0"}
@@ -732,8 +721,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="starType"
-                                                label="SLIDE COLOR"
-                                                description="Switch ☆ color"
+                                                label={t("game.options.starType.label")}
+                                                description={t("game.options.starType.description")}
                                                 options={getOptionChoices(choices, "starType")}
                                                 disabled={saving}
                                                 value={values.starType ?? "0"}
@@ -741,8 +730,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="outlineDesign"
-                                                label="LINE DESIGN"
-                                                description="Switch the LINE design"
+                                                label={t("game.options.outlineDesign.label")}
+                                                description={t("game.options.outlineDesign.description")}
                                                 options={getOptionChoices(choices, "outlineDesign")}
                                                 disabled={saving}
                                                 value={values.outlineDesign ?? "3"}
@@ -750,11 +739,11 @@ function PageSettingsGame() {
                                             />
                                         </OptionSection>
 
-                                        <OptionSection title="Sound">
+                                        <OptionSection title={t("game.sections.sound")}>
                                             <OptionSlider
                                                 name="ansVolume"
-                                                label="GUIDE SOUND VOLUME"
-                                                description="Set the volume of guide sound for the right timing"
+                                                label={t("game.options.ansVolume.label")}
+                                                description={t("game.options.ansVolume.description")}
                                                 options={getOptionChoices(choices, "ansVolume")}
                                                 disabled={saving}
                                                 value={values.ansVolume ?? "3"}
@@ -762,8 +751,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="tapSe"
-                                                label="TAP/HOLD SE (TYPE)"
-                                                description="Switch the sound effect for a successful TAP"
+                                                label={t("game.options.tapSe.label")}
+                                                description={t("game.options.tapSe.description")}
                                                 options={getOptionChoices(choices, "tapSe")}
                                                 disabled={saving}
                                                 value={values.tapSe ?? "0"}
@@ -771,8 +760,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="criticalSe"
-                                                label="TAP/HOLD SE (JUDGEMENT)"
-                                                description="Set the range of judgements that make the sound effect"
+                                                label={t("game.options.criticalSe.label")}
+                                                description={t("game.options.criticalSe.description")}
                                                 options={getOptionChoices(choices, "criticalSe")}
                                                 disabled={saving}
                                                 value={values.criticalSe ?? "0"}
@@ -780,8 +769,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="tapHoldVolume"
-                                                label="TAP/HOLD VOLUME"
-                                                description="Set the TAP/HOLD sound volume"
+                                                label={t("game.options.tapHoldVolume.label")}
+                                                description={t("game.options.tapHoldVolume.description")}
                                                 options={getOptionChoices(choices, "tapHoldVolume")}
                                                 disabled={saving}
                                                 value={values.tapHoldVolume ?? "2"}
@@ -789,8 +778,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="breakSe"
-                                                label="BREAK SE"
-                                                description="Switch the sound effect for BREAK"
+                                                label={t("game.options.breakSe.label")}
+                                                description={t("game.options.breakSe.description")}
                                                 options={getOptionChoices(choices, "breakSe")}
                                                 disabled={saving}
                                                 value={values.breakSe ?? "0"}
@@ -798,8 +787,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="breakVolume"
-                                                label="BREAK VOLUME"
-                                                description="Set the BREAK sound volume"
+                                                label={t("game.options.breakVolume.label")}
+                                                description={t("game.options.breakVolume.description")}
                                                 options={getOptionChoices(choices, "breakVolume")}
                                                 disabled={saving}
                                                 value={values.breakVolume ?? "4"}
@@ -807,8 +796,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="exSe"
-                                                label="EX SE"
-                                                description="Switch the sound effect for EX"
+                                                label={t("game.options.exSe.label")}
+                                                description={t("game.options.exSe.description")}
                                                 options={getOptionChoices(choices, "exSe")}
                                                 disabled={saving}
                                                 value={values.exSe ?? "0"}
@@ -816,8 +805,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="exVolume"
-                                                label="EX VOLUME"
-                                                description="Set the EX sound volume"
+                                                label={t("game.options.exVolume.label")}
+                                                description={t("game.options.exVolume.description")}
                                                 options={getOptionChoices(choices, "exVolume")}
                                                 disabled={saving}
                                                 value={values.exVolume ?? "3"}
@@ -825,8 +814,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSelect
                                                 name="slideSe"
-                                                label="SLIDE SE"
-                                                description="Switch the sound effect for SLIDE"
+                                                label={t("game.options.slideSe.label")}
+                                                description={t("game.options.slideSe.description")}
                                                 options={getOptionChoices(choices, "slideSe")}
                                                 disabled={saving}
                                                 value={values.slideSe ?? "0"}
@@ -834,8 +823,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="slideVolume"
-                                                label="SLIDE VOLUME"
-                                                description="Set the SLIDE sound volume"
+                                                label={t("game.options.slideVolume.label")}
+                                                description={t("game.options.slideVolume.description")}
                                                 options={getOptionChoices(choices, "slideVolume")}
                                                 disabled={saving}
                                                 value={values.slideVolume ?? "2"}
@@ -843,8 +832,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="breakSlideVolume"
-                                                label="BREAK SLIDE VOLUME"
-                                                description="Set the BREAK SLIDE sound volume"
+                                                label={t("game.options.breakSlideVolume.label")}
+                                                description={t("game.options.breakSlideVolume.description")}
                                                 options={getOptionChoices(choices, "breakSlideVolume")}
                                                 disabled={saving}
                                                 value={values.breakSlideVolume ?? "2"}
@@ -852,8 +841,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="touchVolume"
-                                                label="TOUCH VOLUME"
-                                                description="Set the TOUCH/TOUCH HOLD sound volume"
+                                                label={t("game.options.touchVolume.label")}
+                                                description={t("game.options.touchVolume.description")}
                                                 options={getOptionChoices(choices, "touchVolume")}
                                                 disabled={saving}
                                                 value={values.touchVolume ?? "2"}
@@ -861,8 +850,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="touchHoldVolume"
-                                                label="TOUCH EFFECT VOLUME"
-                                                description="Set the TOUCH EFFECT sound volume"
+                                                label={t("game.options.touchHoldVolume.label")}
+                                                description={t("game.options.touchHoldVolume.description")}
                                                 options={getOptionChoices(choices, "touchHoldVolume")}
                                                 disabled={saving}
                                                 value={values.touchHoldVolume ?? "2"}
@@ -870,8 +859,8 @@ function PageSettingsGame() {
                                             />
                                             <OptionSlider
                                                 name="damageSeVolume"
-                                                label="DAMAGE VOLUME"
-                                                description="Set the DAMAGE sound volume in PERFECT CHALLENGE"
+                                                label={t("game.options.damageSeVolume.label")}
+                                                description={t("game.options.damageSeVolume.description")}
                                                 options={getOptionChoices(choices, "damageSeVolume")}
                                                 disabled={saving}
                                                 value={values.damageSeVolume ?? "2"}
@@ -890,7 +879,7 @@ function PageSettingsGame() {
                                 disabled={loading || saving || !isChanged}
                                 onClick={handleReset}
                             >
-                                Reset
+                                {t("common.reset")}
                             </Button>
                             <Button
                                 variant="contained"
@@ -899,14 +888,14 @@ function PageSettingsGame() {
                                 disabled={loading || saving || !isChanged}
                                 onClick={() => void handleSave()}
                             >
-                                Save settings
+                                {t("common.saveSettings")}
                             </Button>
                         </Stack>
 
                         <Snackbar
                             open={isChanged && !loading}
                             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                            message="You have unsaved game option changes."
+                            message={t("game.unsaved")}
                             action={
                                 <Stack direction="row" spacing={1}>
                                     <Button
@@ -916,7 +905,7 @@ function PageSettingsGame() {
                                         disabled={saving}
                                         onClick={handleReset}
                                     >
-                                        Reset
+                                        {t("common.reset")}
                                     </Button>
                                     <Button
                                         color="primary"
@@ -927,7 +916,7 @@ function PageSettingsGame() {
                                         disabled={saving}
                                         onClick={() => void handleSave()}
                                     >
-                                        Save
+                                        {t("common.save")}
                                     </Button>
                                 </Stack>
                             }

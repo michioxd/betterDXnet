@@ -17,8 +17,10 @@ import {
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function PageCollectionsPartner() {
+    const { t } = useTranslation("collections");
     const { app, me } = rootStore;
     const [partners, setPartners] = useState<PartnerAvailableListResponse[]>([]);
     const [searchText, setSearchText] = useState("");
@@ -74,7 +76,7 @@ function PageCollectionsPartner() {
         const token = me.getUserToken();
 
         if (!token) {
-            throw new Error("User token not found");
+            throw new Error(t("common.userTokenNotFound"));
         }
 
         return token;
@@ -109,15 +111,15 @@ function PageCollectionsPartner() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
-                <Typography variant="h5">Collections / Partner</Typography>
-                <Typography color="textSecondary">Change partners for your profile.</Typography>
+                <Typography variant="h5">{t("partner.title")}</Typography>
+                <Typography color="textSecondary">{t("partner.description")}</Typography>
             </Box>
 
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <TextField
                     fullWidth
-                    label="Search"
-                    placeholder="Filter by title or description"
+                    label={t("common.search")}
+                    placeholder={t("common.filterPlaceholder")}
                     value={searchText}
                     onChange={(event) => setSearchText(event.target.value)}
                 />
@@ -134,7 +136,11 @@ function PageCollectionsPartner() {
             {!loading && !error && (
                 <>
                     <Typography color="textSecondary">
-                        Showing {filteredPartners.length} of {partners.length} partners
+                        {t("common.showing", {
+                            shown: filteredPartners.length,
+                            total: partners.length,
+                            itemName: t("partner.itemName"),
+                        })}
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -158,7 +164,7 @@ function PageCollectionsPartner() {
                                             />
                                             <Box sx={{ minWidth: 0 }}>
                                                 <Typography variant="subtitle1" noWrap title={partner.title}>
-                                                    {partner.title || "Untitled"}
+                                                    {partner.title || t("common.untitled")}
                                                 </Typography>
                                                 <Typography
                                                     variant="body2"
@@ -166,7 +172,7 @@ function PageCollectionsPartner() {
                                                     noWrap
                                                     title={partner.description}
                                                 >
-                                                    {partner.description || "No description"}
+                                                    {partner.description || t("common.noDescription")}
                                                 </Typography>
                                                 <Stack
                                                     direction="row"
@@ -174,10 +180,10 @@ function PageCollectionsPartner() {
                                                     sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}
                                                 >
                                                     {partner.using && (
-                                                        <Chip size="small" color="primary" label="In-use" />
+                                                        <Chip size="small" color="primary" label={t("common.inUse")} />
                                                     )}
                                                     {!partner.available && (
-                                                        <Chip size="small" color="default" label="Locked" />
+                                                        <Chip size="small" color="default" label={t("common.locked")} />
                                                     )}
                                                 </Stack>
                                             </Box>
@@ -191,7 +197,7 @@ function PageCollectionsPartner() {
                                             disabled={!partner.available || partner.using || backgroundLoading}
                                             onClick={() => void handleSetPartner(partner)}
                                         >
-                                            Set
+                                            {t("common.set")}
                                         </Button>
                                     </CardActions>
                                 </Card>

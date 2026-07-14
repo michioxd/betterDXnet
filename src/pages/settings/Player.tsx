@@ -24,6 +24,7 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import SpaceBarIcon from "@mui/icons-material/SpaceBar";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const playerNameSymbols = [
     "\u30FB",
@@ -74,6 +75,7 @@ const playerNameSymbols = [
 ];
 
 function PageSettingsPlayer() {
+    const { t } = useTranslation("settings");
     const { app, me } = rootStore;
     const currentPlayerName = me.me?.name ?? "";
     const initializedPlayerNameRef = useRef(false);
@@ -134,7 +136,7 @@ function PageSettingsPlayer() {
         const token = me.getUserToken();
 
         if (!token) {
-            throw new Error("User token not found");
+            throw new Error(t("common.userTokenNotFound"));
         }
 
         return token;
@@ -160,7 +162,7 @@ function PageSettingsPlayer() {
         try {
             await apiOptions.profile.updateUserName(trimmedPlayerName, getRequiredUserToken());
             await me.refresh();
-            setSuccessMessage("Player name updated.");
+            setSuccessMessage(t("player.playerNameUpdated"));
         } catch (error) {
             setError(error as Error);
         } finally {
@@ -175,7 +177,7 @@ function PageSettingsPlayer() {
 
         try {
             await apiOptions.profile.updateUserFriendRegistOption(friendRegistOption === "1", getRequiredUserToken());
-            setSuccessMessage("Friend registration skip setting updated.");
+            setSuccessMessage(t("player.friendRegistrationSkipUpdated"));
         } catch (error) {
             setError(error as Error);
         } finally {
@@ -186,8 +188,8 @@ function PageSettingsPlayer() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
-                <Typography variant="h5">Settings / Player</Typography>
-                <Typography color="textSecondary">Change player name and friend registration skip setting.</Typography>
+                <Typography variant="h5">{t("player.title")}</Typography>
+                <Typography color="textSecondary">{t("player.description")}</Typography>
             </Box>
 
             {error && <Alert severity="error">{error.message}</Alert>}
@@ -198,22 +200,22 @@ function PageSettingsPlayer() {
                     <Stack spacing={2}>
                         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                             <PersonIcon color="primary" />
-                            <Typography variant="h6">Player name</Typography>
+                            <Typography variant="h6">{t("player.playerName")}</Typography>
                         </Stack>
 
                         <TextField
                             fullWidth
-                            label="Player name"
+                            label={t("player.playerName")}
                             value={playerName}
                             disabled={loading}
                             slotProps={{ htmlInput: { maxLength: 8 } }}
-                            helperText="Up to 8 double-byte characters."
+                            helperText={t("player.playerNameHelper")}
                             onChange={(event) => setPlayerName(Array.from(event.target.value).slice(0, 8).join(""))}
                         />
 
                         <Box>
                             <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-                                The following symbols can also be used ({playerNameLength}/8):
+                                {t("player.usableSymbols", { current: playerNameLength, max: 8 })}
                             </Typography>
                             <Stack direction="row" sx={{ flexWrap: "wrap", gap: 0.8 }}>
                                 {playerNameSymbols.map((symbol) => (
@@ -245,7 +247,7 @@ function PageSettingsPlayer() {
                                 disabled={loading || !isPlayerNameChanged}
                                 onClick={handleResetPlayerName}
                             >
-                                Reset
+                                {t("common.reset")}
                             </Button>
                             <Button
                                 variant="contained"
@@ -255,7 +257,7 @@ function PageSettingsPlayer() {
                                 disabled={loading || !trimmedPlayerName || playerNameLength > 8 || !isPlayerNameChanged}
                                 onClick={() => void handleUpdatePlayerName()}
                             >
-                                Change
+                                {t("common.change")}
                             </Button>
                         </Stack>
                     </Stack>
@@ -267,27 +269,26 @@ function PageSettingsPlayer() {
                     <Stack spacing={2}>
                         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                             <PersonAddDisabledIcon color="primary" />
-                            <Typography variant="h6">Friend registration skip setting</Typography>
+                            <Typography variant="h6">{t("player.friendRegistrationSkipSetting")}</Typography>
                         </Stack>
 
                         <Divider />
 
                         <FormControl fullWidth disabled={loading || friendRegistOptionLoading}>
-                            <InputLabel id="friend-regist-option-label">Friend registration</InputLabel>
+                            <InputLabel id="friend-regist-option-label">{t("player.friendRegistration")}</InputLabel>
                             <Select
                                 labelId="friend-regist-option-label"
-                                label="Friend registration"
+                                label={t("player.friendRegistration")}
                                 value={friendRegistOption}
                                 onChange={(event) => setFriendRegistOption(event.target.value)}
                             >
-                                <MenuItem value="0">Do not skip friend registration</MenuItem>
-                                <MenuItem value="1">Skip friend registration</MenuItem>
+                                <MenuItem value="0">{t("player.doNotSkipFriendRegistration")}</MenuItem>
+                                <MenuItem value="1">{t("player.skipFriendRegistration")}</MenuItem>
                             </Select>
                         </FormControl>
 
                         <Typography variant="body2" color="textSecondary">
-                            When selecting 'Skip', friend registration screen will skip when playing 2P with a user who
-                            is not a friend.
+                            {t("player.friendRegistrationDescription")}
                         </Typography>
 
                         <Stack direction="row" sx={{ justifyContent: "flex-end" }}>
@@ -303,7 +304,7 @@ function PageSettingsPlayer() {
                                 disabled={loading || friendRegistOptionLoading}
                                 onClick={() => void handleUpdateFriendRegistOption()}
                             >
-                                Save setting
+                                {t("common.saveSetting")}
                             </Button>
                         </Stack>
                     </Stack>

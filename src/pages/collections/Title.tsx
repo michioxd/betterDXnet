@@ -26,6 +26,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const trophyTypes = Object.values(TrophyType);
 
@@ -34,6 +35,7 @@ function getTrophyBg(type: TrophyType) {
 }
 
 function PageCollectionsTitle() {
+    const { t } = useTranslation("collections");
     const { app, me } = rootStore;
     const [selectedType, setSelectedType] = useState<TrophyType>(TrophyType.Normal);
     const [titles, setTitles] = useState<TitleAvailableListResponse[]>([]);
@@ -95,7 +97,7 @@ function PageCollectionsTitle() {
         const token = me.getUserToken();
 
         if (!token) {
-            throw new Error("User token not found");
+            throw new Error(t("common.userTokenNotFound"));
         }
 
         return token;
@@ -153,15 +155,15 @@ function PageCollectionsTitle() {
     const randomOptions = [
         {
             key: "all",
-            title: "Random selection from all",
-            description: "Randomly selected from all collections for each play!",
+            title: t("common.randomFromAll"),
+            description: t("common.randomFromAllDescription"),
             formValue: randomFormValue?.all,
             active: me.me?.collections.title.isRandomFromAll ?? false,
         },
         {
             key: "favorite",
-            title: "Random selection from favorite",
-            description: "Randomly selected from favorite collections for each play!",
+            title: t("common.randomFromFavorite"),
+            description: t("common.randomFromFavoriteDescription"),
             formValue: randomFormValue?.favorite,
             active: me.me?.collections.title.isRandomFromFavorite ?? false,
             disabled: !hasFavoriteTitle,
@@ -171,16 +173,16 @@ function PageCollectionsTitle() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
-                <Typography variant="h5">Collections / Title</Typography>
-                <Typography color="textSecondary">Change titles for your profile.</Typography>
+                <Typography variant="h5">{t("title.title")}</Typography>
+                <Typography color="textSecondary">{t("title.description")}</Typography>
             </Box>
 
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <FormControl fullWidth>
-                    <InputLabel id="title-type-filter-label">Type</InputLabel>
+                    <InputLabel id="title-type-filter-label">{t("common.type")}</InputLabel>
                     <Select
                         labelId="title-type-filter-label"
-                        label="Type"
+                        label={t("common.type")}
                         value={selectedType}
                         onChange={(event) => setSelectedType(event.target.value as TrophyType)}
                     >
@@ -194,8 +196,8 @@ function PageCollectionsTitle() {
 
                 <TextField
                     fullWidth
-                    label="Search"
-                    placeholder="Filter by title or description"
+                    label={t("common.search")}
+                    placeholder={t("common.filterPlaceholder")}
                     value={searchText}
                     onChange={(event) => setSearchText(event.target.value)}
                 />
@@ -205,7 +207,7 @@ function PageCollectionsTitle() {
                     control={
                         <Checkbox checked={favoriteOnly} onChange={(event) => setFavoriteOnly(event.target.checked)} />
                     }
-                    label="Favorite only"
+                    label={t("common.favoriteOnly")}
                 />
             </Stack>
 
@@ -238,7 +240,9 @@ function PageCollectionsTitle() {
                                         <Typography variant="body1" component="div">
                                             {option.title}
                                         </Typography>
-                                        {option.active && <Chip size="small" color="primary" label="In-use" />}
+                                        {option.active && (
+                                            <Chip size="small" color="primary" label={t("common.inUse")} />
+                                        )}
                                     </Stack>
                                     <Typography variant="body2" sx={{ color: "text.secondary" }}>
                                         {option.description}
@@ -261,7 +265,11 @@ function PageCollectionsTitle() {
             {!loading && !error && (
                 <>
                     <Typography color="textSecondary">
-                        Showing {filteredTitles.length} of {titles.length} titles
+                        {t("common.showing", {
+                            shown: filteredTitles.length,
+                            total: titles.length,
+                            itemName: t("title.itemName"),
+                        })}
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -296,7 +304,7 @@ function PageCollectionsTitle() {
                                             }}
                                         >
                                             <Typography variant="subtitle1" noWrap title={title.title}>
-                                                {title.title || "Untitled"}
+                                                {title.title || t("common.untitled")}
                                             </Typography>
                                         </Box>
                                         <Typography
@@ -305,13 +313,19 @@ function PageCollectionsTitle() {
                                             noWrap
                                             title={title.description}
                                         >
-                                            {title.description || "No description"}
+                                            {title.description || t("common.noDescription")}
                                         </Typography>
                                         <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}>
                                             <Chip size="small" label={title.type} />
-                                            {title.using && <Chip size="small" color="primary" label="In-use" />}
-                                            {title.favorite && <Chip size="small" color="error" label="Favorite" />}
-                                            {!title.available && <Chip size="small" color="default" label="Locked" />}
+                                            {title.using && (
+                                                <Chip size="small" color="primary" label={t("common.inUse")} />
+                                            )}
+                                            {title.favorite && (
+                                                <Chip size="small" color="error" label={t("common.favorite")} />
+                                            )}
+                                            {!title.available && (
+                                                <Chip size="small" color="default" label={t("common.locked")} />
+                                            )}
                                         </Stack>
                                     </CardContent>
                                     <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
@@ -321,7 +335,7 @@ function PageCollectionsTitle() {
                                             disabled={!title.available || backgroundLoading}
                                             onClick={() => void handleToggleFavoriteTitle(title)}
                                         >
-                                            {title.favorite ? "Unfavorite" : "Favorite"}
+                                            {title.favorite ? t("common.unfavorite") : t("common.favorite")}
                                         </Button>
                                         <Button
                                             size="small"
@@ -330,7 +344,7 @@ function PageCollectionsTitle() {
                                             disabled={!title.available || title.using || backgroundLoading}
                                             onClick={() => void handleSetTitle(title.formValue)}
                                         >
-                                            Set
+                                            {t("common.set")}
                                         </Button>
                                     </CardActions>
                                 </Card>

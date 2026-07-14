@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Link, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 type DisclaimerDialogProps = {
     open: boolean;
@@ -8,6 +9,7 @@ type DisclaimerDialogProps = {
 };
 
 function DisclaimerDialog({ open, onClose, onAccept }: DisclaimerDialogProps) {
+    const { t } = useTranslation("layout");
     const [remainingSeconds, setRemainingSeconds] = useState(5);
 
     useEffect(() => {
@@ -28,48 +30,45 @@ function DisclaimerDialog({ open, onClose, onAccept }: DisclaimerDialogProps) {
 
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Disclaimer</DialogTitle>
+            <DialogTitle>{t("disclaimer.title")}</DialogTitle>
             <DialogContent>
                 <Typography gutterBottom color="textSecondary">
-                    betterDXnet is an{" "}
+                    {t("disclaimer.openSourcePrefix")}{" "}
                     <Link color="inherit" target="_blank" href="https://github.com/michioxd/betterDXnet">
-                        open source
+                        {t("disclaimer.openSourceLink")}
                     </Link>{" "}
-                    and unofficial browser extension to give you an alternative and better Web UI experience. And of
-                    course it is not affiliated with, endorsed by, sponsored by, or approved by SEGA.
+                    {t("disclaimer.openSourceSuffix")}
                 </Typography>
 
                 <Typography gutterBottom color="textSecondary">
-                    This extension is provided{" "}
+                    {t("disclaimer.asIsPrefix")}{" "}
                     <Typography component="span" sx={{ fontWeight: "bold" }} color="textSecondary">
-                        "as is"
+                        {t("disclaimer.asIs")}
                     </Typography>
-                    , without any warranty of any kind. By installing or continuing to use betterDXnet, you acknowledge
-                    that you do so entirely at your own risk and accept full responsibility for any issues, unexpected
-                    behavior, data loss, account-related consequences, or other damages that may arise from its use.
+                    {t("disclaimer.asIsSuffix")}
                 </Typography>
 
                 <Typography color="textSecondary" gutterBottom>
-                    If you are unsure whether using this extension complies with SEGA's policies, or if you are not
-                    comfortable accepting the risks described above,{" "}
+                    {t("disclaimer.riskPrefix")}{" "}
                     <Typography component="span" sx={{ fontWeight: "bold" }} color="error">
-                        do not use this extension and remove it from your browser immediately.
+                        {t("disclaimer.riskWarning")}
                     </Typography>
                 </Typography>
 
                 <Typography color="textSecondary" gutterBottom>
-                    By clicking "I understand", you acknowledge that you have read and understood this disclaimer, and
-                    you accept the risks associated with using betterDXnet.
+                    {t("disclaimer.acknowledge")}
                 </Typography>
 
-                <Typography color="textSecondary">You only have to accept this disclaimer once.</Typography>
+                <Typography color="textSecondary">{t("disclaimer.acceptOnce")}</Typography>
             </DialogContent>
             <DialogActions>
                 <Button variant="contained" onClick={onClose} autoFocus>
-                    Cancel
+                    {t("disclaimer.cancel")}
                 </Button>
                 <Button onClick={onAccept} disabled={!canAccept}>
-                    {canAccept ? "I understand" : `I understand (${remainingSeconds}s)`}
+                    {canAccept
+                        ? t("disclaimer.understand")
+                        : t("disclaimer.understandCountdown", { seconds: remainingSeconds })}
                 </Button>
             </DialogActions>
         </Dialog>

@@ -27,8 +27,10 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function PageCollectionsNameplate() {
+    const { t } = useTranslation("collections");
     const { app, me } = rootStore;
     const [genres, setGenres] = useState<CollectionGeneres[]>([]);
     const [nameplates, setNameplates] = useState<NameplateAvailableListResponse[]>([]);
@@ -90,7 +92,7 @@ function PageCollectionsNameplate() {
         const token = me.getUserToken();
 
         if (!token) {
-            throw new Error("User token not found");
+            throw new Error(t("common.userTokenNotFound"));
         }
 
         return token;
@@ -148,15 +150,15 @@ function PageCollectionsNameplate() {
     const randomOptions = [
         {
             key: "all",
-            title: "Random selection from all",
-            description: "Randomly selected from all collections for each play!",
+            title: t("common.randomFromAll"),
+            description: t("common.randomFromAllDescription"),
             formValue: randomFormValue?.all,
             active: me.me?.collections.nameplate.isRandomFromAll ?? false,
         },
         {
             key: "favorite",
-            title: "Random selection from favorite",
-            description: "Randomly selected from favorite collections for each play!",
+            title: t("common.randomFromFavorite"),
+            description: t("common.randomFromFavoriteDescription"),
             formValue: randomFormValue?.favorite,
             active: me.me?.collections.nameplate.isRandomFromFavorite ?? false,
             disabled: !hasFavoriteNameplate,
@@ -166,20 +168,20 @@ function PageCollectionsNameplate() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
-                <Typography variant="h5">Collections / Nameplate</Typography>
-                <Typography color="textSecondary">Change nameplates for your profile.</Typography>
+                <Typography variant="h5">{t("nameplate.title")}</Typography>
+                <Typography color="textSecondary">{t("nameplate.description")}</Typography>
             </Box>
 
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <FormControl fullWidth>
-                    <InputLabel id="nameplate-genre-filter-label">Genre</InputLabel>
+                    <InputLabel id="nameplate-genre-filter-label">{t("common.genre")}</InputLabel>
                     <Select
                         labelId="nameplate-genre-filter-label"
-                        label="Genre"
+                        label={t("common.genre")}
                         value={selectedGenreId}
                         onChange={(event) => setSelectedGenreId(event.target.value)}
                     >
-                        <MenuItem value="all">All genres</MenuItem>
+                        <MenuItem value="all">{t("common.allGenres")}</MenuItem>
                         {genres.map((genre) => (
                             <MenuItem key={genre.id} value={genre.id}>
                                 {genre.name}
@@ -190,8 +192,8 @@ function PageCollectionsNameplate() {
 
                 <TextField
                     fullWidth
-                    label="Search"
-                    placeholder="Filter by title or description"
+                    label={t("common.search")}
+                    placeholder={t("common.filterPlaceholder")}
                     value={searchText}
                     onChange={(event) => setSearchText(event.target.value)}
                 />
@@ -201,7 +203,7 @@ function PageCollectionsNameplate() {
                     control={
                         <Checkbox checked={favoriteOnly} onChange={(event) => setFavoriteOnly(event.target.checked)} />
                     }
-                    label="Favorite only"
+                    label={t("common.favoriteOnly")}
                 />
             </Stack>
 
@@ -234,7 +236,9 @@ function PageCollectionsNameplate() {
                                         <Typography variant="body1" component="div">
                                             {option.title}
                                         </Typography>
-                                        {option.active && <Chip size="small" color="primary" label="In-use" />}
+                                        {option.active && (
+                                            <Chip size="small" color="primary" label={t("common.inUse")} />
+                                        )}
                                     </Stack>
                                     <Typography variant="body2" sx={{ color: "text.secondary" }}>
                                         {option.description}
@@ -257,7 +261,11 @@ function PageCollectionsNameplate() {
             {!loading && !error && (
                 <>
                     <Typography color="textSecondary">
-                        Showing {filteredNameplates.length} of {nameplates.length} nameplates
+                        {t("common.showing", {
+                            shown: filteredNameplates.length,
+                            total: nameplates.length,
+                            itemName: t("nameplate.itemName"),
+                        })}
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -282,7 +290,7 @@ function PageCollectionsNameplate() {
                                             sx={{ width: "100%", height: 80, objectFit: "contain", mb: 2 }}
                                         />
                                         <Typography variant="subtitle1" noWrap title={nameplate.title}>
-                                            {nameplate.title || "Untitled"}
+                                            {nameplate.title || t("common.untitled")}
                                         </Typography>
                                         <Typography
                                             variant="body2"
@@ -290,14 +298,18 @@ function PageCollectionsNameplate() {
                                             noWrap
                                             title={nameplate.description}
                                         >
-                                            {nameplate.description || "No description"}
+                                            {nameplate.description || t("common.noDescription")}
                                         </Typography>
                                         <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}>
                                             <Chip size="small" label={nameplate.genereName} />
-                                            {nameplate.using && <Chip size="small" color="primary" label="In-use" />}
-                                            {nameplate.favorite && <Chip size="small" color="error" label="Favorite" />}
+                                            {nameplate.using && (
+                                                <Chip size="small" color="primary" label={t("common.inUse")} />
+                                            )}
+                                            {nameplate.favorite && (
+                                                <Chip size="small" color="error" label={t("common.favorite")} />
+                                            )}
                                             {!nameplate.available && (
-                                                <Chip size="small" color="default" label="Locked" />
+                                                <Chip size="small" color="default" label={t("common.locked")} />
                                             )}
                                         </Stack>
                                     </CardContent>
@@ -308,7 +320,7 @@ function PageCollectionsNameplate() {
                                             disabled={!nameplate.available || backgroundLoading}
                                             onClick={() => void handleToggleFavoriteNameplate(nameplate)}
                                         >
-                                            {nameplate.favorite ? "Unfavorite" : "Favorite"}
+                                            {nameplate.favorite ? t("common.unfavorite") : t("common.favorite")}
                                         </Button>
                                         <Button
                                             size="small"
@@ -317,7 +329,7 @@ function PageCollectionsNameplate() {
                                             disabled={!nameplate.available || nameplate.using || backgroundLoading}
                                             onClick={() => void handleSetNameplate(nameplate.formValue)}
                                         >
-                                            Set
+                                            {t("common.set")}
                                         </Button>
                                     </CardActions>
                                 </Card>

@@ -1,7 +1,11 @@
 import { Box, Link, Tooltip, Typography } from "@mui/material";
 import { version as ReactVersion } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+    const { t } = useTranslation("layout");
+    const buildDate = new Date(import.meta.env.VITE_BUILD_TIME);
+
     return (
         <>
             <Box sx={{ flex: "1", minWidth: 0 }}></Box>
@@ -13,19 +17,19 @@ export default function Footer() {
                 <Link color="inherit" target="_blank" href="https://github.com/michioxd/betterDXnet">
                     betterDXnet
                 </Link>{" "}
-                by{" "}
+                {t("footer.by")}{" "}
                 <Link color="inherit" target="_blank" href="https://github.com/michioxd">
                     michioxd
                 </Link>{" "}
-                with{" "}
+                {t("footer.with")}{" "}
                 <Link
                     color="inherit"
                     target="_blank"
                     href="https://github.com/michioxd/betterDXnet/graphs/contributors"
                 >
-                    contributors
+                    {t("footer.contributors")}
                 </Link>{" "}
-                - version{" "}
+                - {t("footer.version")}{" "}
                 <Link
                     color="inherit"
                     target="_blank"
@@ -45,14 +49,15 @@ export default function Footer() {
                 </Tooltip>
                 {")"}
                 <br />
-                {import.meta.env.VITE_VITE_VERSION} - React {ReactVersion} - TypeScript{" "}
-                {import.meta.env.VITE_TYPESCRIPT_VERSION}
+                {t("footer.techStack", {
+                    viteVersion: import.meta.env.VITE_VITE_VERSION,
+                    reactVersion: ReactVersion,
+                    typescriptVersion: import.meta.env.VITE_TYPESCRIPT_VERSION,
+                })}
                 <br />
-                Build date: {new Date(import.meta.env.VITE_BUILD_TIME).toLocaleTimeString()}{" "}
-                {new Date(import.meta.env.VITE_BUILD_TIME).toLocaleDateString()}
+                {t("footer.buildDate", { time: buildDate.toLocaleTimeString(), date: buildDate.toLocaleDateString() })}
                 <br />
-                SEGA and maimai are registered trademarks of SEGA. This extension is unofficial and is not affiliated
-                with, endorsed by, sponsored by, or approved by SEGA.
+                {t("footer.segaDisclaimer")}
             </Typography>
         </>
     );

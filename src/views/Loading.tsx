@@ -1,7 +1,10 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
+import { useTranslation } from "react-i18next";
 
 export default function LoadingView({ error, closeView }: { error?: Error | null; closeView?: () => void }) {
+    const { t } = useTranslation("layout");
+
     return (
         <>
             {error ? (
@@ -19,14 +22,14 @@ export default function LoadingView({ error, closeView }: { error?: Error | null
                 >
                     <ErrorIcon sx={{ fontSize: 100 }} />
                     <Typography align="center" variant="h6" sx={{ mt: 2 }}>
-                        An error occurred!
+                        {t("loading.errorTitle")}
                     </Typography>
                     <Typography align="center" variant="body2" color="textSecondary" sx={{ maxWidth: 400 }}>
                         {error.message}
                     </Typography>
                     {closeView && (
                         <Button variant="contained" onClick={closeView} sx={{ mt: 2 }}>
-                            Close
+                            {t("loading.close")}
                         </Button>
                     )}
                 </Box>
@@ -45,7 +48,7 @@ export default function LoadingView({ error, closeView }: { error?: Error | null
                 >
                     <CircularProgress />
                     <Typography align="center" variant="body2" sx={{ mt: 2 }} color="textSecondary">
-                        Please wait while we are fetching your data...
+                        {t("loading.fetchingData")}
                     </Typography>
                 </Box>
             )}

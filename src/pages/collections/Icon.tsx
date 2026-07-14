@@ -27,8 +27,10 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function PageCollectionsIcon() {
+    const { t } = useTranslation("collections");
     const { app, me } = rootStore;
     const [genres, setGenres] = useState<CollectionGeneres[]>([]);
     const [icons, setIcons] = useState<IconAvailableListResponse[]>([]);
@@ -90,7 +92,7 @@ function PageCollectionsIcon() {
         const token = me.getUserToken();
 
         if (!token) {
-            throw new Error("User token not found");
+            throw new Error(t("common.userTokenNotFound"));
         }
 
         return token;
@@ -152,15 +154,15 @@ function PageCollectionsIcon() {
     const randomOptions = [
         {
             key: "all",
-            title: "Random selection from all",
-            description: "Randomly selected from all collections for each play!",
+            title: t("common.randomFromAll"),
+            description: t("common.randomFromAllDescription"),
             formValue: randomFormValue.all,
             active: me.me?.collections.icon.isRandomFromAll ?? false,
         },
         {
             key: "favorite",
-            title: "Random selection from favorite",
-            description: "Randomly selected from favorite collections for each play!",
+            title: t("common.randomFromFavorite"),
+            description: t("common.randomFromFavoriteDescription"),
             formValue: randomFormValue.favorite,
             active: me.me?.collections.icon.isRandomFromFavorite ?? false,
             disabled: !hasFavoriteIcon,
@@ -176,20 +178,20 @@ function PageCollectionsIcon() {
             }}
         >
             <Box>
-                <Typography variant="h5">Collections / Icon</Typography>
-                <Typography color="textSecondary">Change icons for your profile.</Typography>
+                <Typography variant="h5">{t("icon.title")}</Typography>
+                <Typography color="textSecondary">{t("icon.description")}</Typography>
             </Box>
 
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <FormControl fullWidth>
-                    <InputLabel id="icon-genre-filter-label">Genre</InputLabel>
+                    <InputLabel id="icon-genre-filter-label">{t("common.genre")}</InputLabel>
                     <Select
                         labelId="icon-genre-filter-label"
-                        label="Genre"
+                        label={t("common.genre")}
                         value={selectedGenreId}
                         onChange={(event) => setSelectedGenreId(event.target.value)}
                     >
-                        <MenuItem value="all">All genres</MenuItem>
+                        <MenuItem value="all">{t("common.allGenres")}</MenuItem>
                         {genres.map((genre) => (
                             <MenuItem key={genre.id} value={genre.id}>
                                 {genre.name}
@@ -200,8 +202,8 @@ function PageCollectionsIcon() {
 
                 <TextField
                     fullWidth
-                    label="Search"
-                    placeholder="Filter by title or description"
+                    label={t("common.search")}
+                    placeholder={t("common.filterPlaceholder")}
                     value={searchText}
                     onChange={(event) => setSearchText(event.target.value)}
                 />
@@ -211,7 +213,7 @@ function PageCollectionsIcon() {
                     control={
                         <Checkbox checked={favoriteOnly} onChange={(event) => setFavoriteOnly(event.target.checked)} />
                     }
-                    label="Favorite only"
+                    label={t("common.favoriteOnly")}
                 />
             </Stack>
 
@@ -245,7 +247,9 @@ function PageCollectionsIcon() {
                                         <Typography variant="body1" component="div">
                                             {option.title}
                                         </Typography>
-                                        {option.active && <Chip size="small" color="primary" label="In-use" />}
+                                        {option.active && (
+                                            <Chip size="small" color="primary" label={t("common.inUse")} />
+                                        )}
                                     </Stack>
                                     <Typography variant="body2" sx={{ color: "text.secondary" }}>
                                         {option.description}
@@ -268,7 +272,11 @@ function PageCollectionsIcon() {
             {!loading && !error && (
                 <>
                     <Typography color="textSecondary">
-                        Showing {filteredIcons.length} of {icons.length} icons
+                        {t("common.showing", {
+                            shown: filteredIcons.length,
+                            total: icons.length,
+                            itemName: t("icon.itemName"),
+                        })}
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -295,7 +303,7 @@ function PageCollectionsIcon() {
                                             />
                                             <Box sx={{ minWidth: 0 }}>
                                                 <Typography variant="subtitle1" noWrap title={icon.title}>
-                                                    {icon.title || "Untitled"}
+                                                    {icon.title || t("common.untitled")}
                                                 </Typography>
                                                 <Typography
                                                     variant="body2"
@@ -303,7 +311,7 @@ function PageCollectionsIcon() {
                                                     noWrap
                                                     title={icon.description}
                                                 >
-                                                    {icon.description || "No description"}
+                                                    {icon.description || t("common.noDescription")}
                                                 </Typography>
                                                 <Stack
                                                     direction="row"
@@ -311,9 +319,11 @@ function PageCollectionsIcon() {
                                                     sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}
                                                 >
                                                     <Chip size="small" label={icon.genereName} />
-                                                    {icon.using && <Chip size="small" color="primary" label="In-use" />}
+                                                    {icon.using && (
+                                                        <Chip size="small" color="primary" label={t("common.inUse")} />
+                                                    )}
                                                     {!icon.available && (
-                                                        <Chip size="small" color="default" label="Locked" />
+                                                        <Chip size="small" color="default" label={t("common.locked")} />
                                                     )}
                                                 </Stack>
                                             </Box>
@@ -327,7 +337,7 @@ function PageCollectionsIcon() {
                                                 disabled={!icon.available || backgroundLoading}
                                                 onClick={() => void handleToggleFavoriteIcon(icon)}
                                             >
-                                                {icon.favorite ? "Unfavorite" : "Favorite"}
+                                                {icon.favorite ? t("common.unfavorite") : t("common.favorite")}
                                             </Button>
                                         )}
                                         <Button
@@ -337,7 +347,7 @@ function PageCollectionsIcon() {
                                             disabled={!icon.available || icon.using || backgroundLoading}
                                             onClick={() => void handleSetIcon(icon.formValue)}
                                         >
-                                            Set
+                                            {t("common.set")}
                                         </Button>
                                     </CardActions>
                                 </Card>

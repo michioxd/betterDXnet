@@ -2,8 +2,10 @@ import ProfileCard from "@/components/ProfileCard";
 import { rootStore } from "@/stores/root";
 import { Box, Typography } from "@mui/material";
 import { observer } from "mobx-react-lite";
+import { useTranslation } from "react-i18next";
 
 function PageHome() {
+    const { t } = useTranslation("pages");
     const { me } = rootStore;
     return (
         <Box
@@ -12,9 +14,9 @@ function PageHome() {
                 flexDirection: "column",
             }}
         >
-            <Typography variant="h5">Welcome to betterDXnet v{import.meta.env.VITE_APP_VERSION}</Typography>
+            <Typography variant="h5">{t("home.welcome", { version: import.meta.env.VITE_APP_VERSION })}</Typography>
             <Typography color="textSecondary">
-                You are logged in as{" "}
+                {t("home.loggedInAs")}{" "}
                 <Typography component="span" sx={{ fontWeight: "bold" }}>
                     {me.me?.name}
                 </Typography>

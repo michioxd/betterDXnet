@@ -31,17 +31,18 @@ import type { SvgIconComponent } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import ProfileCard from "@/components/ProfileCard";
 import type { ApiMe } from "@/api/me";
+import { useTranslation } from "react-i18next";
 
 type SidebarSection = {
     key: string;
-    label: string;
+    labelKey: string;
     icon: SvgIconComponent;
-    title?: string;
-    description?: string;
+    titleKey?: string;
+    descriptionKey?: string;
     to?: string;
     disabled?: boolean;
     items?: {
-        label: string;
+        labelKey: string;
         to: string;
         icon?: SvgIconComponent;
         disabled?: boolean;
@@ -51,101 +52,101 @@ type SidebarSection = {
 const sidebarSections: SidebarSection[] = [
     {
         key: "home",
-        label: "Home",
+        labelKey: "home",
         icon: HomeIcon,
         items: [
-            { label: "Overview", to: "/", icon: HomeIcon },
-            { label: "DX Rating", to: "/dx-rating", icon: StarIcon, disabled: true },
-            { label: "Record of maimai", to: "/maimai-record", icon: FormatListNumberedIcon, disabled: true },
+            { labelKey: "overview", to: "/", icon: HomeIcon },
+            { labelKey: "dxRating", to: "/dx-rating", icon: StarIcon, disabled: true },
+            { labelKey: "recordOfMaimai", to: "/maimai-record", icon: FormatListNumberedIcon, disabled: true },
         ],
     },
     {
         key: "playdata",
-        label: "Player Data",
+        labelKey: "playerData",
         icon: PersonIcon,
         disabled: true,
         items: [
-            { label: "Player data", to: "/playdata", icon: BadgeIcon, disabled: true },
-            { label: "Stamp card", to: "/playdata/stamp-card", icon: StyleIcon, disabled: true },
-            { label: "Album", to: "/playdata/album", icon: CameraAltIcon, disabled: true },
+            { labelKey: "playerDataItem", to: "/playdata", icon: BadgeIcon, disabled: true },
+            { labelKey: "stampCard", to: "/playdata/stamp-card", icon: StyleIcon, disabled: true },
+            { labelKey: "album", to: "/playdata/album", icon: CameraAltIcon, disabled: true },
         ],
     },
     {
         key: "friends",
-        label: "Friends and Circles",
+        labelKey: "friendsAndCircles",
         icon: GroupIcon,
         disabled: true,
         items: [
-            { label: "Friends", to: "/friends", icon: GroupIcon, disabled: true },
-            { label: "Circles", to: "/circles", icon: GroupsIcon, disabled: true },
+            { labelKey: "friends", to: "/friends", icon: GroupIcon, disabled: true },
+            { labelKey: "circles", to: "/circles", icon: GroupsIcon, disabled: true },
         ],
     },
     {
         key: "shop",
-        label: "maimile Shop",
+        labelKey: "maimileShop",
         icon: ShoppingBagIcon,
         disabled: true,
         to: "/shop",
     },
     {
         key: "title",
-        label: "Records",
+        labelKey: "records",
         icon: AssessmentIcon,
         disabled: true,
         items: [
-            { label: "Game records", to: "/records/game", icon: FormatListNumberedIcon, disabled: true },
-            { label: "Song scores", to: "/records/songs", icon: MusicNoteIcon, disabled: true },
-            { label: "Courses", to: "/records/courses", icon: FlagIcon, disabled: true },
-            { label: "World stats", to: "/records/worldstats", icon: PublicIcon, disabled: true },
+            { labelKey: "gameRecords", to: "/records/game", icon: FormatListNumberedIcon, disabled: true },
+            { labelKey: "songScores", to: "/records/songs", icon: MusicNoteIcon, disabled: true },
+            { labelKey: "courses", to: "/records/courses", icon: FlagIcon, disabled: true },
+            { labelKey: "worldStats", to: "/records/worldstats", icon: PublicIcon, disabled: true },
         ],
     },
     {
         key: "event",
-        label: "Events",
+        labelKey: "events",
         icon: EventIcon,
         disabled: true,
         items: [
-            { label: "Area", to: "/events/area", icon: FlagIcon, disabled: true },
-            { label: "Event area", to: "/events/event-area", icon: EventIcon, disabled: true },
-            { label: "End event area", to: "/events/end-event-area", icon: TodayIcon, disabled: true },
-            { label: "Season info", to: "/events/season-info", icon: CalendarMonthIcon, disabled: true },
+            { labelKey: "area", to: "/events/area", icon: FlagIcon, disabled: true },
+            { labelKey: "eventArea", to: "/events/event-area", icon: EventIcon, disabled: true },
+            { labelKey: "endEventArea", to: "/events/end-event-area", icon: TodayIcon, disabled: true },
+            { labelKey: "seasonInfo", to: "/events/season-info", icon: CalendarMonthIcon, disabled: true },
         ],
     },
     {
         key: "collections",
-        label: "Collections",
+        labelKey: "collections",
         icon: CollectionsIcon,
         items: [
-            { label: "Icon", to: "/collections/icon", icon: CollectionsIcon },
-            { label: "Nameplate", to: "/collections/nameplate", icon: BadgeIcon },
-            { label: "Frame", to: "/collections/frame", icon: StyleIcon },
-            { label: "Title", to: "/collections/title", icon: MilitaryTechIcon },
-            { label: "Tour member", to: "/collections/tour-member", icon: GroupIcon, disabled: true },
-            { label: "Partner", to: "/collections/partner", icon: FavoriteIcon },
+            { labelKey: "icon", to: "/collections/icon", icon: CollectionsIcon },
+            { labelKey: "nameplate", to: "/collections/nameplate", icon: BadgeIcon },
+            { labelKey: "frame", to: "/collections/frame", icon: StyleIcon },
+            { labelKey: "title", to: "/collections/title", icon: MilitaryTechIcon },
+            { labelKey: "tourMember", to: "/collections/tour-member", icon: GroupIcon, disabled: true },
+            { labelKey: "partner", to: "/collections/partner", icon: FavoriteIcon },
         ],
     },
     {
         key: "ranking",
-        label: "Ranking",
+        labelKey: "ranking",
         icon: LeaderboardIcon,
         disabled: true,
         items: [
-            { label: "Song", to: "/ranking/song", icon: MusicNoteIcon, disabled: true },
-            { label: "Course", to: "/ranking/course", icon: FlagIcon, disabled: true },
-            { label: "Session", to: "/ranking/session", icon: CasinoIcon, disabled: true },
-            { label: "DX", to: "/ranking/dx", icon: StarIcon, disabled: true },
-            { label: "Total", to: "/ranking/total", icon: EmojiEventsIcon, disabled: true },
-            { label: "Partner", to: "/ranking/partner", icon: FavoriteIcon, disabled: true },
+            { labelKey: "song", to: "/ranking/song", icon: MusicNoteIcon, disabled: true },
+            { labelKey: "course", to: "/ranking/course", icon: FlagIcon, disabled: true },
+            { labelKey: "session", to: "/ranking/session", icon: CasinoIcon, disabled: true },
+            { labelKey: "dx", to: "/ranking/dx", icon: StarIcon, disabled: true },
+            { labelKey: "total", to: "/ranking/total", icon: EmojiEventsIcon, disabled: true },
+            { labelKey: "partner", to: "/ranking/partner", icon: FavoriteIcon, disabled: true },
         ],
     },
     {
         key: "settings",
-        label: "Settings",
+        labelKey: "settings",
         icon: SettingsIcon,
         items: [
-            { label: "Game options", to: "/settings/game", icon: SettingsApplicationsIcon },
-            { label: "Player", to: "/settings/player", icon: PersonIcon },
-            { label: "Favorite songs", to: "/settings/favorite-songs", icon: FavoriteIcon, disabled: true },
+            { labelKey: "gameOptions", to: "/settings/game", icon: SettingsApplicationsIcon },
+            { labelKey: "player", to: "/settings/player", icon: PersonIcon },
+            { labelKey: "favoriteSongs", to: "/settings/favorite-songs", icon: FavoriteIcon, disabled: true },
         ],
     },
 ];
@@ -164,6 +165,8 @@ type SidebarProps = {
 };
 
 function Sidebar({ profile, sectionsOpen, onToggleSection }: SidebarProps) {
+    const { t } = useTranslation("navigation");
+
     return (
         <Box className={cls.sidebarContent}>
             <Box className={cls.sidebarHeader}>
@@ -184,7 +187,10 @@ function Sidebar({ profile, sectionsOpen, onToggleSection }: SidebarProps) {
                                     <ListItemIcon sx={{ minWidth: 40 }}>
                                         <SidebarIcon />
                                     </ListItemIcon>
-                                    <ListItemText primary={item.label} secondary={item.title} />
+                                    <ListItemText
+                                        primary={t(item.labelKey)}
+                                        secondary={item.titleKey ? t(item.titleKey) : undefined}
+                                    />
                                 </ListItemButton>
                             </Box>
                         );
@@ -196,18 +202,23 @@ function Sidebar({ profile, sectionsOpen, onToggleSection }: SidebarProps) {
                                 <ListItemIcon sx={{ minWidth: 40 }}>
                                     <SidebarIcon />
                                 </ListItemIcon>
-                                <ListItemText primary={item.label} secondary={item.title} />
+                                <ListItemText
+                                    primary={t(item.labelKey)}
+                                    secondary={item.titleKey ? t(item.titleKey) : undefined}
+                                />
                                 {isOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                             </ListItemButton>
 
                             <Collapse in={isOpen} timeout="auto" unmountOnExit>
                                 <List disablePadding dense sx={{ pl: 2 }}>
-                                    {(item.title || item.description) && (
+                                    {(item.titleKey || item.descriptionKey) && (
                                         <Box sx={{ px: 2, py: 1 }}>
-                                            {item.title && <Typography variant="subtitle2">{item.title}</Typography>}
-                                            {item.description && (
+                                            {item.titleKey && (
+                                                <Typography variant="subtitle2">{t(item.titleKey)}</Typography>
+                                            )}
+                                            {item.descriptionKey && (
                                                 <Typography variant="body2" color="text.secondary">
-                                                    {item.description}
+                                                    {t(item.descriptionKey)}
                                                 </Typography>
                                             )}
                                         </Box>
@@ -229,7 +240,7 @@ function Sidebar({ profile, sectionsOpen, onToggleSection }: SidebarProps) {
                                                         <SubItemIcon fontSize="small" />
                                                     </ListItemIcon>
                                                 )}
-                                                <ListItemText primary={subItem.label} />
+                                                <ListItemText primary={t(subItem.labelKey)} />
                                             </ListItemButton>
                                         );
                                     })}

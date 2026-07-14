@@ -27,8 +27,10 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function PageCollectionsFrame() {
+    const { t } = useTranslation("collections");
     const { app, me } = rootStore;
     const [genres, setGenres] = useState<CollectionGeneres[]>([]);
     const [frames, setFrames] = useState<FrameAvailableListResponse[]>([]);
@@ -90,7 +92,7 @@ function PageCollectionsFrame() {
         const token = me.getUserToken();
 
         if (!token) {
-            throw new Error("User token not found");
+            throw new Error(t("common.userTokenNotFound"));
         }
 
         return token;
@@ -149,15 +151,15 @@ function PageCollectionsFrame() {
     const randomOptions = [
         {
             key: "all",
-            title: "Random selection from all",
-            description: "Randomly selected from all collections for each play!",
+            title: t("common.randomFromAll"),
+            description: t("common.randomFromAllDescription"),
             formValue: randomFormValue?.all,
             active: me.me?.collections.frame.isRandomFromAll ?? false,
         },
         {
             key: "favorite",
-            title: "Random selection from favorite",
-            description: "Randomly selected from favorite collections for each play!",
+            title: t("common.randomFromFavorite"),
+            description: t("common.randomFromFavoriteDescription"),
             formValue: randomFormValue?.favorite,
             active: me.me?.collections.frame.isRandomFromFavorite ?? false,
             disabled: !hasFavoriteFrame,
@@ -167,20 +169,20 @@ function PageCollectionsFrame() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
-                <Typography variant="h5">Collections / Frame</Typography>
-                <Typography color="textSecondary">Change frames for your profile.</Typography>
+                <Typography variant="h5">{t("frame.title")}</Typography>
+                <Typography color="textSecondary">{t("frame.description")}</Typography>
             </Box>
 
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <FormControl fullWidth>
-                    <InputLabel id="frame-genre-filter-label">Genre</InputLabel>
+                    <InputLabel id="frame-genre-filter-label">{t("common.genre")}</InputLabel>
                     <Select
                         labelId="frame-genre-filter-label"
-                        label="Genre"
+                        label={t("common.genre")}
                         value={selectedGenreId}
                         onChange={(event) => setSelectedGenreId(event.target.value)}
                     >
-                        <MenuItem value="all">All genres</MenuItem>
+                        <MenuItem value="all">{t("common.allGenres")}</MenuItem>
                         {genres.map((genre) => (
                             <MenuItem key={genre.id} value={genre.id}>
                                 {genre.name}
@@ -191,8 +193,8 @@ function PageCollectionsFrame() {
 
                 <TextField
                     fullWidth
-                    label="Search"
-                    placeholder="Filter by title or description"
+                    label={t("common.search")}
+                    placeholder={t("common.filterPlaceholder")}
                     value={searchText}
                     onChange={(event) => setSearchText(event.target.value)}
                 />
@@ -202,7 +204,7 @@ function PageCollectionsFrame() {
                     control={
                         <Checkbox checked={favoriteOnly} onChange={(event) => setFavoriteOnly(event.target.checked)} />
                     }
-                    label="Favorite only"
+                    label={t("common.favoriteOnly")}
                 />
             </Stack>
 
@@ -235,7 +237,9 @@ function PageCollectionsFrame() {
                                         <Typography variant="body1" component="div">
                                             {option.title}
                                         </Typography>
-                                        {option.active && <Chip size="small" color="primary" label="In-use" />}
+                                        {option.active && (
+                                            <Chip size="small" color="primary" label={t("common.inUse")} />
+                                        )}
                                     </Stack>
                                     <Typography variant="body2" sx={{ color: "text.secondary" }}>
                                         {option.description}
@@ -258,7 +262,11 @@ function PageCollectionsFrame() {
             {!loading && !error && (
                 <>
                     <Typography color="textSecondary">
-                        Showing {filteredFrames.length} of {frames.length} frames
+                        {t("common.showing", {
+                            shown: filteredFrames.length,
+                            total: frames.length,
+                            itemName: t("frame.itemName"),
+                        })}
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -289,7 +297,7 @@ function PageCollectionsFrame() {
                                             }}
                                         />
                                         <Typography variant="subtitle1" noWrap title={frame.title}>
-                                            {frame.title || "Untitled"}
+                                            {frame.title || t("common.untitled")}
                                         </Typography>
                                         <Typography
                                             variant="body2"
@@ -297,13 +305,19 @@ function PageCollectionsFrame() {
                                             noWrap
                                             title={frame.description}
                                         >
-                                            {frame.description || "No description"}
+                                            {frame.description || t("common.noDescription")}
                                         </Typography>
                                         <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}>
                                             <Chip size="small" label={frame.genereName} />
-                                            {frame.using && <Chip size="small" color="primary" label="In-use" />}
-                                            {frame.favorite && <Chip size="small" color="error" label="Favorite" />}
-                                            {!frame.available && <Chip size="small" color="default" label="Locked" />}
+                                            {frame.using && (
+                                                <Chip size="small" color="primary" label={t("common.inUse")} />
+                                            )}
+                                            {frame.favorite && (
+                                                <Chip size="small" color="error" label={t("common.favorite")} />
+                                            )}
+                                            {!frame.available && (
+                                                <Chip size="small" color="default" label={t("common.locked")} />
+                                            )}
                                         </Stack>
                                     </CardContent>
                                     <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
@@ -313,7 +327,7 @@ function PageCollectionsFrame() {
                                             disabled={!frame.available || backgroundLoading}
                                             onClick={() => void handleToggleFavoriteFrame(frame)}
                                         >
-                                            {frame.favorite ? "Unfavorite" : "Favorite"}
+                                            {frame.favorite ? t("common.unfavorite") : t("common.favorite")}
                                         </Button>
                                         <Button
                                             size="small"
@@ -322,7 +336,7 @@ function PageCollectionsFrame() {
                                             disabled={!frame.available || frame.using || backgroundLoading}
                                             onClick={() => void handleSetFrame(frame.formValue)}
                                         >
-                                            Set
+                                            {t("common.set")}
                                         </Button>
                                     </CardActions>
                                 </Card>
