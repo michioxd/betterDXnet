@@ -9,11 +9,13 @@ export default function LoadingView() {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    py: 5,
+                    height: "100%",
+                    flex: 1,
+                    pt: "25%",
                 }}
             >
                 <CircularProgress />
-                <Typography variant="body2" sx={{ mt: 2 }}>
+                <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
                     Please wait while we are fetching your data...
                 </Typography>
             </Box>
