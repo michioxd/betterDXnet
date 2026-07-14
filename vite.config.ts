@@ -7,6 +7,7 @@ import manifest from "./manifest.config.js";
 import { version } from "./package.json";
 import { execSync } from "child_process";
 import postCssRemoveComments from "postcss-discard-comments";
+import replaceManifestCss from "./scripts/replaceManifestCss";
 
 const buildTime = Date.now();
 const buildDate = new Date(buildTime).toISOString();
@@ -31,8 +32,15 @@ export default defineConfig({
         "import.meta.env.VITE_APP_VERSION": JSON.stringify(version),
         "import.meta.env.VITE_VITE_VERSION": JSON.stringify(viteVersion),
         "import.meta.env.VITE_TYPESCRIPT_VERSION": JSON.stringify(typescriptVersion).replaceAll("Version ", ""),
+        "import.meta.resolve": "undefined",
+        "import.meta.url": "location.href",
     },
-    plugins: [react(), crx({ manifest }), zip({ outDir: "release", outFileName: `betterDXnet-${version}.zip` })],
+    plugins: [
+        react(),
+        crx({ manifest }),
+        replaceManifestCss(),
+        zip({ outDir: "release", outFileName: `betterDXnet-${version}.zip` }),
+    ],
     server: {
         host: "127.0.0.1",
         port: 5173,
@@ -92,6 +100,7 @@ export default defineConfig({
         minify: "terser",
         sourcemap: "hidden",
         cssCodeSplit: false,
+        modulePreload: false,
         terserOptions: {
             parse: {
                 html5_comments: false,
