@@ -1,11 +1,11 @@
 .fabControl {
-    position: fixed;
-    bottom: 16px;
-    left: 16px;
-    z-index: 99999;
+    position: fixed !important;
+    bottom: 16px !important;
+    left: 16px !important;
+    z-index: 99999 !important;
 }
 
 html[data-betterdxnet="727"] .fabControl {
-    opacity: 0;
-    visibility: hidden;
+    opacity: 0 !important;
+    visibility: hidden !important;
 }
