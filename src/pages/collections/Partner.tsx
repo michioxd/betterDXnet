@@ -87,7 +87,6 @@ function PageCollectionsPartner() {
         try {
             await apiCollections.partner.set(partner.formValue, getRequiredUserToken());
             await loadPartners(false);
-            me.refresh();
         } catch (error) {
             setError(error as Error);
             setBackgroundLoading(false);

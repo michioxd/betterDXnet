@@ -25,6 +25,7 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 function PageCollectionsFrame() {
@@ -334,4 +335,4 @@ function PageCollectionsFrame() {
     );
 }
 
-export default PageCollectionsFrame;
+export default observer(PageCollectionsFrame);

@@ -25,6 +25,7 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 function PageCollectionsNameplate() {
@@ -102,7 +103,6 @@ function PageCollectionsNameplate() {
         try {
             await apiCollections.nameplate.set(formValue, getRequiredUserToken());
             await loadNameplates(false);
-            me.refresh();
         } catch (error) {
             setError(error as Error);
             setBackgroundLoading(false);
@@ -330,4 +330,4 @@ function PageCollectionsNameplate() {
     );
 }
 
-export default PageCollectionsNameplate;
+export default observer(PageCollectionsNameplate);

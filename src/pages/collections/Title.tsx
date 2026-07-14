@@ -24,6 +24,7 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const trophyTypes = Object.values(TrophyType);
@@ -342,4 +343,4 @@ function PageCollectionsTitle() {
     );
 }
 
-export default PageCollectionsTitle;
+export default observer(PageCollectionsTitle);
