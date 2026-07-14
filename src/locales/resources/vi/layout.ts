@@ -11,6 +11,16 @@ const I18nLayout = {
         refresh: "Làm mới",
         unload: "Gỡ betterDXnet",
         close: "Đóng",
+        dxVersion: "Phiên bản DX: {{version}}",
+        unknownVersion: "không rõ",
+    },
+    language: {
+        fallbackName: "Tiếng Anh",
+    },
+    profileCard: {
+        iconAlt: "icon",
+        badgeAlt: "huy hiệu",
+        starAlt: "ngôi sao",
     },
     footer: {
         by: "bởi",

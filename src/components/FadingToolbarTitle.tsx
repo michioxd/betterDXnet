@@ -1,5 +1,6 @@
 import { Box, Chip, Fade, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const randomFadeDelay = () => Math.floor(Math.random() * 4001) + 4000;
 
@@ -12,6 +13,7 @@ function FadingToolbarTitle({
     rankType?: string;
     version?: string;
 }) {
+    const { t } = useTranslation("layout");
     const [showUsername, setShowUsername] = useState(false);
 
     useEffect(() => {
@@ -49,7 +51,7 @@ function FadingToolbarTitle({
                     data-ranking-color-type={rankType ?? ""}
                 >
                     {username}{" "}
-                    <Tooltip title={`DX Version: ${version ?? "unknown"}`} arrow>
+                    <Tooltip title={t("toolbar.dxVersion", { version: version ?? t("toolbar.unknownVersion") })} arrow>
                         <Chip label={version} size="small" sx={{ width: "fit-content", height: "fit-content" }} />
                     </Tooltip>
                 </Typography>

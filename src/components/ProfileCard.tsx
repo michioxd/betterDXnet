@@ -1,8 +1,11 @@
 import { ApiMe, ratingBgBaseUrl } from "@/api/me";
 import cls from "./ProfileCard.module.scss";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 
 function ProfileCard({ d, cardProps }: { d: ApiMe; cardProps?: React.HTMLAttributes<HTMLDivElement> }) {
+    const { t } = useTranslation("layout");
+
     return (
         <>
             <div
@@ -11,7 +14,7 @@ function ProfileCard({ d, cardProps }: { d: ApiMe; cardProps?: React.HTMLAttribu
                 style={{ ...cardProps?.style, "--frame-bg": `url(${d.collections.frame.url})` } as React.CSSProperties}
             >
                 <div className={cls.content}>
-                    <img src={d.collections.icon.url} alt="icon" className={cls.userIcon} />
+                    <img src={d.collections.icon.url} alt={t("profileCard.iconAlt")} className={cls.userIcon} />
                     <div className={cls.userInfo}>
                         <div
                             className={cls.trophyBlock}
@@ -44,10 +47,14 @@ function ProfileCard({ d, cardProps }: { d: ApiMe; cardProps?: React.HTMLAttribu
                         </div>
                         <div className={cls.divider}></div>
                         <div className={cls.badge}>
-                            <img className={cls.badgeImg} src={d.courseRankImg} alt="badge" />
-                            <img className={cls.badgeImg} src={d.classImg} alt="badge" />
+                            <img className={cls.badgeImg} src={d.courseRankImg} alt={t("profileCard.badgeAlt")} />
+                            <img className={cls.badgeImg} src={d.classImg} alt={t("profileCard.badgeAlt")} />
                             <div className={cls.stars}>
-                                <img className={cls.starImg} src="/maimai-mobile/img/icon_star.png" alt="star" />
+                                <img
+                                    className={cls.starImg}
+                                    src="/maimai-mobile/img/icon_star.png"
+                                    alt={t("profileCard.starAlt")}
+                                />
                                 <span className={cls.starText}>x{d.stars}</span>
                             </div>
                         </div>

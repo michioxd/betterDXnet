@@ -6,7 +6,9 @@
     "scripts": {
         "dev": "bunx --bun vite",
         "build": "tsc -b && bunx --bun vite build",
-        "preview": "bunx --bun vite preview"
+        "preview": "bunx --bun vite preview",
+        "format": "bunx --bun prettier --write .",
+        "format:check": "bunx --bun prettier --check ."
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",

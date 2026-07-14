@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import unknownFlag from "@/assets/unknown_flag.svg";
 import { knownLocales } from "@/locales/list";
 
-function getLangInfo(localeCode: string) {
+function getLangInfo(localeCode: string, fallbackName: string) {
     try {
         const region = new Intl.Locale(localeCode).maximize().region;
         const languageName = new Intl.DisplayNames([localeCode], { type: "language" }).of(localeCode);
@@ -32,7 +32,7 @@ function getLangInfo(localeCode: string) {
         return { name: languageName, emoji, flag };
     } catch {
         return {
-            name: "English",
+            name: fallbackName,
             emoji: "🇺🇸",
             flag: `https://flagcdn.com/us.svg`,
         };
@@ -40,8 +40,9 @@ function getLangInfo(localeCode: string) {
 }
 
 const LangItem = ({ lang }: { lang: (typeof knownLocales)[string] }) => {
-    const { i18n } = useTranslation();
-    const langInfo = useMemo(() => getLangInfo(lang.code4), [lang]);
+    const { i18n, t } = useTranslation("layout");
+    const fallbackName = t("language.fallbackName");
+    const langInfo = useMemo(() => getLangInfo(lang.code4, fallbackName), [fallbackName, lang]);
 
     return (
         <MenuItem
@@ -82,10 +83,11 @@ export const LangSelectorComponent = (
         buttonProps?: ButtonProps;
     },
 ) => {
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation("layout");
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-    const langInfo = useMemo(() => getLangInfo(i18n.language), [i18n.language]);
+    const fallbackName = t("language.fallbackName");
+    const langInfo = useMemo(() => getLangInfo(i18n.language, fallbackName), [fallbackName, i18n.language]);
     const { minimal, buttonProps, ...menuProps } = props;
     const open = Boolean(anchorEl);
 
@@ -103,6 +105,7 @@ export const LangSelectorComponent = (
                 <IconButton
                     size="large"
                     color="inherit"
+                    edge="end"
                     onClick={handleOpen}
                     aria-label={langInfo.name}
                     {...(buttonProps as IconButtonProps)}

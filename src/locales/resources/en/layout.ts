@@ -11,6 +11,16 @@ const I18nLayout = {
         refresh: "Refresh",
         unload: "Unload betterDXnet",
         close: "Close",
+        dxVersion: "DX Version: {{version}}",
+        unknownVersion: "unknown",
+    },
+    language: {
+        fallbackName: "English",
+    },
+    profileCard: {
+        iconAlt: "icon",
+        badgeAlt: "badge",
+        starAlt: "star",
     },
     footer: {
         by: "by",
