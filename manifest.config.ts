@@ -1,7 +1,7 @@
 import { defineManifest } from "@crxjs/vite-plugin";
 import pkg from "./package.json";
 
-export default defineManifest({
+export default defineManifest(({ mode }) => ({
     manifest_version: 3,
     name: "betterDXnet",
     description: "just an alternative UI for sinmaiDX :)",
@@ -12,7 +12,6 @@ export default defineManifest({
         48: "assets/48.png",
         128: "assets/128.png",
     },
-    permissions: ["contentSettings"],
     content_scripts: [
         {
             js: ["src/main.tsx"],
@@ -20,4 +19,11 @@ export default defineManifest({
             run_at: "document_idle",
         },
     ],
-});
+    ...(mode === "firefox" && {
+        browser_specific_settings: {
+            gecko: {
+                id: "betterdxnet@michioxd.ch",
+            },
+        },
+    }),
+}));

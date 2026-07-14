@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "bunx --bun vite",
         "build": "tsc -b && bunx --bun vite build",
+        "build:firefox": "tsc -b && bunx --bun vite build --mode firefox",
         "preview": "bunx --bun vite preview",
         "format": "bunx --bun prettier --write .",
         "format:check": "bunx --bun prettier --check ."
