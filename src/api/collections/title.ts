@@ -19,7 +19,13 @@ const trophyRareMap: Record<TrophyType, number> = {
 
 export const trophyBgBasePath = "/maimai-mobile/img/trophy_{}.png";
 
-export async function titleAvailableList(type: TrophyType): Promise<TitleAvailableListResponse[]> {
+export async function titleAvailableList(type: TrophyType): Promise<{
+    titleList: TitleAvailableListResponse[];
+    randomFormValue: {
+        all?: string;
+        favorite?: string;
+    };
+}> {
     const res = await apiHelperFetchDoc(`/maimai-mobile/collection/trophy/?rare=${trophyRareMap[type]}`);
 
     const titleList: TitleAvailableListResponse[] = [
@@ -45,7 +51,27 @@ export async function titleAvailableList(type: TrophyType): Promise<TitleAvailab
         };
     });
 
-    return titleList;
+    const randomFormValue = [
+        ...res.document.querySelectorAll<HTMLElement>("body .town_block.m_15.m_t_0.p_15.t_l .see_through_block"),
+    ].reduce<{
+        all?: string;
+        favorite?: string;
+    }>((value, item) => {
+        const title = item.querySelector(".trophy_inner_block")?.textContent?.trim() ?? "";
+        const formValue = item.querySelector<HTMLInputElement>(
+            'form[action$="/collection/trophy/set/"] input[name="idx"]',
+        )?.value;
+
+        if (title === "Random selection from all") {
+            value.all = formValue;
+        } else if (title === "Random selection from favorite") {
+            value.favorite = formValue;
+        }
+
+        return value;
+    }, {});
+
+    return { titleList, randomFormValue };
 }
 
 export async function currentTitle(): Promise<CurrentTitleResponse> {
@@ -57,6 +83,8 @@ export async function currentTitle(): Promise<CurrentTitleResponse> {
 
     const title = currentTitleBlock?.querySelector(".trophy_inner_block")?.textContent?.trim() ?? "";
     const description = currentTitleBlock?.querySelector(".p_l_5.f_12.gray.break")?.textContent?.trim() ?? "";
+    const isRandomFromAll = title === "Random selection from all";
+    const isRandomFromFavorite = title === "Random selection from favorite";
     const type = (currentTitleBlock
         ?.querySelector(".collection_trophy_block")
         ?.className.split(" ")
@@ -67,6 +95,8 @@ export async function currentTitle(): Promise<CurrentTitleResponse> {
         title,
         description,
         type,
+        isRandomFromAll,
+        isRandomFromFavorite,
     };
 }
 

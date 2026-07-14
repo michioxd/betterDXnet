@@ -32,6 +32,8 @@ export interface CurrentNameplateResponse {
     title: string;
     description: string;
     url: string;
+    isRandomFromAll: boolean;
+    isRandomFromFavorite: boolean;
 }
 
 export interface CurrentFrameResponse {
@@ -39,6 +41,8 @@ export interface CurrentFrameResponse {
     title: string;
     description: string;
     url: string;
+    isRandomFromAll: boolean;
+    isRandomFromFavorite: boolean;
 }
 
 export interface FrameAvailableListResponse {
@@ -104,4 +108,6 @@ export interface CurrentTitleResponse {
     title: string;
     description: string;
     type: TrophyType;
+    isRandomFromAll: boolean;
+    isRandomFromFavorite: boolean;
 }

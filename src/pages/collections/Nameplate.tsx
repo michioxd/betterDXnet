@@ -5,6 +5,7 @@ import {
     Box,
     Button,
     Card,
+    CardActionArea,
     CardActions,
     CardContent,
     CardMedia,
@@ -30,6 +31,7 @@ function PageCollectionsNameplate() {
     const { app, me } = rootStore;
     const [genres, setGenres] = useState<CollectionGeneres[]>([]);
     const [nameplates, setNameplates] = useState<NameplateAvailableListResponse[]>([]);
+    const [randomFormValue, setRandomFormValue] = useState<{ all?: string; favorite?: string }>({});
     const [selectedGenreId, setSelectedGenreId] = useState("all");
     const [searchText, setSearchText] = useState("");
     const [favoriteOnly, setFavoriteOnly] = useState(false);
@@ -47,12 +49,13 @@ function PageCollectionsNameplate() {
         setError(null);
 
         try {
-            const { genereList, nameplateList } = await apiCollections.nameplate.listAvailable();
+            const { genereList, nameplateList, randomFormValue = {} } = await apiCollections.nameplate.listAvailable();
 
             if (disposedRef.current) return;
 
             setGenres(genereList);
             setNameplates(nameplateList);
+            setRandomFormValue(randomFormValue);
         } catch (error) {
             if (disposedRef.current) return;
 
@@ -92,12 +95,12 @@ function PageCollectionsNameplate() {
         return token;
     };
 
-    const handleSetNameplate = async (nameplate: NameplateAvailableListResponse) => {
+    const handleSetNameplate = async (formValue: string) => {
         setBackgroundLoading(true);
         setError(null);
 
         try {
-            await apiCollections.nameplate.set(nameplate.formValue, getRequiredUserToken());
+            await apiCollections.nameplate.set(formValue, getRequiredUserToken());
             await loadNameplates(false);
             me.refresh();
         } catch (error) {
@@ -141,6 +144,25 @@ function PageCollectionsNameplate() {
         });
     }, [favoriteOnly, nameplates, searchText, selectedGenreId]);
 
+    const hasFavoriteNameplate = nameplates.some((nameplate) => nameplate.favorite);
+    const randomOptions = [
+        {
+            key: "all",
+            title: "Random selection from all",
+            description: "Randomly selected from all collections for each play!",
+            formValue: randomFormValue?.all,
+            active: me.me?.collections.nameplate.isRandomFromAll ?? false,
+        },
+        {
+            key: "favorite",
+            title: "Random selection from favorite",
+            description: "Randomly selected from favorite collections for each play!",
+            formValue: randomFormValue?.favorite,
+            active: me.me?.collections.nameplate.isRandomFromFavorite ?? false,
+            disabled: !hasFavoriteNameplate,
+        },
+    ];
+
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
@@ -182,6 +204,47 @@ function PageCollectionsNameplate() {
                     label="Favorite only"
                 />
             </Stack>
+
+            <Grid container spacing={2}>
+                {randomOptions.map((option) => (
+                    <Grid key={option.key} size={{ xs: 12, sm: 6 }}>
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                borderColor: option.active ? "primary.main" : undefined,
+                                opacity: option.disabled ? 0.55 : 1,
+                            }}
+                        >
+                            <CardActionArea
+                                disabled={option.disabled || !option.formValue || option.active || backgroundLoading}
+                                data-active={option.active ? "" : undefined}
+                                onClick={() => option.formValue && void handleSetNameplate(option.formValue)}
+                                sx={{
+                                    height: "100%",
+                                    "&[data-active]": {
+                                        backgroundColor: "action.selected",
+                                        "&:hover": {
+                                            backgroundColor: "action.selectedHover",
+                                        },
+                                    },
+                                }}
+                            >
+                                <CardContent sx={{ height: "100%" }}>
+                                    <Stack direction="row" spacing={1} sx={{ mb: 1, alignItems: "center" }}>
+                                        <Typography variant="body1" component="div">
+                                            {option.title}
+                                        </Typography>
+                                        {option.active && <Chip size="small" color="primary" label="In-use" />}
+                                    </Stack>
+                                    <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                                        {option.description}
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
 
             {loading && (
                 <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
@@ -252,7 +315,7 @@ function PageCollectionsNameplate() {
                                             variant="contained"
                                             startIcon={<CheckCircleIcon />}
                                             disabled={!nameplate.available || nameplate.using || backgroundLoading}
-                                            onClick={() => void handleSetNameplate(nameplate)}
+                                            onClick={() => void handleSetNameplate(nameplate.formValue)}
                                         >
                                             Set
                                         </Button>

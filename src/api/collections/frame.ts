@@ -4,6 +4,10 @@ import { CollectionGeneres, CollectionType, CurrentFrameResponse, FrameAvailable
 export async function frameAvailableList(): Promise<{
     genereList: CollectionGeneres[];
     frameList: FrameAvailableListResponse[];
+    randomFormValue: {
+        all?: string;
+        favorite?: string;
+    };
 }> {
     const res = await apiHelperFetchDoc("/maimai-mobile/collection/frame");
 
@@ -12,6 +16,9 @@ export async function frameAvailableList(): Promise<{
             'body div.see_through_area .town_block[name^="genre_"]:not([name="genre_101"]):not([name="genre_100"])',
         ),
     ];
+    const randomBlock = res.document.querySelector<HTMLElement>(
+        'body div.see_through_area .town_block[name="genre_101"]',
+    );
 
     const genereList: CollectionGeneres[] = genereBlocks.map((block) => ({
         id: block.getAttribute("name")!.replace("genre_", ""),
@@ -50,7 +57,25 @@ export async function frameAvailableList(): Promise<{
         });
     });
 
-    return { genereList, frameList };
+    const randomFormValue = [...(randomBlock?.querySelectorAll<HTMLElement>(".see_through_block") ?? [])].reduce<{
+        all?: string;
+        favorite?: string;
+    }>((value, item) => {
+        const title = item.querySelector(".p_5.f_14.break")?.textContent?.trim() ?? "";
+        const formValue = item.querySelector<HTMLInputElement>(
+            'form[action$="/collection/frame/set/"] input[name="idx"]',
+        )?.value;
+
+        if (title === "Random selection from all") {
+            value.all = formValue;
+        } else if (title === "Random selection from favorite") {
+            value.favorite = formValue;
+        }
+
+        return value;
+    }, {});
+
+    return { genereList, frameList, randomFormValue };
 }
 
 export async function currentFrame(): Promise<CurrentFrameResponse> {
@@ -60,11 +85,17 @@ export async function currentFrame(): Promise<CurrentFrameResponse> {
         "body .town_block.m_15.p_15.t_l .see_through_block.collection_setting_block",
     );
 
+    const currentFrameTitle = currentFrameBlock?.querySelector(".p_5.f_14.break")?.textContent?.trim() ?? "";
+    const isRandomFromAll = currentFrameTitle === "Random selection from all";
+    const isRandomFromFavorite = currentFrameTitle === "Random selection from favorite";
+
     return {
         areaName: currentFrameBlock?.querySelector(".block_info")?.textContent?.trim() ?? "",
-        title: currentFrameBlock?.querySelector(".p_5.f_14.break")?.textContent?.trim() ?? "",
+        title: currentFrameTitle,
         description: currentFrameBlock?.querySelector(".p_l_5.f_12.gray.break")?.textContent?.trim() ?? "",
         url: currentFrameBlock?.querySelector<HTMLImageElement>('img[src*="/img/Frame/"]')?.getAttribute("src") ?? "",
+        isRandomFromAll,
+        isRandomFromFavorite,
     };
 }
 

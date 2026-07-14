@@ -9,7 +9,6 @@ export default function Footer() {
                 variant="body2"
                 color="textSecondary"
                 sx={{ p: 1, fontSize: 12, opacity: 0.5, transition: "opacity 0.2s", "&:hover": { opacity: 1 } }}
-                align="center"
             >
                 <Link color="inherit" target="_blank" href="https://github.com/michioxd/betterDXnet">
                     betterDXnet

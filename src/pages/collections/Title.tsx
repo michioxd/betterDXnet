@@ -5,6 +5,7 @@ import {
     Box,
     Button,
     Card,
+    CardActionArea,
     CardActions,
     CardContent,
     Checkbox,
@@ -35,6 +36,7 @@ function PageCollectionsTitle() {
     const { app, me } = rootStore;
     const [selectedType, setSelectedType] = useState<TrophyType>(TrophyType.Normal);
     const [titles, setTitles] = useState<TitleAvailableListResponse[]>([]);
+    const [randomFormValue, setRandomFormValue] = useState<{ all?: string; favorite?: string }>({});
     const [searchText, setSearchText] = useState("");
     const [favoriteOnly, setFavoriteOnly] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -51,11 +53,14 @@ function PageCollectionsTitle() {
         setError(null);
 
         try {
-            const titleList = await apiCollections.title.listAvailable(type);
+            const titleResponse = await apiCollections.title.listAvailable(type);
+            const titleList = Array.isArray(titleResponse) ? titleResponse : titleResponse.titleList;
+            const randomFormValue = Array.isArray(titleResponse) ? {} : (titleResponse.randomFormValue ?? {});
 
             if (disposedRef.current) return;
 
-            setTitles(titleList);
+            setTitles(titleList ?? []);
+            setRandomFormValue(randomFormValue);
         } catch (error) {
             if (disposedRef.current) return;
 
@@ -95,12 +100,12 @@ function PageCollectionsTitle() {
         return token;
     };
 
-    const handleSetTitle = async (title: TitleAvailableListResponse) => {
+    const handleSetTitle = async (formValue: string) => {
         setBackgroundLoading(true);
         setError(null);
 
         try {
-            await apiCollections.title.set(title.formValue, getRequiredUserToken());
+            await apiCollections.title.set(formValue, getRequiredUserToken());
             await loadTitles(false, selectedType);
             me.refresh();
         } catch (error) {
@@ -143,6 +148,25 @@ function PageCollectionsTitle() {
         });
     }, [favoriteOnly, searchText, titles]);
 
+    const hasFavoriteTitle = titles.some((title) => title.favorite);
+    const randomOptions = [
+        {
+            key: "all",
+            title: "Random selection from all",
+            description: "Randomly selected from all collections for each play!",
+            formValue: randomFormValue?.all,
+            active: me.me?.collections.title.isRandomFromAll ?? false,
+        },
+        {
+            key: "favorite",
+            title: "Random selection from favorite",
+            description: "Randomly selected from favorite collections for each play!",
+            formValue: randomFormValue?.favorite,
+            active: me.me?.collections.title.isRandomFromFavorite ?? false,
+            disabled: !hasFavoriteTitle,
+        },
+    ];
+
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
@@ -183,6 +207,47 @@ function PageCollectionsTitle() {
                     label="Favorite only"
                 />
             </Stack>
+
+            <Grid container spacing={2}>
+                {randomOptions.map((option) => (
+                    <Grid key={option.key} size={{ xs: 12, sm: 6 }}>
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                borderColor: option.active ? "primary.main" : undefined,
+                                opacity: option.disabled ? 0.55 : 1,
+                            }}
+                        >
+                            <CardActionArea
+                                disabled={option.disabled || !option.formValue || option.active || backgroundLoading}
+                                data-active={option.active ? "" : undefined}
+                                onClick={() => option.formValue && void handleSetTitle(option.formValue)}
+                                sx={{
+                                    height: "100%",
+                                    "&[data-active]": {
+                                        backgroundColor: "action.selected",
+                                        "&:hover": {
+                                            backgroundColor: "action.selectedHover",
+                                        },
+                                    },
+                                }}
+                            >
+                                <CardContent sx={{ height: "100%" }}>
+                                    <Stack direction="row" spacing={1} sx={{ mb: 1, alignItems: "center" }}>
+                                        <Typography variant="body1" component="div">
+                                            {option.title}
+                                        </Typography>
+                                        {option.active && <Chip size="small" color="primary" label="In-use" />}
+                                    </Stack>
+                                    <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                                        {option.description}
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
 
             {loading && (
                 <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
@@ -262,7 +327,7 @@ function PageCollectionsTitle() {
                                             variant="contained"
                                             startIcon={<CheckCircleIcon />}
                                             disabled={!title.available || title.using || backgroundLoading}
-                                            onClick={() => void handleSetTitle(title)}
+                                            onClick={() => void handleSetTitle(title.formValue)}
                                         >
                                             Set
                                         </Button>

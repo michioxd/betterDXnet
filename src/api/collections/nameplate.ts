@@ -4,6 +4,10 @@ import { CollectionGeneres, CollectionType, CurrentNameplateResponse, NameplateA
 export async function nameplateAvailableList(): Promise<{
     genereList: CollectionGeneres[];
     nameplateList: NameplateAvailableListResponse[];
+    randomFormValue: {
+        all?: string;
+        favorite?: string;
+    };
 }> {
     const res = await apiHelperFetchDoc("/maimai-mobile/collection/nameplate");
 
@@ -12,6 +16,9 @@ export async function nameplateAvailableList(): Promise<{
             'body div.see_through_area .town_block[name^="genre_"]:not([name="genre_101"]):not([name="genre_100"])',
         ),
     ];
+    const randomBlock = res.document.querySelector<HTMLElement>(
+        'body div.see_through_area .town_block[name="genre_101"]',
+    );
 
     const genereList: CollectionGeneres[] = genereBlocks.map((block) => ({
         id: block.getAttribute("name")!.replace("genre_", ""),
@@ -52,7 +59,25 @@ export async function nameplateAvailableList(): Promise<{
         });
     });
 
-    return { genereList, nameplateList };
+    const randomFormValue = [...(randomBlock?.querySelectorAll<HTMLElement>(".see_through_block") ?? [])].reduce<{
+        all?: string;
+        favorite?: string;
+    }>((value, item) => {
+        const title = item.querySelector(".p_5.f_14.break")?.textContent?.trim() ?? "";
+        const formValue = item.querySelector<HTMLInputElement>(
+            'form[action$="/collection/nameplate/set/"] input[name="idx"]',
+        )?.value;
+
+        if (title === "Random selection from all") {
+            value.all = formValue;
+        } else if (title === "Random selection from favorite") {
+            value.favorite = formValue;
+        }
+
+        return value;
+    }, {});
+
+    return { genereList, nameplateList, randomFormValue };
 }
 
 export async function currentNameplate(): Promise<CurrentNameplateResponse> {
@@ -62,14 +87,20 @@ export async function currentNameplate(): Promise<CurrentNameplateResponse> {
         "body .town_block.m_15.p_15.t_l .see_through_block.collection_setting_block",
     );
 
+    const currentNameplateTitle = currentNameplateBlock?.querySelector(".p_5.f_14.break")?.textContent?.trim() ?? "";
+    const isRandomFromAll = currentNameplateTitle === "Random selection from all";
+    const isRandomFromFavorite = currentNameplateTitle === "Random selection from favorite";
+
     return {
         areaName: currentNameplateBlock?.querySelector(".block_info")?.textContent?.trim() ?? "",
-        title: currentNameplateBlock?.querySelector(".p_5.f_14.break")?.textContent?.trim() ?? "",
+        title: currentNameplateTitle,
         description: currentNameplateBlock?.querySelector(".p_l_5.f_12.gray.break")?.textContent?.trim() ?? "",
         url:
             currentNameplateBlock
                 ?.querySelector<HTMLImageElement>('img[src*="/img/NamePlate/"]')
                 ?.getAttribute("src") ?? "",
+        isRandomFromAll,
+        isRandomFromFavorite,
     };
 }
 

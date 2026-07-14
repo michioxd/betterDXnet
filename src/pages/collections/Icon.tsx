@@ -147,6 +147,7 @@ function PageCollectionsIcon() {
     }, [favoriteOnly, icons, searchText, selectedGenreId]);
 
     const canFavoriteIcon = (icon: IconAvailableListResponse) => icon.genereId !== "1" || icon.title !== "USER ICON";
+    const hasFavoriteIcon = icons.some((icon) => icon.favorite);
     const randomOptions = [
         {
             key: "all",
@@ -161,6 +162,7 @@ function PageCollectionsIcon() {
             description: "Randomly selected from favorite collections for each play!",
             formValue: randomFormValue.favorite,
             active: me.me?.collections.icon.isRandomFromFavorite ?? false,
+            disabled: !hasFavoriteIcon,
         },
     ];
 
@@ -218,10 +220,13 @@ function PageCollectionsIcon() {
                         <Card
                             key={option.key}
                             variant="outlined"
-                            sx={{ borderColor: option.active ? "primary.main" : undefined }}
+                            sx={{
+                                borderColor: option.active ? "primary.main" : undefined,
+                                opacity: option.disabled ? 0.55 : 1,
+                            }}
                         >
                             <CardActionArea
-                                disabled={!option.formValue || option.active || backgroundLoading}
+                                disabled={option.disabled || !option.formValue || option.active || backgroundLoading}
                                 data-active={option.active ? "" : undefined}
                                 onClick={() => option.formValue && void handleSetIcon(option.formValue)}
                                 sx={{
