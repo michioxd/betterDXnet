@@ -5,6 +5,7 @@ import {
     type GameOptionSelectOption,
     type GameOptionValues,
 } from "@/api/options";
+import ImageOptionPicker from "@/components/ImageOptionPicker";
 import { rootStore } from "@/stores/root";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -13,8 +14,8 @@ import {
     Alert,
     Box,
     Button,
-    CardActionArea,
     Card,
+    CardActionArea,
     CardContent,
     CircularProgress,
     Divider,
@@ -47,16 +48,6 @@ type OptionSectionProps = {
 };
 
 type OptionSliderProps = {
-    name: GameOptionName;
-    label: string;
-    description: string;
-    options: GameOptionSelectOption[];
-    disabled: boolean;
-    value: string;
-    onChange: (name: GameOptionName, value: string) => void;
-};
-
-type OptionImagePickerProps = {
     name: GameOptionName;
     label: string;
     description: string;
@@ -198,66 +189,6 @@ function OptionSlider({ name, label, description, options, disabled, value, onCh
                     {description}
                 </Typography>
             )}
-        </Box>
-    );
-}
-
-function OptionImagePicker({ name, label, description, options, disabled, value, onChange }: OptionImagePickerProps) {
-    return (
-        <Box sx={{ gridColumn: "1 / -1", minWidth: 0 }}>
-            <Stack spacing={1}>
-                <Box>
-                    <Typography variant="subtitle2">{label}</Typography>
-                    {description && (
-                        <Typography variant="body2" color="textSecondary">
-                            {description}
-                        </Typography>
-                    )}
-                </Box>
-                <Box sx={{ display: "flex", gap: 1.5, maxWidth: "100%", minWidth: 0, overflowX: "auto", pb: 1 }}>
-                    {options.map((selectOption) => {
-                        const optionIndex = Number(selectOption.value);
-                        const selected = selectOption.value === value;
-                        const optionLabel = dispJudgeLabels[optionIndex] ?? selectOption.label;
-
-                        return (
-                            <Card
-                                key={selectOption.value}
-                                variant="outlined"
-                                sx={{
-                                    borderColor: selected ? "primary.main" : "divider",
-                                    borderWidth: selected ? 2 : 1,
-                                    flex: "0 0 232px",
-                                }}
-                            >
-                                <CardActionArea
-                                    disabled={disabled}
-                                    onClick={() => onChange(name, selectOption.value)}
-                                    sx={{ height: "100%" }}
-                                >
-                                    <Box
-                                        component="img"
-                                        src={`https://maimaidx-eng.com/maimai-mobile/img/option/disp_judge_${selectOption.value}.png`}
-                                        alt={optionLabel}
-                                        draggable={false}
-                                        loading="lazy"
-                                        sx={{ display: "block", width: "100%" }}
-                                    />
-                                    <Box sx={{ bgcolor: selected ? "primary.main" : "action.hover", px: 1, py: 0.75 }}>
-                                        <Typography
-                                            variant="body2"
-                                            color={selected ? "gray" : "textPrimary"}
-                                            sx={{ fontWeight: 700, textAlign: "center" }}
-                                        >
-                                            {optionLabel}
-                                        </Typography>
-                                    </Box>
-                                </CardActionArea>
-                            </Card>
-                        );
-                    })}
-                </Box>
-            </Stack>
         </Box>
     );
 }
@@ -542,33 +473,6 @@ function PageSettingsGame() {
                                         </OptionSection>
 
                                         <OptionSection title={t("game.sections.game")}>
-                                            <OptionSelect
-                                                name="trackSkip"
-                                                label={t("game.options.trackSkip.label")}
-                                                description={t("game.options.trackSkip.description")}
-                                                options={getOptionChoices(choices, "trackSkip")}
-                                                disabled={saving}
-                                                value={values.trackSkip ?? "1"}
-                                                onChange={handleChange}
-                                            />
-                                            <OptionSelect
-                                                name="mirrorMode"
-                                                label={t("game.options.mirrorMode.label")}
-                                                description={t("game.options.mirrorMode.description")}
-                                                options={getOptionChoices(choices, "mirrorMode")}
-                                                disabled={saving}
-                                                value={values.mirrorMode ?? "0"}
-                                                onChange={handleChange}
-                                            />
-                                            <OptionSelect
-                                                name="starRotate"
-                                                label={t("game.options.starRotate.label")}
-                                                description={t("game.options.starRotate.description")}
-                                                options={getOptionChoices(choices, "starRotate")}
-                                                disabled={saving}
-                                                value={values.starRotate ?? "0"}
-                                                onChange={handleChange}
-                                            />
                                             <OptionSlider
                                                 name="adjustTiming"
                                                 label={t("game.options.adjustTiming.label")}
@@ -587,16 +491,61 @@ function PageSettingsGame() {
                                                 value={values.judgeTiming ?? "33"}
                                                 onChange={handleChange}
                                             />
-                                            <OptionSelect
-                                                name="brightness"
-                                                label={t("game.options.brightness.label")}
-                                                description={t("game.options.brightness.description")}
-                                                options={getOptionChoices(choices, "brightness")}
+                                            <Box sx={{ gridColumn: "1 / -1" }}>
+                                                <OptionSlider
+                                                    name="brightness"
+                                                    label={t("game.options.brightness.label")}
+                                                    description={t("game.options.brightness.description")}
+                                                    options={getOptionChoices(choices, "brightness")}
+                                                    disabled={saving}
+                                                    value={values.brightness ?? "0"}
+                                                    onChange={handleChange}
+                                                />
+                                            </Box>
+
+                                            <ImageOptionPicker
+                                                name="trackSkip"
+                                                label={t("game.options.trackSkip.label")}
+                                                description={t("game.options.trackSkip.description")}
+                                                options={getOptionChoices(choices, "trackSkip")}
                                                 disabled={saving}
-                                                value={values.brightness ?? "0"}
+                                                value={values.trackSkip ?? "1"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b05/UI_OPT_B_05_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+                                            <ImageOptionPicker
+                                                name="mirrorMode"
+                                                label={t("game.options.mirrorMode.label")}
+                                                description={t("game.options.mirrorMode.description")}
+                                                options={getOptionChoices(choices, "mirrorMode")}
+                                                disabled={saving}
+                                                value={values.mirrorMode ?? "0"}
+                                                onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b06/UI_OPT_B_06_${String(index + 1).padStart(2, "0")}.png`
+                                                }
+                                            />
+                                            <ImageOptionPicker
+                                                name="starRotate"
+                                                label={t("game.options.starRotate.label")}
+                                                description={t("game.options.starRotate.description")}
+                                                options={getOptionChoices(choices, "starRotate")}
+                                                disabled={saving}
+                                                value={values.starRotate ?? "0"}
+                                                onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b08/UI_OPT_B_08_${String(index + 1).padStart(2, "0")}.png`
+                                                }
+                                            />
+                                            <ImageOptionPicker
                                                 name="touchEffect"
                                                 label={t("game.options.touchEffect.label")}
                                                 description={t("game.options.touchEffect.description")}
@@ -604,20 +553,16 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.touchEffect ?? "2"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b10/UI_OPT_B_10_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
                                         </OptionSection>
 
                                         <OptionSection title={t("game.sections.display")}>
-                                            <OptionSelect
-                                                name="dispCenter"
-                                                label={t("game.options.dispCenter.label")}
-                                                description={t("game.options.dispCenter.description")}
-                                                options={getOptionChoices(choices, "dispCenter")}
-                                                disabled={saving}
-                                                value={values.dispCenter ?? "0"}
-                                                onChange={handleChange}
-                                            />
-                                            <OptionSelect
+                                            <ImageOptionPicker
                                                 name="outFrameType"
                                                 label={t("game.options.outFrameType.label")}
                                                 description={t("game.options.outFrameType.description")}
@@ -625,8 +570,14 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.outFrameType ?? "3"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/f34/UI_OPT_F_34_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+
+                                            <ImageOptionPicker
                                                 name="dispJudgePos"
                                                 label={t("game.options.dispJudgePos.label")}
                                                 description={t("game.options.dispJudgePos.description")}
@@ -634,8 +585,13 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.dispJudgePos ?? "5"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/c16/UI_OPT_C_16_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+                                            <ImageOptionPicker
                                                 name="dispJudgeTouchPos"
                                                 label={t("game.options.dispJudgeTouchPos.label")}
                                                 description={t("game.options.dispJudgeTouchPos.description")}
@@ -643,8 +599,29 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.dispJudgeTouchPos ?? "1"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/c17/UI_OPT_C_17_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+
+                                            <ImageOptionPicker
+                                                name="dispCenter"
+                                                label={t("game.options.dispCenter.label")}
+                                                description={t("game.options.dispCenter.description")}
+                                                options={getOptionChoices(choices, "dispCenter")}
+                                                disabled={saving}
+                                                value={values.dispCenter ?? "0"}
+                                                onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b04/UI_OPT_B_04_${String(index + 1).padStart(2, "0")}.png`
+                                                }
+                                            />
+
+                                            <ImageOptionPicker
                                                 name="dispChain"
                                                 label={t("game.options.dispChain.label")}
                                                 description={t("game.options.dispChain.description")}
@@ -652,17 +629,14 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.dispChain ?? "1"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b12/UI_OPT_B_12_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
-                                                name="submonitorAchieve"
-                                                label={t("game.options.submonitorAchieve.label")}
-                                                description={t("game.options.submonitorAchieve.description")}
-                                                options={getOptionChoices(choices, "submonitorAchieve")}
-                                                disabled={saving}
-                                                value={values.submonitorAchieve ?? "1"}
-                                                onChange={handleChange}
-                                            />
-                                            <OptionSelect
+
+                                            <ImageOptionPicker
                                                 name="dispRate"
                                                 label={t("game.options.dispRate.label")}
                                                 description={t("game.options.dispRate.description")}
@@ -670,8 +644,29 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.dispRate ?? "7"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b11/UI_OPT_B_11_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+
+                                            <ImageOptionPicker
+                                                name="submonitorAchieve"
+                                                label={t("game.options.submonitorAchieve.label")}
+                                                description={t("game.options.submonitorAchieve.description")}
+                                                options={getOptionChoices(choices, "submonitorAchieve")}
+                                                disabled={saving}
+                                                value={values.submonitorAchieve ?? "1"}
+                                                onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b13/UI_OPT_B_13_${String(index + 1).padStart(2, "0")}.png`
+                                                }
+                                            />
+
+                                            <ImageOptionPicker
                                                 name="submonitorAppeal"
                                                 label={t("game.options.submonitorAppeal.label")}
                                                 description={t("game.options.submonitorAppeal.description")}
@@ -679,8 +674,14 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.submonitorAppeal ?? "0"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/b14/UI_OPT_B_14_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionImagePicker
+
+                                            <ImageOptionPicker
                                                 name="dispJudge"
                                                 label={t("game.options.dispJudge.label")}
                                                 description={t("game.options.dispJudge.description")}
@@ -688,11 +689,18 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.dispJudge ?? "11"}
                                                 onChange={handleChange}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(option) =>
+                                                    `https://maimaidx-eng.com/maimai-mobile/img/option/disp_judge_${option.value}.png`
+                                                }
+                                                getOptionLabel={(option) =>
+                                                    dispJudgeLabels[Number(option.value)] ?? option.label
+                                                }
                                             />
                                         </OptionSection>
 
                                         <OptionSection title={t("game.sections.design")}>
-                                            <OptionSelect
+                                            <ImageOptionPicker
                                                 name="tapDesign"
                                                 label={t("game.options.tapDesign.label")}
                                                 description={t("game.options.tapDesign.description")}
@@ -700,8 +708,13 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.tapDesign ?? "0"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/d18/UI_OPT_D_18_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+                                            <ImageOptionPicker
                                                 name="holdDesign"
                                                 label={t("game.options.holdDesign.label")}
                                                 description={t("game.options.holdDesign.description")}
@@ -709,8 +722,13 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.holdDesign ?? "0"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/d19/UI_OPT_D_19_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+                                            <ImageOptionPicker
                                                 name="slideDesign"
                                                 label={t("game.options.slideDesign.label")}
                                                 description={t("game.options.slideDesign.description")}
@@ -718,8 +736,13 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.slideDesign ?? "0"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/d20/UI_OPT_D_20_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+                                            <ImageOptionPicker
                                                 name="starType"
                                                 label={t("game.options.starType.label")}
                                                 description={t("game.options.starType.description")}
@@ -727,8 +750,13 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.starType ?? "0"}
                                                 onChange={handleChange}
+                                                sx={{ gridColumn: "auto" }}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/d21/UI_OPT_D_21_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
-                                            <OptionSelect
+                                            <ImageOptionPicker
                                                 name="outlineDesign"
                                                 label={t("game.options.outlineDesign.label")}
                                                 description={t("game.options.outlineDesign.description")}
@@ -736,6 +764,10 @@ function PageSettingsGame() {
                                                 disabled={saving}
                                                 value={values.outlineDesign ?? "3"}
                                                 onChange={handleChange}
+                                                imageAspectRatio="312 / 116"
+                                                getImageSrc={(_, index) =>
+                                                    `https://michioxd.ch/betterDXnet-resources/images/options/d22/UI_OPT_D_22_${String(index + 1).padStart(2, "0")}.png`
+                                                }
                                             />
                                         </OptionSection>
 
