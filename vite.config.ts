@@ -17,7 +17,7 @@ const gitCurrentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().
 const viteVersion = execSync("vite --version").toString().trim();
 const typescriptVersion = execSync("tsc --version").toString().trim();
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     resolve: {
         alias: {
             "@": `${path.resolve(__dirname, "src")}`,
@@ -39,7 +39,10 @@ export default defineConfig({
         react(),
         crx({ manifest }),
         replaceManifestCss(),
-        zip({ outDir: "release", outFileName: `betterDXnet-${version}.zip` }),
+        zip({
+            outDir: "release",
+            outFileName: `betterDXnet-${mode === "firefox" ? "firefox" : "chrome"}-${version}.zip`,
+        }),
     ],
     server: {
         host: "127.0.0.1",
@@ -110,4 +113,4 @@ export default defineConfig({
             },
         },
     },
-});
+}));
