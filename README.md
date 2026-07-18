@@ -1,52 +1,15 @@
-# React + Vite + CRXJS
+# betterDXnet
 
-This template helps you quickly start developing Chrome extensions with React, TypeScript and Vite. It includes the CRXJS Vite plugin for seamless Chrome extension development.
+coming soon!
 
-## Features
+## Disclaimer
 
-- React with TypeScript
-- TypeScript support
-- Vite build tool
-- CRXJS Vite plugin integration
-- Chrome extension manifest configuration
+This is an unofficial extension and is not affiliated with, endorsed, sponsored, or approved by SEGA Interactive Co., Ltd. Provided as-is, without any warranty of any kind. By installing or continuing to use betterDXnet, you acknowledge that you do so entirely at your own risk and accept full responsibility for any issues, unexpected behavior, data loss, account-related consequences, or other damages that may arise from its use.
 
-## Quick Start
+If you are unsure whether using this extension complies with SEGA's policies, or if you are not comfortable accepting the risks described above, please refrain from using betterDXnet.
 
-1. Install dependencies:
+SEGA and maimai are registered trademarks of SEGA Interactive Co., Ltd. This is an unofficial extension and is not affiliated with, endorsed, sponsored, or approved by SEGA Interactive Co., Ltd.
 
-```bash
-npm install
-```
+## License
 
-2. Start development server:
-
-```bash
-npm run dev
-```
-
-3. Open Chrome and navigate to `chrome://extensions/`, enable "Developer mode", and load the unpacked extension from the `dist` directory.
-
-4. Build for production:
-
-```bash
-npm run build
-```
-
-## Project Structure
-
-- `src/popup/` - Extension popup UI
-- `src/content/` - Content scripts
-- `manifest.config.ts` - Chrome extension manifest configuration
-
-## Documentation
-
-- [React Documentation](https://reactjs.org/)
-- [Vite Documentation](https://vitejs.dev/)
-- [CRXJS Documentation](https://crxjs.dev/vite-plugin)
-
-## Chrome Extension Development Notes
-
-- Use `manifest.config.ts` to configure your extension
-- The CRXJS plugin automatically handles manifest generation
-- Content scripts should be placed in `src/content/`
-- Popup UI should be placed in `src/popup/`
+[GPL-3.0 license](LICENSE)
