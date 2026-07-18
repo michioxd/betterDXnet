@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Link, Typography } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 type DisclaimerDialogProps = {
     open: boolean;
@@ -33,33 +33,38 @@ function DisclaimerDialog({ open, onClose, onAccept }: DisclaimerDialogProps) {
             <DialogTitle>{t("disclaimer.title")}</DialogTitle>
             <DialogContent>
                 <Typography gutterBottom color="textSecondary">
-                    {t("disclaimer.openSourcePrefix")}{" "}
-                    <Link color="inherit" target="_blank" href="https://github.com/michioxd/betterDXnet">
-                        {t("disclaimer.openSourceLink")}
-                    </Link>{" "}
-                    {t("disclaimer.openSourceSuffix")}
+                    <Trans
+                        ns="layout"
+                        i18nKey="disclaimer.openSource"
+                        components={[
+                            <Link color="inherit" target="_blank" href="https://github.com/michioxd/betterDXnet" />,
+                        ]}
+                    />
                 </Typography>
 
                 <Typography gutterBottom color="textSecondary">
-                    {t("disclaimer.asIsPrefix")}{" "}
-                    <Typography component="span" sx={{ fontWeight: "bold" }} color="textSecondary">
-                        {t("disclaimer.asIs")}
-                    </Typography>
-                    {t("disclaimer.asIsSuffix")}
+                    <Trans
+                        ns="layout"
+                        i18nKey="disclaimer.asIsText"
+                        components={[<Typography component="span" sx={{ fontWeight: "bold" }} color="textSecondary" />]}
+                    />
                 </Typography>
 
                 <Typography color="textSecondary" gutterBottom>
-                    {t("disclaimer.riskPrefix")}{" "}
-                    <Typography component="span" sx={{ fontWeight: "bold" }} color="error">
-                        {t("disclaimer.riskWarning")}
-                    </Typography>
+                    <Trans
+                        ns="layout"
+                        i18nKey="disclaimer.risk"
+                        components={[<Typography component="span" sx={{ fontWeight: "bold" }} color="error" />]}
+                    />
                 </Typography>
 
                 <Typography color="textSecondary" gutterBottom>
-                    {t("disclaimer.acknowledge")}
+                    <Trans ns="layout" i18nKey="disclaimer.acknowledge" />
                 </Typography>
 
-                <Typography color="textSecondary">{t("disclaimer.acceptOnce")}</Typography>
+                <Typography color="textSecondary">
+                    <Trans ns="layout" i18nKey="disclaimer.acceptOnce" />
+                </Typography>
             </DialogContent>
             <DialogActions>
                 <Button variant="contained" onClick={onClose} autoFocus>

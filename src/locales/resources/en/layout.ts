@@ -23,10 +23,7 @@ const I18nLayout = {
         starAlt: "star",
     },
     footer: {
-        by: "by",
-        with: "with",
-        contributors: "contributors",
-        version: "version",
+        source: "<0>betterDXnet</0> by <1>michioxd</1> with <2>contributors</2> - version <3>{{appVersion}}</3> (<4>{{branch}}.{{commit}}</4>)",
         techStack: "{{viteVersion}} - React {{reactVersion}} - TypeScript {{typescriptVersion}}",
         buildDate: "Build date: {{time}} {{date}}",
         segaDisclaimer:
@@ -34,17 +31,11 @@ const I18nLayout = {
     },
     disclaimer: {
         title: "Disclaimer",
-        openSourcePrefix: "betterDXnet is an",
-        openSourceLink: "open source",
-        openSourceSuffix:
-            "and unofficial browser extension to give you an alternative and better Web UI experience. And of course it is not affiliated with, endorsed by, sponsored by, or approved by SEGA.",
-        asIsPrefix: "This extension is provided",
-        asIs: '"as is"',
-        asIsSuffix:
-            ", without any warranty of any kind. By installing or continuing to use betterDXnet, you acknowledge that you do so entirely at your own risk and accept full responsibility for any issues, unexpected behavior, data loss, account-related consequences, or other damages that may arise from its use.",
-        riskPrefix:
-            "If you are unsure whether using this extension complies with SEGA's policies, or if you are not comfortable accepting the risks described above,",
-        riskWarning: "do not use this extension and remove it from your browser immediately.",
+        openSource:
+            "betterDXnet is an <0>open source</0> and unofficial browser extension to give you an alternative and better Web UI experience. And of course it is not affiliated with, endorsed by, sponsored by, or approved by SEGA.",
+        asIsText:
+            'This extension is provided <0>"as is"</0>, without any warranty of any kind. By installing or continuing to use betterDXnet, you acknowledge that you do so entirely at your own risk and accept full responsibility for any issues, unexpected behavior, data loss, account-related consequences, or other damages that may arise from its use.',
+        risk: "If you are unsure whether using this extension complies with SEGA's policies, or if you are not comfortable accepting the risks described above, <0>do not use this extension and remove it from your browser immediately.</0>",
         acknowledge:
             'By clicking "I understand", you acknowledge that you have read and understood this disclaimer, and you accept the risks associated with using betterDXnet.',
         acceptOnce: "You only have to accept this disclaimer once.",

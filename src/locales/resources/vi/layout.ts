@@ -23,10 +23,7 @@ const I18nLayout = {
         starAlt: "ngôi sao",
     },
     footer: {
-        by: "bởi",
-        with: "với",
-        contributors: "người đóng góp",
-        version: "phiên bản",
+        source: "<0>betterDXnet</0> bởi <1>michioxd</1> với <2>người đóng góp</2> - phiên bản <3>{{appVersion}}</3> (<4>{{branch}}.{{commit}}</4>)",
         techStack: "{{viteVersion}} - React {{reactVersion}} - TypeScript {{typescriptVersion}}",
         buildDate: "Ngày build: {{time}} {{date}}",
         segaDisclaimer:
@@ -34,17 +31,11 @@ const I18nLayout = {
     },
     disclaimer: {
         title: "Miễn trừ trách nhiệm",
-        openSourcePrefix: "betterDXnet là một browser extension",
-        openSourceLink: "mã nguồn mở",
-        openSourceSuffix:
-            "và không chính thức, cung cấp trải nghiệm Web UI thay thế và tốt hơn. Tất nhiên extension này không liên kết, được xác nhận, tài trợ hoặc phê duyệt bởi SEGA.",
-        asIsPrefix: "Extension này được cung cấp",
-        asIs: '"nguyên trạng"',
-        asIsSuffix:
-            ", không kèm bất kỳ bảo đảm nào. Bằng việc cài đặt hoặc tiếp tục sử dụng betterDXnet, bạn xác nhận rằng bạn tự chịu hoàn toàn rủi ro và chấp nhận toàn bộ trách nhiệm đối với mọi sự cố, hành vi không mong muốn, mất dữ liệu, hậu quả liên quan đến tài khoản hoặc thiệt hại khác có thể phát sinh từ việc sử dụng extension.",
-        riskPrefix:
-            "Nếu bạn không chắc việc sử dụng extension này có tuân thủ chính sách của SEGA hay không, hoặc nếu bạn không thoải mái với các rủi ro nêu trên,",
-        riskWarning: "đừng sử dụng extension này và hãy gỡ nó khỏi trình duyệt ngay lập tức.",
+        openSource:
+            "betterDXnet là một browser extension <0>mã nguồn mở</0> và không chính thức, cung cấp trải nghiệm Web UI thay thế và tốt hơn. Tất nhiên extension này không liên kết, được xác nhận, tài trợ hoặc phê duyệt bởi SEGA.",
+        asIsText:
+            'Extension này được cung cấp <0>"nguyên trạng"</0>, không kèm bất kỳ bảo đảm nào. Bằng việc cài đặt hoặc tiếp tục sử dụng betterDXnet, bạn xác nhận rằng bạn tự chịu hoàn toàn rủi ro và chấp nhận toàn bộ trách nhiệm đối với mọi sự cố, hành vi không mong muốn, mất dữ liệu, hậu quả liên quan đến tài khoản hoặc thiệt hại khác có thể phát sinh từ việc sử dụng extension.',
+        risk: "Nếu bạn không chắc việc sử dụng extension này có tuân thủ chính sách của SEGA hay không, hoặc nếu bạn không thoải mái với các rủi ro nêu trên, <0>đừng sử dụng extension này và hãy gỡ nó khỏi trình duyệt ngay lập tức.</0>",
         acknowledge:
             'Bằng cách nhấn "Tôi hiểu", bạn xác nhận rằng bạn đã đọc và hiểu miễn trừ trách nhiệm này, đồng thời chấp nhận các rủi ro liên quan đến việc sử dụng betterDXnet.',
         acceptOnce: "Bạn chỉ cần chấp nhận miễn trừ trách nhiệm này một lần.",
