@@ -12,6 +12,19 @@ export default defineManifest(({ mode }) => ({
         48: "assets/48.png",
         128: "assets/128.png",
     },
+    action: {
+        default_title: "Toggle betterDXnet",
+    },
+    background:
+        mode === "firefox"
+            ? {
+                  scripts: ["src/background.ts"],
+                  type: "module",
+              }
+            : {
+                  service_worker: "src/background.ts",
+                  type: "module",
+              },
     content_scripts: [
         {
             js: ["src/main.tsx"],

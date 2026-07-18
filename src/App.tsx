@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Fab from "@mui/material/Fab";
 import cls from "./App.module.scss";
 import { Tooltip } from "@mui/material";
@@ -8,25 +8,43 @@ import DisclaimerDialog from "./components/DisclaimerDialog";
 
 const lastTitle = document.title;
 const ACCEPT_TOS_STORAGE_KEY = "bdn.disclaimer.ok";
+const TOGGLE_MESSAGE_TYPE = "betterdxnet:toggle";
+const extensionRuntime = ((globalThis as typeof globalThis & { browser?: typeof chrome }).browser ?? chrome).runtime;
 
 function App() {
     const [show, setShow] = useState(localStorage.getItem("bdn.show") === "1");
     const [showRiskDialog, setShowRiskDialog] = useState(false);
 
-    const toggle = () => {
-        if (!show && localStorage.getItem(ACCEPT_TOS_STORAGE_KEY) !== "1") {
-            setShowRiskDialog(true);
-            return;
-        }
+    const toggle = useCallback(() => {
+        setShow((currentShow) => {
+            if (!currentShow && localStorage.getItem(ACCEPT_TOS_STORAGE_KEY) !== "1") {
+                setShowRiskDialog(true);
+                return currentShow;
+            }
 
-        setShow(!show);
-    };
+            return !currentShow;
+        });
+    }, []);
 
     const acceptRisk = () => {
         localStorage.setItem(ACCEPT_TOS_STORAGE_KEY, "1");
         setShowRiskDialog(false);
         setShow(true);
     };
+
+    useEffect(() => {
+        const listener = (message: { type?: string }) => {
+            if (message.type === TOGGLE_MESSAGE_TYPE) {
+                toggle();
+            }
+        };
+
+        extensionRuntime.onMessage.addListener(listener);
+
+        return () => {
+            extensionRuntime.onMessage.removeListener(listener);
+        };
+    }, [toggle]);
 
     useEffect(() => {
         if (show) {
