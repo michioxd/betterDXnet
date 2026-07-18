@@ -37,7 +37,7 @@ export async function apiHelperFetchDoc(path: string): Promise<ApiFetchDocRespon
     if (!res.ok) {
         const content = await res.text();
         if (content.includes("Sorry, servers are under maintenance.")) {
-            throw new Error(`SEGA shut down they server! Please check back later. (About ${getSegayShutdownLeft()})`);
+            throw new Error(`SEGA fucked their server! Please check back later. (About ${getSegayShutdownLeft()})`);
         }
         throw new Error(`Request failed with status ${res.status}`);
     }
