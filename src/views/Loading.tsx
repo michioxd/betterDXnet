@@ -24,7 +24,7 @@ export default function LoadingView({ error, closeView }: { error?: Error | null
                     <Typography align="center" variant="h6" sx={{ mt: 2 }}>
                         {t("loading.errorTitle")}
                     </Typography>
-                    <Typography align="center" variant="body2" color="textSecondary" sx={{ maxWidth: 400 }}>
+                    <Typography align="center" variant="body2" color="textSecondary" sx={{ maxWidth: 500 }}>
                         {error.message}
                     </Typography>
                     {closeView && (
