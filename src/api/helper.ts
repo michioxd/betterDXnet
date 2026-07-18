@@ -14,6 +14,10 @@ export async function apiHelperFetchDoc(path: string): Promise<ApiFetchDocRespon
     const res = await fetch(path);
 
     if (!res.ok) {
+        const content = await res.text();
+        if (content.includes("Sorry, servers are under maintenance.")) {
+            throw new Error("SEGA shut down the server in 7PM-10PM GMT everyday lol.");
+        }
         throw new Error(`Request failed with status ${res.status}`);
     }
 

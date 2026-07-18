@@ -26,7 +26,11 @@ html[data-betterdxnet="727"] {
     color-scheme: light dark;
     .wrapper,
     img#page-top,
-    img#page-bottom {
+    img#page-bottom,
+    div[style="margin:10px 0;"],
+    div[style="font-size:15px;padding: 15px;"],
+    img[src="https://maimaidx-eng.com/maimai-mobile/img/logo.png"][style="width: 272px;"],
+    a[href="https://sega.jp/"][target="_blank"][rel="noopener"] {
         display: none !important;
     }
 
