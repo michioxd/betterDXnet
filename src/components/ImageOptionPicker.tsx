@@ -153,34 +153,48 @@ function ImageOptionPicker<Name extends string>({
                             );
                         })}
                     </Box>
-                    {showStartScrollHint && (
-                        <Box
-                            sx={{
-                                background: (theme) =>
-                                    `linear-gradient(270deg, transparent, ${theme.palette.background.paper})`,
-                                bottom: 1,
-                                left: 0,
-                                pointerEvents: "none",
-                                position: "absolute",
-                                top: 0,
-                                width: 32,
-                            }}
-                        />
-                    )}
-                    {showEndScrollHint && (
-                        <Box
-                            sx={{
-                                background: (theme) =>
-                                    `linear-gradient(90deg, transparent, ${theme.palette.background.paper})`,
-                                bottom: 1,
-                                pointerEvents: "none",
-                                position: "absolute",
-                                right: 0,
-                                top: 0,
-                                width: 32,
-                            }}
-                        />
-                    )}
+                    <Box
+                        sx={{
+                            background: (theme) =>
+                                `linear-gradient(270deg, transparent, ${theme.palette.background.paper})`,
+                            bottom: 1,
+                            left: 0,
+                            pointerEvents: "none",
+                            position: "absolute",
+                            top: 0,
+                            width: 32,
+                            opacity: 0,
+                            visibility: "hidden",
+                            transition: "opacity 0.2s, visibility 0.2s",
+                            ...(showStartScrollHint
+                                ? {
+                                      opacity: 1,
+                                      visibility: "visible",
+                                  }
+                                : {}),
+                        }}
+                    />
+                    <Box
+                        sx={{
+                            background: (theme) =>
+                                `linear-gradient(90deg, transparent, ${theme.palette.background.paper})`,
+                            bottom: 1,
+                            pointerEvents: "none",
+                            position: "absolute",
+                            right: 0,
+                            top: 0,
+                            width: 32,
+                            opacity: 0,
+                            visibility: "hidden",
+                            transition: "opacity 0.2s, visibility 0.2s",
+                            ...(showEndScrollHint
+                                ? {
+                                      opacity: 1,
+                                      visibility: "visible",
+                                  }
+                                : {}),
+                        }}
+                    />
                 </Box>
             </Stack>
         </Box>
