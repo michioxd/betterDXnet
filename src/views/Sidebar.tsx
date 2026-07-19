@@ -61,10 +61,22 @@ const sidebarSections: SidebarSection[] = [
         ],
     },
     {
+        key: "title",
+        labelKey: "records",
+        icon: AssessmentIcon,
+        disabled: false,
+        items: [
+            { labelKey: "Last 50 records", to: "/records/game", icon: FormatListNumberedIcon, disabled: false },
+            { labelKey: "songScores", to: "/records/songs", icon: MusicNoteIcon, disabled: true },
+            { labelKey: "courses", to: "/records/courses", icon: FlagIcon, disabled: true },
+            { labelKey: "worldStats", to: "/records/worldstats", icon: PublicIcon, disabled: true },
+        ],
+    },
+    {
         key: "playdata",
         labelKey: "playerData",
         icon: PersonIcon,
-        disabled: true,
+        disabled: false,
         items: [
             { labelKey: "playerDataItem", to: "/playdata", icon: BadgeIcon, disabled: true },
             { labelKey: "stampCard", to: "/playdata/stamp-card", icon: StyleIcon, disabled: true },
@@ -87,18 +99,6 @@ const sidebarSections: SidebarSection[] = [
         icon: ShoppingBagIcon,
         disabled: true,
         to: "/shop",
-    },
-    {
-        key: "title",
-        labelKey: "records",
-        icon: AssessmentIcon,
-        disabled: true,
-        items: [
-            { labelKey: "gameRecords", to: "/records/game", icon: FormatListNumberedIcon, disabled: true },
-            { labelKey: "songScores", to: "/records/songs", icon: MusicNoteIcon, disabled: true },
-            { labelKey: "courses", to: "/records/courses", icon: FlagIcon, disabled: true },
-            { labelKey: "worldStats", to: "/records/worldstats", icon: PublicIcon, disabled: true },
-        ],
     },
     {
         key: "event",

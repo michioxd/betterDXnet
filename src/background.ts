@@ -1,6 +1,6 @@
+import { extensionApi } from "./runtime";
+
 const TOGGLE_MESSAGE_TYPE = "betterdxnet:toggle";
-const extensionApi = ((globalThis as typeof globalThis & { browser?: typeof chrome }).browser ??
-    chrome) as typeof chrome;
 
 extensionApi.action.onClicked.addListener((tab) => {
     if (!tab.id) {

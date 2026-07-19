@@ -61,6 +61,14 @@ jobs:
             - name: Build Chrome extension
               run: bun run build
 
+            - name: Upload Chrome artifact
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              uses: actions/upload-artifact@v4
+              with:
+                  name: betterDXnet-chrome
+                  path: release/betterDXnet-chrome-*.zip
+                  if-no-files-found: error
+
     build-firefox:
         name: Build Firefox
         runs-on: ubuntu-latest
@@ -76,3 +84,11 @@ jobs:
 
             - name: Build Firefox extension
               run: bun run build:firefox
+
+            - name: Upload Firefox artifact
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              uses: actions/upload-artifact@v4
+              with:
+                  name: betterDXnet-firefox
+                  path: release/betterDXnet-firefox-*.zip
+                  if-no-files-found: error

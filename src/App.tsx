@@ -5,11 +5,11 @@ import { Tooltip } from "@mui/material";
 import SupportIcon from "@mui/icons-material/Support";
 import MainView from "./views/Main";
 import DisclaimerDialog from "./components/DisclaimerDialog";
+import { extensionRuntime } from "./runtime";
 
 const lastTitle = document.title;
 const ACCEPT_TOS_STORAGE_KEY = "bdn.disclaimer.ok";
 const TOGGLE_MESSAGE_TYPE = "betterdxnet:toggle";
-const extensionRuntime = ((globalThis as typeof globalThis & { browser?: typeof chrome }).browser ?? chrome).runtime;
 
 function App() {
     const [show, setShow] = useState(localStorage.getItem("bdn.show") === "1");

@@ -1,11 +1,22 @@
 import { defineManifest } from "@crxjs/vite-plugin";
 import pkg from "./package.json";
 
+const toManifestVersion = (version: string) => {
+    const cleanVersion = version.split(/[+-]/)[0];
+    const parts = cleanVersion.split(".");
+
+    if (parts.length < 1 || parts.length > 4 || parts.some((part) => !/^\d+$/.test(part) || Number(part) > 65536)) {
+        throw new Error(`Invalid extension manifest version: ${version}`);
+    }
+
+    return parts.join(".");
+};
+
 export default defineManifest(({ mode }) => ({
     manifest_version: 3,
     name: "betterDXnet",
     description: "just an alternative UI for sinmaiDX :)",
-    version: pkg.version,
+    version: toManifestVersion(pkg.version),
     icons: {
         16: "assets/16.png",
         32: "assets/32.png",
@@ -28,7 +39,7 @@ export default defineManifest(({ mode }) => ({
     content_scripts: [
         {
             js: ["src/main.tsx"],
-            matches: ["https://maimaidx-eng.com/maimai-mobile/*"],
+            matches: ["https://maimaidx-eng.com/*"],
             run_at: "document_idle",
         },
     ],
