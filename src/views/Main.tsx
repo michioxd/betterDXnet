@@ -13,7 +13,10 @@ import {
     useTheme,
 } from "@mui/material";
 import cls from "./Main.module.scss";
+import BrightnessAutoIcon from "@mui/icons-material/BrightnessAuto";
 import CloseIcon from "@mui/icons-material/Close";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { observer } from "mobx-react-lite";
@@ -27,11 +30,13 @@ import Footer from "@/components/Footer";
 import Sidebar, { createSidebarSectionState } from "./Sidebar";
 import { LangSelectorComponent } from "@/components/LanguageSelector";
 import { useTranslation } from "react-i18next";
+import { useColorScheme } from "@mui/material/styles";
 
 function MainView({ closeView }: { closeView?: () => void }) {
     const { t } = useTranslation("layout");
     const { me, app } = rootStore;
     const theme = useTheme();
+    const { mode, systemMode, setMode } = useColorScheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const refreshHoldTimeoutRef = useRef<number | null>(null);
     const refreshHoldTriggeredRef = useRef(false);
@@ -43,6 +48,10 @@ function MainView({ closeView }: { closeView?: () => void }) {
     const username = me.me?.name;
     const rankType = me.me?.rankType;
     const version = me.me?.version;
+    const activeMode = mode === "system" ? systemMode : mode;
+    const isDarkMode = activeMode === "dark";
+    const themeMode = mode ?? "system";
+    const themeModeLabel = t(`toolbar.themeMode.${themeMode}`);
 
     useEffect(() => {
         app.ensureSidebarSectionsOpen(createSidebarSectionState());
@@ -94,6 +103,23 @@ function MainView({ closeView }: { closeView?: () => void }) {
         void me.refresh();
     };
 
+    const toggleThemeMode = () => {
+        if (themeMode === "light") {
+            setMode("dark");
+        } else if (themeMode === "dark") {
+            setMode("system");
+        } else {
+            setMode("light");
+        }
+    };
+
+    const themeModeIcon = () => {
+        if (themeMode === "light") return <LightModeIcon fontWeight="medium" />;
+        if (themeMode === "dark") return <DarkModeIcon fontWeight="medium" />;
+
+        return <BrightnessAutoIcon fontWeight="medium" />;
+    };
+
     return (
         <Paper component="main" className={cls.mainView}>
             <AppBar position="sticky" color="primary">
@@ -118,6 +144,18 @@ function MainView({ closeView }: { closeView?: () => void }) {
                     />
 
                     <LangSelectorComponent minimal />
+
+                    <Tooltip title={t("toolbar.themeModeLabel", { mode: themeModeLabel })} placement="bottom" arrow>
+                        <IconButton
+                            size="large"
+                            edge="end"
+                            color="inherit"
+                            aria-label={t("toolbar.themeModeLabel", { mode: themeModeLabel })}
+                            onClick={toggleThemeMode}
+                        >
+                            {themeModeIcon()}
+                        </IconButton>
+                    </Tooltip>
 
                     <Tooltip title={t("toolbar.refreshProfile")} placement="bottom" arrow>
                         <span>

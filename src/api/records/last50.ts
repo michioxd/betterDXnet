@@ -135,7 +135,7 @@ function parseLifeStatus(block: HTMLElement) {
     };
 }
 
-function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
+export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
     const detailForm = block.querySelector<HTMLFormElement>(`form[action="${PLAYLOG_DETAIL_PATH}"]`);
     const difficultyName = imageName(block.querySelector<HTMLImageElement>(".playlog_diff"));
     const songKindName = imageName(block.querySelector<HTMLImageElement>(".playlog_music_kind_icon"));

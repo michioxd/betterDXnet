@@ -1,13 +1,16 @@
-import { apiRecords } from "@/api";
 import { difficultyColor, GameRecordStatus, type GameRecordLast50 } from "@/api/records";
 import { GameRecordSyncStatusShort, musicIconBaseImg, playlogBaseImg, songKindBaseImg } from "@/api/records/types";
 import { rootStore } from "@/stores/root";
 import HeartIcon from "@mui/icons-material/Favorite";
 import ClockIcon from "@mui/icons-material/AccessTime";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import StarIcon from "@mui/icons-material/Star";
 import {
     Alert,
     Box,
+    Button,
     Card,
+    CardActionArea,
     CardContent,
     CardMedia,
     Chip,
@@ -17,7 +20,9 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -71,11 +76,19 @@ function colorFromHue(hue: number) {
     return `hsl(${hue} 85% 58%)`;
 }
 
-function colorFromSessionStart(value: Date) {
+export function colorFromSessionStart(value: Date) {
     return colorFromHue(hueFromSessionStart(value));
 }
 
-function RecordCard({ record, sessionColor }: { record: GameRecordLast50; sessionColor: string }) {
+export function RecordCard({
+    record,
+    sessionColor,
+    to = `/records/game/${record.id}`,
+}: {
+    record: GameRecordLast50;
+    sessionColor: string;
+    to?: string;
+}) {
     const color = difficultyColor[record.songdifficulty];
 
     return (
@@ -85,220 +98,209 @@ function RecordCard({ record, sessionColor }: { record: GameRecordLast50; sessio
                 position: "relative",
                 height: "100%",
                 borderColor: color,
-                bgcolor: `color-mix(in srgb, ${color} 10%, transparent)`,
+                bgcolor: `color-mix(in srgb, ${color} 5%, transparent)`,
             }}
         >
-            <CardContent sx={{ height: "100%" }}>
-                <Stack spacing={2} sx={{ height: "100%" }}>
-                    <Stack direction="row" spacing={2}>
-                        <Box sx={{ position: "relative" }}>
-                            <CardMedia
-                                component="img"
-                                image={record.songArtwork}
-                                alt={record.songTitle}
-                                sx={{ width: 88, height: 88, borderRadius: 1, objectFit: "cover", flexShrink: 0 }}
-                            />
-                            <img
-                                src={songKindBaseImg.replace("{}", record.songKind)}
-                                alt={record.songKind}
-                                style={{ position: "absolute", bottom: -5, right: -5, height: "18px" }}
-                            />
-                        </Box>
-
-                        <Box sx={{ minWidth: 0, flex: 1 }}>
-                            <Typography variant="subtitle1" noWrap title={record.songTitle}>
-                                {record.songTitle || "Untitled"}
-                            </Typography>
-                            <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}>
-                                <Chip
-                                    size="small"
-                                    label={record.songdifficulty.toUpperCase()}
-                                    sx={{ bgcolor: color, color: "common.black", fontWeight: 700 }}
+            <CardActionArea component={Link} to={to} sx={{ height: "100%" }}>
+                <CardContent sx={{ height: "100%" }}>
+                    <Stack spacing={2} sx={{ height: "100%" }}>
+                        <Stack direction="row" spacing={2}>
+                            <Box sx={{ position: "relative" }}>
+                                <CardMedia
+                                    component="img"
+                                    image={record.songArtwork}
+                                    alt={record.songTitle}
+                                    sx={{ width: 95, height: 95, borderRadius: 1, objectFit: "cover", flexShrink: 0 }}
                                 />
-                                <Chip size="small" label={`Lv ${record.songLevel}`} />
-                                <Chip
-                                    size="small"
-                                    label={`No. ${record.trackNo}`}
-                                    sx={{
-                                        bgcolor: "color-mix(in srgb, " + sessionColor + " 20%, transparent)",
-                                    }}
+                                <img
+                                    src={songKindBaseImg.replace("{}", record.songKind)}
+                                    alt={record.songKind}
+                                    style={{ position: "absolute", bottom: -5, right: -5, height: "18px" }}
+                                />
+                            </Box>
+
+                            <Box sx={{ minWidth: 0, flex: 1 }}>
+                                <Typography variant="subtitle1" noWrap title={record.songTitle}>
+                                    {record.songTitle || "Untitled"}
+                                </Typography>
+                                <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}>
+                                    <Chip
+                                        size="small"
+                                        label={record.songdifficulty.toUpperCase()}
+                                        sx={{ bgcolor: color, color: "common.black", fontWeight: 700 }}
+                                    />
+                                    <Chip size="small" label={`Lv ${record.songLevel}`} />
+                                    <Chip
+                                        size="small"
+                                        label={`No. ${record.trackNo}`}
+                                        sx={{
+                                            bgcolor: "color-mix(in srgb, " + sessionColor + " 20%, transparent)",
+                                        }}
+                                    />
+                                </Stack>
+                            </Box>
+                        </Stack>
+
+                        <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+                            <Stack direction="column" sx={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Achievement
+                                    </Typography>
+                                    {record.newAchievement && (
+                                        <Chip
+                                            size="small"
+                                            sx={{ fontSize: 10, width: "fit-content", height: "fit-content", py: 0 }}
+                                            color="warning"
+                                            label="NEW"
+                                        />
+                                    )}
+                                </Box>
+                                <Typography variant="h6" color="primary.main">
+                                    {formatPercent(record.achievement)}
+                                </Typography>
+                            </Stack>
+
+                            <Stack>
+                                <img
+                                    src={playlogBaseImg.replace("{}", record.scoreRank.toLowerCase())}
+                                    alt={record.scoreRank}
+                                    style={{ height: "50px" }}
                                 />
                             </Stack>
-                        </Box>
-                    </Stack>
 
-                    <Stack direction="row" sx={{ justifyContent: "space-between" }}>
-                        <Stack direction="column" sx={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                <Typography variant="body2" color="textSecondary">
-                                    Achievement
+                            <Stack direction="column" sx={{ justifyContent: "flex-start", alignItems: "flex-end" }}>
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                    {record.newDxScore && (
+                                        <Chip
+                                            size="small"
+                                            sx={{ fontSize: 10, width: "fit-content", height: "fit-content", py: 0 }}
+                                            color="warning"
+                                            label="NEW"
+                                        />
+                                    )}
+                                    <Typography variant="body2" color="textSecondary">
+                                        DX Score
+                                    </Typography>
+                                </Box>
+                                <Typography variant="body1">
+                                    {record.dxScore.current.toLocaleString()} / {record.dxScore.max.toLocaleString()}
                                 </Typography>
-                                {record.newAchievement && (
-                                    <Chip
-                                        size="small"
-                                        sx={{ fontSize: 10, width: "fit-content", height: "fit-content" }}
-                                        color="warning"
-                                        label="NEW"
+                            </Stack>
+                        </Stack>
+
+                        <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", alignItems: "center" }}>
+                            {record.status !== GameRecordStatus.FAILED &&
+                                record.status !== GameRecordStatus.CLEARED && (
+                                    <img
+                                        src={musicIconBaseImg.replace("{}", record.status)}
+                                        alt={record.syncPlayGrade}
+                                        style={{
+                                            width: "45px",
+                                            height: "45px",
+                                            objectFit: "cover",
+                                        }}
                                     />
                                 )}
-                            </Box>
-                            <Typography variant="h6" color="primary.main">
-                                {formatPercent(record.achievement)}
-                            </Typography>
-                        </Stack>
-
-                        <Stack>
-                            <img
-                                src={playlogBaseImg.replace("{}", record.scoreRank.toLowerCase())}
-                                alt={record.scoreRank}
-                                style={{ height: "50px" }}
-                            />
-                        </Stack>
-
-                        <Stack direction="column" sx={{ justifyContent: "flex-start", alignItems: "flex-end" }}>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                {record.newDxScore && (
-                                    <Chip
-                                        size="small"
-                                        sx={{ fontSize: 10, width: "fit-content", height: "fit-content" }}
-                                        color="warning"
-                                        label="NEW"
+                            {record.syncStatusShort !== GameRecordSyncStatusShort.SOLO && (
+                                <>
+                                    <img
+                                        src={musicIconBaseImg.replace("{}", record.syncStatusShort)}
+                                        style={{
+                                            width: "45px",
+                                            height: "45px",
+                                            objectFit: "cover",
+                                        }}
                                     />
-                                )}
-                                <Typography variant="body2" color="textSecondary">
-                                    DX Score
-                                </Typography>
-                            </Box>
-                            <Typography variant="body1">
-                                {record.dxScore.current.toLocaleString()} / {record.dxScore.max.toLocaleString()}
-                            </Typography>
+                                    <img
+                                        src={playlogBaseImg.replace("{}", record.syncPlayGrade)}
+                                        style={{
+                                            width: "45px",
+                                            height: "45px",
+                                            objectFit: "contain",
+                                        }}
+                                    />
+                                </>
+                            )}
+
+                            {record.dxStar > 0 && (
+                                <Chip color="success" label={`${record.dxStar}`} icon={<StarIcon />} />
+                            )}
                         </Stack>
-                    </Stack>
 
-                    <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", alignItems: "center" }}>
-                        {record.status !== GameRecordStatus.FAILED && record.status !== GameRecordStatus.CLEARED && (
-                            <img
-                                src={musicIconBaseImg.replace("{}", record.status)}
-                                alt={record.syncPlayGrade}
-                                style={{
-                                    width: "45px",
-                                    height: "45px",
-                                    objectFit: "cover",
-                                }}
-                            />
-                        )}
-                        {record.syncStatusShort !== GameRecordSyncStatusShort.SOLO && (
-                            <img
-                                src={musicIconBaseImg.replace("{}", record.syncStatusShort)}
-                                style={{
-                                    width: "45px",
-                                    height: "45px",
-                                    objectFit: "cover",
-                                }}
-                            />
-                        )}
-                        {record.dxStar > 0 && <Chip color="success" label={`${record.dxStar}★`} />}
-                    </Stack>
+                        <Box sx={{ flex: 1, m: "0 !important" }}></Box>
 
-                    <Box sx={{ flex: 1, m: "0 !important" }}></Box>
-
-                    <Box
-                        sx={{
-                            mt: "auto",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            flexWrap: "wrap",
-                            rowGap: 1,
-                        }}
-                    >
-                        <Box>
-                            <Tooltip title={formatDate(record.playDate, true)} placement="top" arrow>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                    sx={{ display: "flex", alignItems: "center", gap: 0.5, width: "fit-content" }}
-                                >
-                                    <ClockIcon />
-                                    {formatDate(record.playDate)}
-                                </Typography>
-                            </Tooltip>
-                        </Box>
-
-                        {record.isPerfectChallenge && (
-                            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", rowGap: 1, mb: 1 }}>
-                                <Tooltip title="Perfect Challenge" placement="top" arrow>
-                                    <Chip size="small" color="warning" sx={{ fontWeight: 700 }} label="PC" />
+                        <Box
+                            sx={{
+                                mt: "auto",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                flexWrap: "wrap",
+                                rowGap: 1,
+                            }}
+                        >
+                            <Box>
+                                <Tooltip title={formatDate(record.playDate, true)} placement="top" arrow>
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                        sx={{ display: "flex", alignItems: "center", gap: 0.5, width: "fit-content" }}
+                                    >
+                                        <ClockIcon />
+                                        {formatDate(record.playDate)}
+                                    </Typography>
                                 </Tooltip>
-                                <Chip
-                                    size="small"
-                                    color="secondary"
-                                    icon={<HeartIcon />}
-                                    label={`LIFE ${record.liveStatus.current} / ${record.liveStatus.max}`}
-                                ></Chip>
                             </Box>
-                        )}
-                    </Box>
-                </Stack>
-            </CardContent>
-            <Box
-                sx={{
-                    width: "100%",
-                    height: 4,
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    opacity: 0.4,
-                    bgcolor: sessionColor,
-                }}
-            ></Box>
+
+                            {record.isPerfectChallenge && (
+                                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", rowGap: 1, mb: 1 }}>
+                                    <Tooltip title="Perfect Challenge" placement="top" arrow>
+                                        <Chip size="small" color="warning" sx={{ fontWeight: 700 }} label="PC" />
+                                    </Tooltip>
+                                    <Chip
+                                        size="small"
+                                        color="secondary"
+                                        icon={<HeartIcon />}
+                                        label={`LIFE ${record.liveStatus.current} / ${record.liveStatus.max}`}
+                                    ></Chip>
+                                </Box>
+                            )}
+                        </Box>
+                    </Stack>
+                </CardContent>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: 4,
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        opacity: 0.4,
+                        bgcolor: sessionColor,
+                    }}
+                />
+            </CardActionArea>
         </Card>
     );
 }
 
-export default function PageRecordsLast50() {
-    const { app } = rootStore;
-    const [records, setRecords] = useState<GameRecordLast50[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
-    const disposedRef = useRef(false);
+function PageRecordsLast50() {
+    const { app, records } = rootStore;
+    const loading = records.last50Loading;
+    const error = records.last50Error;
 
     useEffect(() => {
-        disposedRef.current = false;
-
-        (async () => {
-            setLoading(true);
-            setError(null);
-
-            try {
-                const res = await apiRecords.last50();
-
-                if (disposedRef.current) return;
-
-                setRecords(res);
-            } catch (error) {
-                if (disposedRef.current) return;
-
-                setError(error as Error);
-            } finally {
-                if (disposedRef.current) return;
-
-                setLoading(false);
-            }
-        })();
-
-        return () => {
-            disposedRef.current = true;
-        };
-    }, []);
+        void records.ensureLast50();
+    }, [records]);
 
     useEffect(() => {
         app.setGlobalLoading(loading);
     }, [app, loading]);
 
     const sortedRecords = useMemo(
-        () => [...records].sort((left, right) => right.playDate.getTime() - left.playDate.getTime()),
-        [records],
+        () => [...records.last50].sort((left, right) => right.playDate.getTime() - left.playDate.getTime()),
+        [records.last50],
     );
 
     const recordsWithSessionColor = useMemo(() => {
@@ -332,9 +334,20 @@ export default function PageRecordsLast50() {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Box>
-                <Typography variant="h5">Last 50</Typography>
-                <Typography color="textSecondary">Recent play records.</Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, alignItems: "flex-start" }}>
+                <Box>
+                    <Typography variant="h5">Last 50</Typography>
+                    <Typography color="textSecondary">Recent play records.</Typography>
+                </Box>
+                <Button
+                    variant="outlined"
+                    startIcon={<RefreshIcon />}
+                    onClick={() => void records.refreshLast50()}
+                    loading={loading}
+                    disabled={loading}
+                >
+                    Reload
+                </Button>
             </Box>
 
             {loading && (
@@ -361,3 +374,5 @@ export default function PageRecordsLast50() {
         </Box>
     );
 }
+
+export default observer(PageRecordsLast50);

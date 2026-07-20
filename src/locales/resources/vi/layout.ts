@@ -9,6 +9,12 @@ const I18nLayout = {
         closeSidebar: "Đóng thanh bên",
         refreshProfile: "Làm mới hồ sơ. Nhấn giữ để tải lại hoàn toàn.",
         refresh: "Làm mới",
+        themeModeLabel: "Giao diện: {{mode}}. Nhấn để đổi.",
+        themeMode: {
+            light: "Sáng",
+            dark: "Tối",
+            system: "Tự động",
+        },
         unload: "Gỡ betterDXnet",
         close: "Đóng",
         dxVersion: "Phiên bản DX: {{version}}",

@@ -10,6 +10,7 @@ import PageCollectionsPartner from "./collections/Partner";
 import PageSettingsGame from "./settings/Game";
 import PageSettingsPlayer from "./settings/Player";
 import PageRecordsLast50 from "./records/Last50";
+import PageRecordsLast50Detail from "./records/Last50Detail";
 
 export default function AppRoutes() {
     return (
@@ -18,6 +19,7 @@ export default function AppRoutes() {
             <Route path="*" element={<NotReady />} />
             <Route path="records">
                 <Route path="game" element={<PageRecordsLast50 />} />
+                <Route path="game/:id" element={<PageRecordsLast50Detail />} />
             </Route>
             <Route path="collections">
                 <Route path="icon" element={<PageCollectionsIcon />} />

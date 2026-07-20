@@ -9,6 +9,12 @@ const I18nLayout = {
         closeSidebar: "Close sidebar",
         refreshProfile: "Refresh profile. Hold to fully reload.",
         refresh: "Refresh",
+        themeModeLabel: "Theme: {{mode}}. Click to change.",
+        themeMode: {
+            light: "Light",
+            dark: "Dark",
+            system: "Auto",
+        },
         unload: "Unload betterDXnet",
         close: "Close",
         dxVersion: "DX Version: {{version}}",

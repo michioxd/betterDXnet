@@ -1,3 +1,5 @@
+import { ApiMeRankType } from "../me";
+
 export enum GameRecordSongDifficulty {
     BASIC = "basic",
     ADVANCED = "advanced",
@@ -56,6 +58,22 @@ export enum GameRecordSyncStatusShort {
     FULL_SYNC_DX_PLUS = "fsdp",
 }
 
+export interface JudgeCount {
+    criticalPerfect: number;
+    perfect: number;
+    great: number;
+    good: number;
+    miss: number;
+}
+
+export interface JudgeTable {
+    tap: JudgeCount;
+    hold: JudgeCount;
+    slide: JudgeCount;
+    touch: JudgeCount;
+    break: JudgeCount;
+}
+
 export const difficultyColor: Record<GameRecordSongDifficulty, string> = {
     [GameRecordSongDifficulty.BASIC]: "#81D955",
     [GameRecordSongDifficulty.ADVANCED]: "#F8B709",
@@ -102,3 +120,30 @@ export interface GameRecordLast50 {
     trackNo: number;
     playDate: Date;
 }
+
+export type GameRecordPlayLogDetail = {
+    id: string;
+
+    detail: GameRecordLast50;
+
+    judge: JudgeTable;
+    fast: number;
+    late: number;
+
+    ratingPrev: number; // rating before this play
+    ratingPrevType: ApiMeRankType;
+    ratingResult: number;
+    ratingDirection: "up" | "down" | "keep";
+    ratingDelta: number; // rating change, can be negative
+
+    maxCombo: {
+        current: number;
+        max: number;
+    };
+
+    // maxSync should be 0/0 if solo
+    maxSync: {
+        current: number;
+        max: number;
+    };
+};
