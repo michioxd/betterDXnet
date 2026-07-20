@@ -80,7 +80,7 @@ const sidebarSections: SidebarSection[] = [
         items: [
             { labelKey: "playerDataItem", to: "/playdata", icon: BadgeIcon, disabled: true },
             { labelKey: "stampCard", to: "/playdata/stamp-card", icon: StyleIcon, disabled: true },
-            { labelKey: "album", to: "/playdata/album", icon: CameraAltIcon, disabled: true },
+            { labelKey: "album", to: "/playdata/album", icon: CameraAltIcon },
         ],
     },
     {
