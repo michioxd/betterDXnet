@@ -113,6 +113,19 @@ const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
                 comments: false,
             },
         },
+        rollupOptions: {
+            output: {
+                chunkFileNames() {
+                    return `assets/bdn.[hash].js`;
+                },
+                entryFileNames() {
+                    return `assets/bdn.[hash].js`;
+                },
+                assetFileNames() {
+                    return `assets/bdn.[hash][extname]`;
+                },
+            },
+        },
     },
 });
 

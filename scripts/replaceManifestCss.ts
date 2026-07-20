@@ -9,7 +9,7 @@ type ReplaceManifestCssOptions = {
 
 export default function replaceManifestCss({
     manifestFileName = "manifest.json",
-    cssFilePattern = /^assets\/style-[\w-]+\.css$/,
+    cssFilePattern = /^assets\/bdn.[\w-]+\.css$/,
 }: ReplaceManifestCssOptions = {}): Plugin {
     let config: ResolvedConfig;
 
