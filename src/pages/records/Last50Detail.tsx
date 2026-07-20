@@ -88,14 +88,6 @@ function getNoteAccuracy(judgeCount: JudgeCount) {
     return (weightedTotal / total) * 100;
 }
 
-function getTotalNotes(detailJudge: Record<(typeof noteRows)[number]["key"], JudgeCount>) {
-    return noteRows.reduce(
-        (noteTotal, note) =>
-            noteTotal + judgeLabels.reduce((total, judge) => total + detailJudge[note.key][judge.key], 0),
-        0,
-    );
-}
-
 function formatPercent(value: number) {
     return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
 }
