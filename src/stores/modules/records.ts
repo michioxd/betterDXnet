@@ -19,7 +19,7 @@ export class RecordsStore {
 
     constructor(root: RootStore) {
         this.root = root;
-        makeAutoObservable(this, {
+        makeAutoObservable<this, "last50RequestId" | "playLogDetailRequestIds">(this, {
             root: false,
             last50: observable.ref,
             last50RequestId: false,
