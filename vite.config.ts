@@ -102,7 +102,7 @@ const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
             : undefined,
     build: {
         minify: "terser",
-        sourcemap: "hidden",
+        sourcemap: false,
         cssCodeSplit: false,
         modulePreload: false,
         terserOptions: {

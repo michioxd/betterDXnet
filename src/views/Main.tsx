@@ -36,7 +36,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
     const { t } = useTranslation("layout");
     const { me, app } = rootStore;
     const theme = useTheme();
-    const { mode, systemMode, setMode } = useColorScheme();
+    const { mode, setMode } = useColorScheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const refreshHoldTimeoutRef = useRef<number | null>(null);
     const refreshHoldTriggeredRef = useRef(false);
@@ -48,8 +48,6 @@ function MainView({ closeView }: { closeView?: () => void }) {
     const username = me.me?.name;
     const rankType = me.me?.rankType;
     const version = me.me?.version;
-    const activeMode = mode === "system" ? systemMode : mode;
-    const isDarkMode = activeMode === "dark";
     const themeMode = mode ?? "system";
     const themeModeLabel = t(`toolbar.themeMode.${themeMode}`);
 
