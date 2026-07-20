@@ -20,14 +20,6 @@ export interface AccuracyLossChartProps {
 type JudgeKey = keyof JudgeCount;
 type NoteKey = keyof JudgeTable;
 
-const judgeAccuracyWeight: Record<JudgeKey, number> = {
-    criticalPerfect: 1,
-    perfect: 1,
-    great: 0.8,
-    good: 0.5,
-    miss: 0,
-};
-
 const noteTypes: Array<{ key: NoteKey; label: AccuracyLossNoteType }> = [
     { key: "tap", label: "Tap" },
     { key: "hold", label: "Hold" },
@@ -36,7 +28,14 @@ const noteTypes: Array<{ key: NoteKey; label: AccuracyLossNoteType }> = [
     { key: "break", label: "Break" },
 ];
 
-const judgments = Object.keys(judgeAccuracyWeight) as JudgeKey[];
+const judgments: JudgeKey[] = ["criticalPerfect", "perfect", "great", "good", "miss"];
+const noteScoreFactor: Record<NoteKey, number> = {
+    tap: 1,
+    hold: 2,
+    slide: 3,
+    touch: 1,
+    break: 5,
+};
 const severityColors = {
     negligible: "#64748b",
     small: "#eab308",
@@ -66,16 +65,8 @@ function getTooltipStyle(theme: Theme) {
     };
 }
 
-function getNoteLoss(judgeCount: JudgeCount) {
-    const total = judgments.reduce((sum, judgment) => sum + judgeCount[judgment], 0);
-    if (total === 0) return 0;
-
-    const weightedTotal = judgments.reduce(
-        (sum, judgment) => sum + judgeCount[judgment] * judgeAccuracyWeight[judgment],
-        0,
-    );
-
-    return (1 - weightedTotal / total) * 100;
+function getJudgeSum(judgeCount: JudgeCount) {
+    return judgments.reduce((sum, judgment) => sum + judgeCount[judgment], 0);
 }
 
 function getSeverityColor(loss: number, maxLoss: number, isDarkMode: boolean) {
@@ -92,11 +83,63 @@ function getSeverityColor(loss: number, maxLoss: number, isDarkMode: boolean) {
     return isDarkMode ? darken(color, 0.18) : color;
 }
 
-export function calculateAccuracyLossByNoteType(judgeTable: JudgeTable): AccuracyLossData[] {
-    const losses = noteTypes.map((note) => ({
-        noteType: note.label,
-        loss: getNoteLoss(judgeTable[note.key]),
-    }));
+function calculateBreakPerfectGreatLoss(judgeTable: JudgeTable, base: number, achievement: number) {
+    const breakJudge = judgeTable.break;
+    const numBreaks = getJudgeSum(breakJudge);
+    if (numBreaks === 0 || (breakJudge.perfect === 0 && breakJudge.great === 0)) return 0;
+
+    const fixedLoss =
+        noteTypes.slice(0, 4).reduce((sum, note) => {
+            const factor = noteScoreFactor[note.key];
+
+            return (
+                sum +
+                (factor * judgeTable[note.key].great * base) / 5 +
+                (factor * judgeTable[note.key].good * base) / 2 +
+                factor * judgeTable[note.key].miss * base
+            );
+        }, 0) +
+        breakJudge.good * (3 * base + 0.7 / numBreaks) +
+        breakJudge.miss * (5 * base + 1 / numBreaks);
+
+    return Math.max(0, 101 - fixedLoss - achievement);
+}
+
+export function calculateAccuracyLossByNoteType(judgeTable: JudgeTable, achievement: number): AccuracyLossData[] {
+    const total = noteTypes.reduce(
+        (sum, note) => sum + getJudgeSum(judgeTable[note.key]) * noteScoreFactor[note.key],
+        0,
+    );
+    if (total === 0) {
+        return noteTypes.map((note) => ({ noteType: note.label, loss: 0, totalLossPercentage: 0 }));
+    }
+
+    const base = 100 / total;
+    const breakJudge = judgeTable.break;
+    const numBreaks = getJudgeSum(breakJudge);
+    const losses = noteTypes.map((note) => {
+        if (note.key === "break") {
+            return {
+                noteType: note.label,
+                loss:
+                    (numBreaks === 0
+                        ? 0
+                        : breakJudge.good * (3 * base + 0.7 / numBreaks) +
+                          breakJudge.miss * (5 * base + 1 / numBreaks)) +
+                    calculateBreakPerfectGreatLoss(judgeTable, base, achievement),
+            };
+        }
+
+        const factor = noteScoreFactor[note.key];
+
+        return {
+            noteType: note.label,
+            loss:
+                (factor * judgeTable[note.key].great * base) / 5 +
+                (factor * judgeTable[note.key].good * base) / 2 +
+                factor * judgeTable[note.key].miss * base,
+        };
+    });
     const totalLoss = losses.reduce((sum, item) => sum + item.loss, 0);
 
     return losses

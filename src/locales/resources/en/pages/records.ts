@@ -20,6 +20,10 @@ const I18nRecords = {
         back: "Back to Last 50",
         reload: "Reload",
         recordIdNotFound: "Record id not found.",
+        actions: {
+            showLostPercentage: "Show lost percentage",
+            hideLostPercentage: "Hide lost percentage",
+        },
         judgeDistribution: {
             title: "Judge Distribution",
             description: "Judgment counts split by note type.",

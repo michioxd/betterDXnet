@@ -20,6 +20,10 @@ const I18nRecords = {
         back: "Quay lại 50 lượt gần nhất",
         reload: "Tải lại",
         recordIdNotFound: "Không tìm thấy id bản ghi.",
+        actions: {
+            showLostPercentage: "Hiện phần trăm bị trừ",
+            hideLostPercentage: "Ẩn phần trăm bị trừ",
+        },
         judgeDistribution: {
             title: "Phân bố phán định",
             description: "Số lượng phán định theo từng loại note.",
