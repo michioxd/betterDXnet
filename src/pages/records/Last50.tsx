@@ -4,7 +4,6 @@ import { rootStore } from "@/stores/root";
 import HeartIcon from "@mui/icons-material/Favorite";
 import ClockIcon from "@mui/icons-material/AccessTime";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import StarIcon from "@mui/icons-material/Star";
 import {
     Alert,
     Box,
@@ -226,7 +225,14 @@ export function RecordCard({
                             )}
 
                             {record.dxStar > 0 && (
-                                <Chip color="success" label={`${record.dxStar}`} icon={<StarIcon />} />
+                                <img
+                                    src={musicIconBaseImg.replace("{}", "dxstar_" + record.dxStar)}
+                                    style={{
+                                        width: "45px",
+                                        height: "45px",
+                                        objectFit: "contain",
+                                    }}
+                                />
                             )}
                         </Stack>
 

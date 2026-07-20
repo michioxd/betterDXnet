@@ -1,11 +1,12 @@
 import ProfileCard from "@/components/ProfileCard";
 import { rootStore } from "@/stores/root";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Alert, AlertTitle, Box, Button, CircularProgress, Link, Typography } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link as LinkRouter } from "react-router-dom";
+import RedeemIcon from "@mui/icons-material/Redeem";
 
 import { colorFromSessionStart, RecordCard } from "./records/Last50";
 
@@ -40,6 +41,44 @@ function PageHome() {
                 </Typography>
             </Box>
 
+            <Alert severity="info">
+                <AlertTitle>Hi there!</AlertTitle>
+                Thanks for using betterDXnet! This is an early version of the extension, and there may be bugs or
+                missing features. If you encounter any issues, please report them on our{" "}
+                <Link
+                    color="inherit"
+                    href="https://github.com/michioxd/betterDXnet/issues"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    GitHub Issues
+                </Link>
+                . Since this extension is fully open source on{" "}
+                <Link
+                    color="inherit"
+                    href="https://github.com/michioxd/betterDXnet"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    GitHub
+                </Link>
+                , feel free to contribute or suggest improvements! Have fun!
+                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                    <Button
+                        color="inherit"
+                        component={Link}
+                        href="https://buymeacoffee.com/michioxd"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ ml: 1 }}
+                        variant="outlined"
+                        startIcon={<RedeemIcon />}
+                    >
+                        Buy me a coffee
+                    </Button>
+                </Box>
+            </Alert>
+
             {me?.me && (
                 <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                     <Box sx={{ maxWidth: 500, width: "100%" }}>
@@ -63,7 +102,7 @@ function PageHome() {
                     >
                         {t("home.reload")}
                     </Button>
-                    <Button component={Link} to="/records/game" variant="outlined">
+                    <Button component={LinkRouter} to="/records/game" variant="outlined">
                         {t("home.seeAll")}
                     </Button>
                 </Box>
