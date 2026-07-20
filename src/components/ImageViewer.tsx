@@ -38,6 +38,7 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
     const lastPinchDistanceRef = useRef<number | null>(null);
     const closeTimerRef = useRef<number | null>(null);
     const openAnimationStartedRef = useRef(false);
+    const pointerStartedOnImageRef = useRef(false);
 
     const getSourceTransform = useCallback(() => {
         const image = imageRef.current;
@@ -160,6 +161,7 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
     };
 
     const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+        pointerStartedOnImageRef.current = event.target instanceof Node && !!imageRef.current?.contains(event.target);
         event.currentTarget.setPointerCapture(event.pointerId);
         pointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
         lastDragRef.current = { x: event.clientX, y: event.clientY };
@@ -228,6 +230,11 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
     };
 
     const handleViewerClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (pointerStartedOnImageRef.current) {
+            pointerStartedOnImageRef.current = false;
+            return;
+        }
+
         if (event.target !== event.currentTarget) return;
 
         handleClose();
