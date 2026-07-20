@@ -1,7 +1,7 @@
 import path from "node:path";
 import { crx } from "@crxjs/vite-plugin";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, type ConfigEnv, type UserConfig } from "vite";
 import zip from "vite-plugin-zip-pack";
 import manifest from "./manifest.config.js";
 import { version } from "./package.json";
@@ -16,8 +16,15 @@ const gitCommitFull = execSync("git rev-parse HEAD").toString().trim();
 const gitCurrentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
 const viteVersion = execSync("vite --version").toString().trim();
 const typescriptVersion = execSync("tsc --version").toString().trim();
+const removeCssCommentsPostcssOptions = {
+    plugins: [
+        postCssRemoveComments({
+            removeAll: true,
+        }),
+    ],
+} as unknown as Exclude<NonNullable<NonNullable<UserConfig["css"]>["postcss"]>, string>;
 
-export default defineConfig(({ mode }) => ({
+const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
     resolve: {
         alias: {
             "@": `${path.resolve(__dirname, "src")}`,
@@ -90,15 +97,9 @@ export default defineConfig(({ mode }) => ({
                           };
                       })(),
                   },
-                  postcss: {
-                      plugins: [
-                          postCssRemoveComments({
-                              removeAll: true,
-                          }),
-                      ],
-                  },
+                  postcss: removeCssCommentsPostcssOptions,
               }
-            : {},
+            : undefined,
     build: {
         minify: "terser",
         sourcemap: "hidden",
@@ -113,4 +114,6 @@ export default defineConfig(({ mode }) => ({
             },
         },
     },
-}));
+});
+
+export default defineConfig(createConfig);
