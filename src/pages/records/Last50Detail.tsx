@@ -28,6 +28,7 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
 
 import { colorFromSessionStart, RecordCard } from "./Last50";
@@ -49,6 +50,7 @@ const noteRows = [
 ] as const;
 
 function PageRecordsLast50Detail() {
+    const { t } = useTranslation("records");
     const { id } = useParams();
     const { app, records } = rootStore;
     const theme = useTheme();
@@ -68,7 +70,7 @@ function PageRecordsLast50Detail() {
     }, [app, loading]);
 
     if (!id) {
-        return <Alert severity="error">Record id not found.</Alert>;
+        return <Alert severity="error">{t("detail.recordIdNotFound")}</Alert>;
     }
 
     return (
@@ -76,12 +78,12 @@ function PageRecordsLast50Detail() {
             <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, alignItems: "flex-start" }}>
                 <Box>
                     <Typography variant="h5" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <IconButton component={Link} to="/records/game" size="small">
+                        <IconButton component={Link} to="/records/game" size="small" aria-label={t("detail.back")}>
                             <ArrowBackIosNewIcon />
                         </IconButton>
-                        Play Log Detail
+                        {t("detail.title")}
                     </Typography>
-                    <Typography color="textSecondary">Detailed result for this play record.</Typography>
+                    <Typography color="textSecondary">{t("detail.description")}</Typography>
                 </Box>
                 <Stack direction="row" spacing={1}>
                     <Button
@@ -91,7 +93,7 @@ function PageRecordsLast50Detail() {
                         loading={loading}
                         disabled={loading}
                     >
-                        Reload
+                        {t("detail.reload")}
                     </Button>
                 </Stack>
             </Box>
@@ -201,9 +203,9 @@ function PageRecordsLast50Detail() {
                             <CardContent>
                                 <Stack spacing={2}>
                                     <Box>
-                                        <Typography variant="h6">Judge Distribution</Typography>
+                                        <Typography variant="h6">{t("detail.judgeDistribution.title")}</Typography>
                                         <Typography color="textSecondary">
-                                            Judgment counts split by note type.
+                                            {t("detail.judgeDistribution.description")}
                                         </Typography>
                                     </Box>
                                     <JudgeDistributionChart data={detail.judge} />
@@ -217,9 +219,11 @@ function PageRecordsLast50Detail() {
                             <CardContent>
                                 <Stack spacing={2}>
                                     <Box>
-                                        <Typography variant="h6">Overall Judgment Distribution</Typography>
+                                        <Typography variant="h6">
+                                            {t("detail.overallJudgmentDistribution.title")}
+                                        </Typography>
                                         <Typography color="textSecondary">
-                                            Total judgment counts across all note types.
+                                            {t("detail.overallJudgmentDistribution.description")}
                                         </Typography>
                                     </Box>
                                     <OverallJudgmentDistributionChart data={detail.judge} />

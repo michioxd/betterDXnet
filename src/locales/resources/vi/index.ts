@@ -4,6 +4,7 @@ import I18nCollections from "./pages/collections";
 import I18nLayout from "./layout";
 import I18nNavigation from "./navigation";
 import I18nPages from "./pages/sys_page";
+import I18nRecords from "./pages/records";
 import I18nSettings from "./pages/settings";
 
 const Locale: LocaleResourcesType = {
@@ -12,6 +13,7 @@ const Locale: LocaleResourcesType = {
     layout: I18nLayout,
     navigation: I18nNavigation,
     pages: I18nPages,
+    records: I18nRecords,
     settings: I18nSettings,
 };
 

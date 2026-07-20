@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
@@ -89,6 +90,7 @@ export function RecordCard({
     sessionColor: string;
     to?: string;
 }) {
+    const { t } = useTranslation("records");
     const color = difficultyColor[record.songdifficulty];
 
     return (
@@ -121,7 +123,7 @@ export function RecordCard({
 
                             <Box sx={{ minWidth: 0, flex: 1 }}>
                                 <Typography variant="subtitle1" noWrap title={record.songTitle}>
-                                    {record.songTitle || "Untitled"}
+                                    {record.songTitle || t("card.untitled")}
                                 </Typography>
                                 <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap", rowGap: 1 }}>
                                     <Chip
@@ -132,7 +134,7 @@ export function RecordCard({
                                     <Chip size="small" label={`Lv ${record.songLevel}`} />
                                     <Chip
                                         size="small"
-                                        label={`No. ${record.trackNo}`}
+                                        label={t("card.trackNo", { trackNo: record.trackNo })}
                                         sx={{
                                             bgcolor: "color-mix(in srgb, " + sessionColor + " 20%, transparent)",
                                         }}
@@ -145,14 +147,14 @@ export function RecordCard({
                             <Stack direction="column" sx={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                                     <Typography variant="body2" color="textSecondary">
-                                        Achievement
+                                        {t("card.achievement")}
                                     </Typography>
                                     {record.newAchievement && (
                                         <Chip
                                             size="small"
                                             sx={{ fontSize: 10, width: "fit-content", height: "fit-content", py: 0 }}
                                             color="warning"
-                                            label="NEW"
+                                            label={t("card.new")}
                                         />
                                     )}
                                 </Box>
@@ -176,11 +178,11 @@ export function RecordCard({
                                             size="small"
                                             sx={{ fontSize: 10, width: "fit-content", height: "fit-content", py: 0 }}
                                             color="warning"
-                                            label="NEW"
+                                            label={t("card.new")}
                                         />
                                     )}
                                     <Typography variant="body2" color="textSecondary">
-                                        DX Score
+                                        {t("card.dxScore")}
                                     </Typography>
                                 </Box>
                                 <Typography variant="body1">
@@ -255,14 +257,17 @@ export function RecordCard({
 
                             {record.isPerfectChallenge && (
                                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", rowGap: 1, mb: 1 }}>
-                                    <Tooltip title="Perfect Challenge" placement="top" arrow>
+                                    <Tooltip title={t("card.perfectChallenge")} placement="top" arrow>
                                         <Chip size="small" color="warning" sx={{ fontWeight: 700 }} label="PC" />
                                     </Tooltip>
                                     <Chip
                                         size="small"
                                         color="secondary"
                                         icon={<HeartIcon />}
-                                        label={`LIFE ${record.liveStatus.current} / ${record.liveStatus.max}`}
+                                        label={t("card.life", {
+                                            current: record.liveStatus.current,
+                                            max: record.liveStatus.max,
+                                        })}
                                     ></Chip>
                                 </Box>
                             )}
@@ -286,6 +291,7 @@ export function RecordCard({
 }
 
 function PageRecordsLast50() {
+    const { t } = useTranslation("records");
     const { app, records } = rootStore;
     const loading = records.last50Loading;
     const error = records.last50Error;
@@ -336,8 +342,8 @@ function PageRecordsLast50() {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, alignItems: "flex-start" }}>
                 <Box>
-                    <Typography variant="h5">Last 50</Typography>
-                    <Typography color="textSecondary">Recent play records.</Typography>
+                    <Typography variant="h5">{t("last50.title")}</Typography>
+                    <Typography color="textSecondary">{t("last50.description")}</Typography>
                 </Box>
                 <Button
                     variant="outlined"
@@ -346,7 +352,7 @@ function PageRecordsLast50() {
                     loading={loading}
                     disabled={loading}
                 >
-                    Reload
+                    {t("last50.reload")}
                 </Button>
             </Box>
 
@@ -360,7 +366,9 @@ function PageRecordsLast50() {
 
             {!loading && !error && (
                 <>
-                    <Typography color="textSecondary">Showing {sortedRecords.length} records</Typography>
+                    <Typography color="textSecondary">
+                        {t("last50.showingRecords", { count: sortedRecords.length })}
+                    </Typography>
 
                     <Grid container spacing={2}>
                         {recordsWithSessionColor.map(({ record, sessionColor }, index) => (
