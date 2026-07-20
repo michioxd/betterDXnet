@@ -22,9 +22,11 @@ export class RecordsStore {
         makeAutoObservable(this, {
             root: false,
             last50: observable.ref,
+            last50RequestId: false,
             playLogDetails: observable.ref,
             playLogDetailLoading: observable.ref,
             playLogDetailErrors: observable.ref,
+            playLogDetailRequestIds: false,
         });
     }
 
