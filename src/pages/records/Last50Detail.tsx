@@ -1,9 +1,13 @@
 import type { JudgeCount } from "@/api/records/types";
+import { AccuracyLossChart, calculateAccuracyLossByNoteType } from "@/components/AccuracyLossChart";
+import { AccuracyRadarChart } from "@/components/AccuracyRadarChart";
+import type { AccuracyData, AccuracyNoteType } from "@/components/AccuracyRadarChart";
 import {
     getJudgeColor,
     JudgeDistributionChart,
     OverallJudgmentDistributionChart,
 } from "@/components/JudgeDistributionCharts";
+import { TimingBias } from "@/components/TimingBias";
 import { rootStore } from "@/stores/root";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -48,6 +52,63 @@ const noteRows = [
     { key: "touch", label: "Touch" },
     { key: "break", label: "Break" },
 ] as const;
+
+const judgeAccuracyWeight: Record<keyof JudgeCount, number> = {
+    criticalPerfect: 1,
+    perfect: 1,
+    great: 0.8,
+    good: 0.5,
+    miss: 0,
+};
+
+function getNoteAccuracy(judgeCount: JudgeCount) {
+    const total = judgeLabels.reduce((sum, judge) => sum + judgeCount[judge.key], 0);
+    if (total === 0) return 0;
+
+    const weightedTotal = judgeLabels.reduce(
+        (sum, judge) => sum + judgeCount[judge.key] * judgeAccuracyWeight[judge.key],
+        0,
+    );
+
+    return (weightedTotal / total) * 100;
+}
+
+function getTotalNotes(detailJudge: Record<(typeof noteRows)[number]["key"], JudgeCount>) {
+    return noteRows.reduce(
+        (noteTotal, note) =>
+            noteTotal + judgeLabels.reduce((total, judge) => total + detailJudge[note.key][judge.key], 0),
+        0,
+    );
+}
+
+function getOverallAccuracy(detailJudge: Record<(typeof noteRows)[number]["key"], JudgeCount>) {
+    const totalNotes = getTotalNotes(detailJudge);
+    if (totalNotes === 0) return 100;
+
+    const weightedTotal = noteRows.reduce(
+        (noteTotal, note) =>
+            noteTotal +
+            judgeLabels.reduce(
+                (total, judge) => total + detailJudge[note.key][judge.key] * judgeAccuracyWeight[judge.key],
+                0,
+            ),
+        0,
+    );
+
+    return (weightedTotal / totalNotes) * 100;
+}
+
+function formatPercent(value: number) {
+    return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+}
+
+function buildAccuracyData(detailJudge: Record<(typeof noteRows)[number]["key"], JudgeCount>): AccuracyData[] {
+    return noteRows.map((note) => ({
+        noteType: note.label as AccuracyNoteType,
+        accuracy: getNoteAccuracy(detailJudge[note.key]),
+        totalNotes: judgeLabels.reduce((total, judge) => total + detailJudge[note.key][judge.key], 0),
+    }));
+}
 
 function PageRecordsLast50Detail() {
     const { t } = useTranslation("records");
@@ -124,12 +185,14 @@ function PageRecordsLast50Detail() {
                                         <Chip
                                             color="primary"
                                             variant="outlined"
-                                            label={`FAST ${detail.fast.toLocaleString()}`}
+                                            size="small"
+                                            label={t("detail.chips.fast", { count: detail.fast.toLocaleString() })}
                                         />
                                         <Chip
                                             color="secondary"
                                             variant="outlined"
-                                            label={`LATE ${detail.late.toLocaleString()}`}
+                                            size="small"
+                                            label={t("detail.chips.late", { count: detail.late.toLocaleString() })}
                                         />
                                         <Chip
                                             color={
@@ -139,15 +202,41 @@ function PageRecordsLast50Detail() {
                                                       ? "error"
                                                       : "default"
                                             }
-                                            label={`Rating ${detail.ratingResult.toLocaleString()} (${detail.ratingDelta > 0 ? "+" : ""}${detail.ratingDelta.toLocaleString()})`}
+                                            size="small"
+                                            label={t("detail.chips.rating", {
+                                                rating: detail.ratingResult.toLocaleString(),
+                                                delta: `${detail.ratingDelta > 0 ? "+" : ""}${detail.ratingDelta.toLocaleString()}`,
+                                            })}
                                         />
                                         <Chip
+                                            size="small"
                                             color="primary"
-                                            label={`Max Combo ${detail.maxCombo.current.toLocaleString()} / ${detail.maxCombo.max.toLocaleString()}`}
+                                            label={t("detail.chips.maxCombo", {
+                                                current: detail.maxCombo.current.toLocaleString(),
+                                                max: detail.maxCombo.max.toLocaleString(),
+                                            })}
                                         />
                                         <Chip
+                                            size="small"
                                             color="secondary"
-                                            label={`Max Sync ${detail.maxSync.current.toLocaleString()} / ${detail.maxSync.max.toLocaleString()}`}
+                                            label={t("detail.chips.maxSync", {
+                                                current: detail.maxSync.current.toLocaleString(),
+                                                max: detail.maxSync.max.toLocaleString(),
+                                            })}
+                                        />
+                                        <Chip
+                                            size="small"
+                                            label={t("detail.chips.totalNotes", {
+                                                count: getTotalNotes(detail.judge).toLocaleString(),
+                                            })}
+                                        />
+                                        <Chip
+                                            size="small"
+                                            color="warning"
+                                            variant="outlined"
+                                            label={t("detail.chips.accuracyLoss", {
+                                                value: formatPercent(100 - getOverallAccuracy(detail.judge)),
+                                            })}
                                         />
                                     </Stack>
 
@@ -155,7 +244,7 @@ function PageRecordsLast50Detail() {
                                         <Table size="small">
                                             <TableHead>
                                                 <TableRow>
-                                                    <TableCell>Note</TableCell>
+                                                    <TableCell>{t("detail.labels.note")}</TableCell>
                                                     {judgeLabels.map((judge) => (
                                                         <TableCell
                                                             key={judge.key}
@@ -165,7 +254,7 @@ function PageRecordsLast50Detail() {
                                                                 fontWeight: 700,
                                                             }}
                                                         >
-                                                            {judge.label}
+                                                            {t(`detail.judgments.${judge.key}`)}
                                                         </TableCell>
                                                     ))}
                                                 </TableRow>
@@ -198,17 +287,59 @@ function PageRecordsLast50Detail() {
                         </Card>
                     </Grid>
 
-                    <Grid size={{ xs: 12 }}>
+                    <Grid size={{ xs: 12, lg: 3 }}>
                         <Card variant="outlined">
                             <CardContent>
                                 <Stack spacing={2}>
                                     <Box>
-                                        <Typography variant="h6">{t("detail.judgeDistribution.title")}</Typography>
-                                        <Typography color="textSecondary">
-                                            {t("detail.judgeDistribution.description")}
+                                        <Typography variant="h6">{t("detail.accuracyByNoteType.title")}</Typography>
+                                        <Typography color="textSecondary" variant="body2">
+                                            {t("detail.accuracyByNoteType.description")}
                                         </Typography>
                                     </Box>
-                                    <JudgeDistributionChart data={detail.judge} />
+                                    <AccuracyRadarChart data={buildAccuracyData(detail.judge)} />
+                                </Stack>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    <Grid size={{ xs: 12, lg: 9 }}>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Stack spacing={2}>
+                                    <Box>
+                                        <Typography variant="h6">
+                                            {t("detail.overallJudgmentDistribution.title")}
+                                        </Typography>
+                                        <Typography color="textSecondary" variant="body2">
+                                            {t("detail.overallJudgmentDistribution.description")}
+                                        </Typography>
+                                    </Box>
+                                    <OverallJudgmentDistributionChart data={detail.judge} />
+                                </Stack>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    <Grid size={{ xs: 12, lg: 4 }}>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <TimingBias fast={detail.fast} late={detail.late} />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    <Grid size={{ xs: 12, lg: 8 }}>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Stack spacing={2}>
+                                    <Box>
+                                        <Typography variant="h6">{t("detail.accuracyLossByNoteType.title")}</Typography>
+                                        <Typography color="textSecondary" variant="body2">
+                                            {t("detail.accuracyLossByNoteType.description")}
+                                        </Typography>
+                                    </Box>
+                                    <AccuracyLossChart data={calculateAccuracyLossByNoteType(detail.judge)} />
                                 </Stack>
                             </CardContent>
                         </Card>
@@ -219,14 +350,12 @@ function PageRecordsLast50Detail() {
                             <CardContent>
                                 <Stack spacing={2}>
                                     <Box>
-                                        <Typography variant="h6">
-                                            {t("detail.overallJudgmentDistribution.title")}
-                                        </Typography>
-                                        <Typography color="textSecondary">
-                                            {t("detail.overallJudgmentDistribution.description")}
+                                        <Typography variant="h6">{t("detail.judgeDistribution.title")}</Typography>
+                                        <Typography color="textSecondary" variant="body2">
+                                            {t("detail.judgeDistribution.description")}
                                         </Typography>
                                     </Box>
-                                    <OverallJudgmentDistributionChart data={detail.judge} />
+                                    <JudgeDistributionChart data={detail.judge} />
                                 </Stack>
                             </CardContent>
                         </Card>

@@ -1,15 +1,27 @@
 import type { JudgeCount, JudgeTable } from "@/api/records/types";
-import { Box, useTheme } from "@mui/material";
+import { Box, type Theme, useTheme } from "@mui/material";
 import { darken } from "@mui/material/styles";
-import { Bar, BarChart, CartesianGrid, LabelList, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    Cell,
+    LabelList,
+    Legend,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from "recharts";
 
 type JudgmentKey = keyof JudgeCount;
 type NoteKey = keyof JudgeTable;
 type NoteDistributionRow = { note: string; total: number } & Record<JudgmentKey, number> &
     Record<`${JudgmentKey}Count`, number>;
+type OverallDistributionRow = { judgment: string; total: number; percentage: number; fill: string };
 
 const judgments: Array<{ key: JudgmentKey; label: string; color: string }> = [
-    { key: "criticalPerfect", label: "Critical Perfect", color: "#ffbc09" },
+    { key: "criticalPerfect", label: "Critical Perfect", color: "#09ceff" },
     { key: "perfect", label: "Perfect", color: "#ff9d00" },
     { key: "great", label: "Great", color: "#f75ea3" },
     { key: "good", label: "Good", color: "#2fca4c" },
@@ -45,6 +57,16 @@ function formatPercent(value: unknown) {
     return `${numberValue.toLocaleString(undefined, { maximumFractionDigits: 1 })}%`;
 }
 
+function getTooltipStyle(theme: Theme) {
+    return {
+        backgroundColor: theme.palette.background.paper,
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: theme.shape.borderRadius,
+        color: theme.palette.text.primary,
+        boxShadow: theme.shadows[4],
+    };
+}
+
 function buildNoteDistribution(data: JudgeTable) {
     return notes.flatMap((note) => {
         const total = judgments.reduce((sum, judgment) => sum + data[note.key][judgment.key], 0);
@@ -71,24 +93,32 @@ export function getJudgeColor(key: JudgmentKey, isDarkMode: boolean) {
 }
 
 function buildOverallDistribution(data: JudgeTable, isDarkMode: boolean) {
+    const grandTotal = notes.reduce(
+        (noteTotal, note) => noteTotal + judgments.reduce((total, judgment) => total + data[note.key][judgment.key], 0),
+        0,
+    );
+
     return judgments.map((judgment) => ({
         judgment: judgment.label,
         total: notes.reduce((total, note) => total + data[note.key][judgment.key], 0),
+        percentage:
+            grandTotal === 0
+                ? 0
+                : (notes.reduce((total, note) => total + data[note.key][judgment.key], 0) / grandTotal) * 100,
         fill: getChartColor(judgment.color, isDarkMode),
     }));
 }
 
-export function JudgeDistributionChart({ data, height = 220 }: JudgeDistributionChartsProps) {
+function getJudgmentLabel(key: string) {
+    return judgments.find((judgment) => judgment.key === key)?.label ?? key;
+}
+
+export function JudgeDistributionChart({ data, height = 280 }: JudgeDistributionChartsProps) {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === "dark";
     const axisColor = theme.palette.text.secondary;
     const gridColor = theme.palette.divider;
-    const tooltipStyle = {
-        backgroundColor: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
-        borderRadius: theme.shape.borderRadius,
-        color: theme.palette.text.primary,
-    };
+    const tooltipStyle = getTooltipStyle(theme);
 
     return (
         <Box sx={{ width: "100%", height }}>
@@ -96,19 +126,25 @@ export function JudgeDistributionChart({ data, height = 220 }: JudgeDistribution
                 <BarChart
                     data={buildNoteDistribution(data)}
                     layout="vertical"
-                    margin={{ top: 16, right: 16, bottom: 8, left: 16 }}
+                    barCategoryGap={10}
+                    margin={{ top: 16, right: 24, bottom: 12, left: 8 }}
                 >
                     <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
                     <XAxis type="number" domain={[0, 100]} tick={{ fill: axisColor }} tickFormatter={formatPercent} />
-                    <YAxis dataKey="note" type="category" width={56} tick={{ fill: axisColor }} />
+                    <YAxis dataKey="note" type="category" width={60} tick={{ fill: axisColor }} />
                     <Tooltip
                         contentStyle={tooltipStyle}
                         labelStyle={{ color: theme.palette.text.primary }}
                         formatter={(value, name, item) => {
                             const countKey = `${String(item.dataKey)}Count`;
-                            const count = toNumber((item.payload as Record<string, unknown> | undefined)?.[countKey]);
+                            const payload = item.payload as Record<string, unknown> | undefined;
+                            const count = toNumber(payload?.[countKey]);
+                            const total = toNumber(payload?.total);
 
-                            return [`${formatPercent(value)} (${formatCount(count)})`, name];
+                            return [
+                                `${formatCount(count)} / ${formatCount(total)} (${formatPercent(value)})`,
+                                getJudgmentLabel(String(item.dataKey ?? name)),
+                            ];
                         }}
                     />
                     <Legend
@@ -119,7 +155,7 @@ export function JudgeDistributionChart({ data, height = 220 }: JudgeDistribution
                                     display: "flex",
                                     flexWrap: "wrap",
                                     justifyContent: "center",
-                                    gap: 2,
+                                    gap: 1.5,
                                     m: 0,
                                     p: 0,
                                     listStyle: "none",
@@ -154,8 +190,10 @@ export function JudgeDistributionChart({ data, height = 220 }: JudgeDistribution
                             dataKey={judgment.key}
                             name={judgment.label}
                             stackId="judgment"
+                            barSize={24}
                             fill={getJudgeColor(judgment.key, isDarkMode)}
                             radius={index === judgments.length - 1 ? [0, 8, 8, 0] : [0, 0, 0, 0]}
+                            animationDuration={600}
                         />
                     ))}
                 </BarChart>
@@ -169,33 +207,38 @@ export function OverallJudgmentDistributionChart({ data, height = 320 }: JudgeDi
     const isDarkMode = theme.palette.mode === "dark";
     const axisColor = theme.palette.text.secondary;
     const gridColor = theme.palette.divider;
-    const tooltipStyle = {
-        backgroundColor: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
-        borderRadius: theme.shape.borderRadius,
-        color: theme.palette.text.primary,
-    };
+    const tooltipStyle = getTooltipStyle(theme);
+    const chartData = buildOverallDistribution(data, isDarkMode);
 
     return (
         <Box sx={{ width: "100%", height }}>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                    data={buildOverallDistribution(data, isDarkMode)}
+                    data={chartData}
                     layout="vertical"
-                    margin={{ top: 24, right: 48, bottom: 8, left: 0 }}
+                    barCategoryGap={12}
+                    margin={{ top: 20, right: 72, bottom: 12, left: 8 }}
                 >
                     <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
-                    <XAxis type="number" tick={{ fill: axisColor }} tickFormatter={formatCount} />
-                    <YAxis dataKey="judgment" type="category" width={112} tick={{ fill: axisColor }} />
+                    <XAxis type="number" tick={{ fill: axisColor }} tickFormatter={formatCount} allowDecimals={false} />
+                    <YAxis dataKey="judgment" type="category" width={124} tick={{ fill: axisColor }} />
                     <Tooltip
                         contentStyle={tooltipStyle}
                         labelStyle={{ color: theme.palette.text.primary }}
-                        formatter={(value) => formatCount(toNumber(value))}
+                        formatter={(value, _name, item) => {
+                            const payload = item.payload as OverallDistributionRow | undefined;
+
+                            return [`${formatCount(toNumber(value))} (${formatPercent(payload?.percentage)})`, "Total"];
+                        }}
                     />
-                    <Bar dataKey="total" name="Total" radius={[0, 8, 8, 0]}>
+                    <Bar dataKey="total" name="Total" radius={[0, 8, 8, 0]} animationDuration={600}>
+                        {chartData.map((entry) => (
+                            <Cell key={entry.judgment} fill={entry.fill} />
+                        ))}
                         <LabelList
                             dataKey="total"
                             position="right"
+                            fill={axisColor}
                             formatter={(value) => formatCount(toNumber(value))}
                         />
                     </Bar>
