@@ -227,6 +227,12 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
         });
     };
 
+    const handleViewerClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (event.target !== event.currentTarget) return;
+
+        handleClose();
+    };
+
     return (
         <Dialog
             fullScreen
@@ -261,6 +267,7 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
+                onClick={handleViewerClick}
                 onDoubleClick={handleDoubleClick}
                 sx={{
                     width: "100vw",
