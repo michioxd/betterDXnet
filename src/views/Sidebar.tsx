@@ -57,7 +57,6 @@ const sidebarSections: SidebarSection[] = [
         items: [
             { labelKey: "overview", to: "/", icon: HomeIcon },
             { labelKey: "dxRating", to: "/dx-rating", icon: StarIcon, disabled: true },
-            { labelKey: "recordOfMaimai", to: "/maimai-record", icon: FormatListNumberedIcon, disabled: true },
         ],
     },
     {
@@ -66,7 +65,7 @@ const sidebarSections: SidebarSection[] = [
         icon: AssessmentIcon,
         disabled: false,
         items: [
-            { labelKey: "Last 50 records", to: "/records/game", icon: FormatListNumberedIcon, disabled: false },
+            { labelKey: "Recent records", to: "/records/game", icon: FormatListNumberedIcon, disabled: false },
             { labelKey: "songScores", to: "/records/songs", icon: MusicNoteIcon, disabled: true },
             { labelKey: "courses", to: "/records/courses", icon: FlagIcon, disabled: true },
             { labelKey: "worldStats", to: "/records/worldstats", icon: PublicIcon, disabled: true },

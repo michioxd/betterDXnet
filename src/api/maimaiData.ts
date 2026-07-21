@@ -1,6 +1,15 @@
-// https://github.com/zetaraku/arcade-songs
+export const dataSource = {
+    baseUrl: "https://dp4p6x0xfi5o9.cloudfront.net/maimai",
+    dataPath: "data.json", // <baseUrl>/<dataPath>
+    source: "zetaraku/arcade-songs",
+    link: "https://github.com/zetaraku/arcade-songs",
+};
 
-export type Sheet = Omit<Song, "sheets"> & {
+/**
+ * @see https://github.com/zetaraku/arcade-songs/blob/master/types/Sheet.ts
+ * @license MIT
+ */
+export type MaimaiSheet = Omit<MaimaiSong, "sheets"> & {
     type?: string;
     difficulty?: string;
 
@@ -14,12 +23,16 @@ export type Sheet = Omit<Song, "sheets"> & {
     noteCounts?: Record<string, number | null>;
 
     regions?: Record<string, boolean>;
-    regionOverrides?: Record<string, Sheet>;
+    regionOverrides?: Record<string, MaimaiSheet>;
 
     isSpecial?: boolean;
 };
 
-export type Song = {
+/**
+ * @see https://github.com/zetaraku/arcade-songs/blob/master/types/Song.ts
+ * @license MIT
+ */
+export type MaimaiSong = {
     songId: string | null;
 
     category?: string;
@@ -37,11 +50,15 @@ export type Song = {
 
     comment?: string;
 
-    sheets: Sheet[];
+    sheets: MaimaiSheet[];
 };
 
-export type Data = {
-    songs: Song[];
+/**
+ * @see https://github.com/zetaraku/arcade-songs/blob/master/types/Data.ts
+ * @license MIT
+ */
+export type MaimaiData = {
+    songs: MaimaiSong[];
 
     categories: {
         category: string;

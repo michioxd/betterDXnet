@@ -5,6 +5,8 @@ export interface ApiFetchDocResponse {
     statusText: string;
 }
 
+export const netImageBase = "https://maimaidx-eng.com/maimai-mobile/img/{}.png";
+
 function getSegayShutdownLeft(): string {
     const now = new Date();
 

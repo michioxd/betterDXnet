@@ -74,6 +74,12 @@ export interface JudgeTable {
     break: JudgeCount;
 }
 
+export enum GameRecordMode {
+    NORMAL = "normal",
+    PERFECT_CHALLENGE = "perfect_challenge",
+    KALEIDXSCOPE = "kaleidxscope",
+}
+
 export const difficultyColor: Record<GameRecordSongDifficulty, string> = {
     [GameRecordSongDifficulty.BASIC]: "#81D955",
     [GameRecordSongDifficulty.ADVANCED]: "#F8B709",
@@ -111,7 +117,7 @@ export interface GameRecordLast50 {
     syncStatusShort: GameRecordSyncStatusShort;
     syncPlayGrade: string; // 1st, 2nd, 3rd, 4th
 
-    isPerfectChallenge: boolean;
+    mode: GameRecordMode;
     liveStatus: {
         current: number;
         max: number;

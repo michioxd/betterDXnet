@@ -1,5 +1,11 @@
 import { difficultyColor, GameRecordStatus, type GameRecordLast50 } from "@/api/records";
-import { GameRecordSyncStatusShort, musicIconBaseImg, playlogBaseImg, songKindBaseImg } from "@/api/records/types";
+import {
+    GameRecordMode,
+    GameRecordSyncStatusShort,
+    musicIconBaseImg,
+    playlogBaseImg,
+    songKindBaseImg,
+} from "@/api/records/types";
 import { rootStore } from "@/stores/root";
 import HeartIcon from "@mui/icons-material/Favorite";
 import ClockIcon from "@mui/icons-material/AccessTime";
@@ -23,6 +29,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { netImageBase } from "@/api/helper";
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -261,14 +268,43 @@ export function RecordCard({
                                 </Tooltip>
                             </Box>
 
-                            {record.isPerfectChallenge && (
-                                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", rowGap: 1, mb: 1 }}>
-                                    <Tooltip title={t("card.perfectChallenge")} placement="top" arrow>
-                                        <Chip size="small" color="warning" sx={{ fontWeight: 700 }} label="PC" />
-                                    </Tooltip>
+                            {record.mode !== GameRecordMode.NORMAL && (
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        gap: 1,
+                                        flexWrap: "wrap",
+                                        rowGap: 1,
+                                        mb: 1,
+                                        alignItems: "center",
+                                        justifyContent: "flex-end",
+                                    }}
+                                >
+                                    {record.mode === GameRecordMode.PERFECT_CHALLENGE && (
+                                        <img
+                                            src={netImageBase.replace("{}", "icon_perfectchallenge")}
+                                            style={{
+                                                width: "75px",
+                                                height: "30px",
+                                                objectFit: "contain",
+                                                objectPosition: "center",
+                                            }}
+                                        />
+                                    )}
+                                    {record.mode === GameRecordMode.KALEIDXSCOPE && (
+                                        <img
+                                            src={netImageBase.replace("{}", "icon_kaleidxscope")}
+                                            style={{
+                                                width: "75px",
+                                                height: "30px",
+                                                objectFit: "contain",
+                                                objectPosition: "center",
+                                            }}
+                                        />
+                                    )}
                                     <Chip
                                         size="small"
-                                        color="secondary"
+                                        color={record.liveStatus.current <= 0 ? "error" : "secondary"}
                                         icon={<HeartIcon />}
                                         label={t("card.life", {
                                             current: record.liveStatus.current,

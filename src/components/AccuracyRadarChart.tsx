@@ -1,6 +1,20 @@
 import { Box, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    LabelList,
+    PolarAngleAxis,
+    PolarGrid,
+    PolarRadiusAxis,
+    Radar,
+    RadarChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from "recharts";
 
 export type AccuracyNoteType = "Tap" | "Hold" | "Slide" | "Touch" | "Break";
 
@@ -143,6 +157,69 @@ export function AccuracyRadarChart({ data, height = 320, zeroNoteBehavior = "zer
                         animationDuration={600}
                     />
                 </RadarChart>
+            </ResponsiveContainer>
+        </Box>
+    );
+}
+
+export function AccuracyByNoteTypeBarChart({ data, height = 320, zeroNoteBehavior = "zero" }: AccuracyRadarChartProps) {
+    const { t } = useTranslation("records");
+    const theme = useTheme();
+    const axisColor = theme.palette.text.secondary;
+    const gridColor = theme.palette.divider;
+    const barColor = theme.palette.primary.main;
+    const chartData = buildChartData(data, zeroNoteBehavior).sort((left, right) => right.accuracy - left.accuracy);
+
+    return (
+        <Box sx={{ width: "100%", height }}>
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                    data={chartData}
+                    layout="vertical"
+                    barCategoryGap={12}
+                    margin={{ top: 20, right: 76, bottom: 12, left: 8 }}
+                >
+                    <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
+                    <XAxis
+                        type="number"
+                        domain={[0, 100]}
+                        tick={{ fill: axisColor }}
+                        tickFormatter={formatPercent}
+                        allowDecimals
+                    />
+                    <YAxis dataKey="noteType" type="category" width={60} tick={{ fill: axisColor }} />
+                    <Tooltip
+                        contentStyle={{
+                            backgroundColor: theme.palette.background.paper,
+                            border: `1px solid ${theme.palette.divider}`,
+                            borderRadius: theme.shape.borderRadius,
+                            color: theme.palette.text.primary,
+                        }}
+                        labelStyle={{ color: theme.palette.text.primary }}
+                        formatter={(value) => [formatPercent(value), t("detail.labels.accuracyPercent")]}
+                        labelFormatter={(_label, payload) => {
+                            const item = getTooltipPayload(payload)?.payload;
+
+                            return item
+                                ? `${t("detail.labels.noteType")}: ${item.noteType}`
+                                : t("detail.labels.noteType");
+                        }}
+                    />
+                    <Bar
+                        dataKey="accuracy"
+                        name="Accuracy"
+                        radius={[0, 8, 8, 0]}
+                        fill={barColor}
+                        animationDuration={600}
+                    >
+                        <LabelList
+                            dataKey="accuracy"
+                            position="right"
+                            fill={axisColor}
+                            formatter={(value) => formatPercent(value)}
+                        />
+                    </Bar>
+                </BarChart>
             </ResponsiveContainer>
         </Box>
     );

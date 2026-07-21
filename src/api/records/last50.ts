@@ -1,6 +1,7 @@
 import { apiHelperFetchDoc } from "../helper";
 import {
     GameRecordLast50,
+    GameRecordMode,
     GameRecordScoreRank,
     GameRecordSongDifficulty,
     GameRecordSongKind,
@@ -147,6 +148,12 @@ export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
     const dxStarName = imageName(block.querySelector<HTMLImageElement>(".playlog_deluxscore_star"));
     const achievement = parseNumber(block.querySelector(".playlog_achievement_txt")?.textContent?.replace("%", ""));
 
+    const mode = block.querySelector('img[src*="/img/icon_perfectchallenge.png"]')
+        ? "perfect_challenge"
+        : block.querySelector('img[src*="/img/icon_kaleidxscope.png"]')
+          ? "kaleidxscope"
+          : "normal";
+
     return {
         id: detailForm?.querySelector<HTMLInputElement>('input[name="idx"]')?.value ?? "",
         songTitle: parseSongTitle(block),
@@ -165,7 +172,7 @@ export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
         syncStatus: syncStatusByImageName[syncStatusName] ?? GameRecordSyncStatus.SOLO,
         syncStatusShort: syncStatusShortByImageName[syncStatusName] ?? GameRecordSyncStatusShort.SOLO,
         syncPlayGrade: imageName(block.querySelector<HTMLImageElement>(".playlog_matching_icon")),
-        isPerfectChallenge: block.querySelector('img[src*="/img/icon_perfectchallenge.png"]') !== null,
+        mode: mode as GameRecordMode,
         liveStatus: parseLifeStatus(block),
         trackNo: parseNumber(subTitleText.match(/TRACK\s+(\d+)/)?.[1]),
         playDate: parsePlayDate(subTitleText.match(/\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}/)?.[0] ?? ""),

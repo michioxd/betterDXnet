@@ -80,6 +80,21 @@ export class RecordsStore {
         return this.playLogDetailErrors[id] ?? null;
     }
 
+    clearPlayLogDetails(ids?: string[]) {
+        if (!ids) {
+            this.playLogDetails = {};
+            this.playLogDetailErrors = {};
+            return;
+        }
+
+        this.playLogDetails = Object.fromEntries(
+            Object.entries(this.playLogDetails).filter(([id]) => !ids.includes(id)),
+        );
+        this.playLogDetailErrors = Object.fromEntries(
+            Object.entries(this.playLogDetailErrors).filter(([id]) => !ids.includes(id)),
+        );
+    }
+
     async refreshPlayLogDetail(id: string) {
         const requestId = (this.playLogDetailRequestIds[id] ?? 0) + 1;
         this.playLogDetailRequestIds[id] = requestId;
