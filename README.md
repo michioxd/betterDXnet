@@ -1,6 +1,8 @@
 # betterDXnet
 
-coming soon!
+yet another alternative web ui for maimai DX NET. in heavy development so stay tunned! you can try prebuilt by download artifacts in [Actions](https://github.com/michioxd/betterDXnet/actions)
+
+![screenshot](https://github.com/user-attachments/assets/0c715f4c-936b-4dd6-93eb-d05c6739d234)
 
 ## Disclaimer
 
