@@ -31,6 +31,7 @@ export default defineManifest(({ mode }) => ({
     action: {
         default_title: "Toggle betterDXnet",
     },
+    permissions: ["tabs"],
     background:
         mode === "firefox"
             ? {
