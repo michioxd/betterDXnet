@@ -31,7 +31,7 @@ export default defineManifest(({ mode }) => ({
     action: {
         default_title: "Toggle betterDXnet",
     },
-    permissions: ["tabs"],
+    permissions: ["tabs", ...(mode === "firefox" ? [] : ["sidePanel", "sidePanelInternal"])],
     background:
         mode === "firefox"
             ? {
@@ -49,11 +49,17 @@ export default defineManifest(({ mode }) => ({
             run_at: "document_idle",
         },
     ],
-    ...(mode === "firefox" && {
-        browser_specific_settings: {
-            gecko: {
-                id: "betterdxnet@michioxd.ch",
-            },
-        },
-    }),
+    ...(mode === "firefox"
+        ? {
+              browser_specific_settings: {
+                  gecko: {
+                      id: "betterdxnet@michioxd.ch",
+                  },
+              },
+          }
+        : {
+              side_panel: {
+                  default_path: "app.html",
+              },
+          }),
 }));
