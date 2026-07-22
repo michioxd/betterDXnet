@@ -50,7 +50,11 @@ export default defineManifest(({ mode }) => ({
         ? {
               browser_specific_settings: {
                   gecko: {
-                      id: "betterdxnet@michioxd.ch",
+                      id: "betterdxnet.moe@michioxd.ch",
+                      data_collection_permissions: {
+                          required: ["none"],
+                          optional: [],
+                      },
                   },
               },
           }
