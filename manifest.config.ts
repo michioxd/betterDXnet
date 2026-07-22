@@ -43,7 +43,7 @@ export default defineManifest(({ mode }) => ({
               },
     content_scripts: [
         {
-            js: ["src/main.tsx"],
+            js: ["src/content.ts"],
             matches: ["https://maimaidx-eng.com/*"],
             run_at: "document_idle",
         },

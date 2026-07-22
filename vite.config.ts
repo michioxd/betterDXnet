@@ -116,6 +116,9 @@ const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
             },
         },
         rollupOptions: {
+            input: {
+                app: "app.html",
+            },
             output: {
                 chunkFileNames() {
                     return `assets/bdn.[hash].js`;

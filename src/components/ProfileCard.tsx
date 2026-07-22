@@ -52,7 +52,7 @@ function ProfileCard({ d, cardProps }: { d: ApiMe; cardProps?: React.HTMLAttribu
                             <div className={cls.stars}>
                                 <img
                                     className={cls.starImg}
-                                    src="/maimai-mobile/img/icon_star.png"
+                                    src="https://maimaidx-eng.com/maimai-mobile/img/icon_star.png"
                                     alt={t("profileCard.starAlt")}
                                 />
                                 <span className={cls.starText}>x{d.stars}</span>

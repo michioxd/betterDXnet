@@ -32,8 +32,10 @@ import { LangSelectorComponent } from "@/components/LanguageSelector";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "@mui/material/styles";
 import { maimaiApi } from "@/db/maimaiDataApi";
+import { useAppMode } from "@/app-context";
 
 function MainView({ closeView }: { closeView?: () => void }) {
+    const appModeCtx = useAppMode();
     const { t } = useTranslation("layout");
     const { me, app } = rootStore;
     const theme = useTheme();
@@ -176,17 +178,19 @@ function MainView({ closeView }: { closeView?: () => void }) {
                         </span>
                     </Tooltip>
 
-                    <Tooltip title={t("toolbar.unload")} placement="bottom" arrow>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            color="inherit"
-                            aria-label={t("toolbar.close")}
-                            onClick={closeView}
-                        >
-                            <CloseIcon fontWeight="medium" />
-                        </IconButton>
-                    </Tooltip>
+                    {appModeCtx !== "standalone" && (
+                        <Tooltip title={t("toolbar.unload")} placement="bottom" arrow>
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                color="inherit"
+                                aria-label={t("toolbar.close")}
+                                onClick={closeView}
+                            >
+                                <CloseIcon fontWeight="medium" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                 </Toolbar>
 
                 <LinearProgress

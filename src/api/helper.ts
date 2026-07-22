@@ -34,7 +34,7 @@ function getSegayShutdownLeft(): string {
  * @returns {Promise<ApiFetchDocResponse>} A promise resolving to the fetched document and response details.
  */
 export async function apiHelperFetchDoc(path: string): Promise<ApiFetchDocResponse> {
-    const res = await fetch(path);
+    const res = await fetch(new URL(path, "https://maimaidx-eng.com/").toString());
 
     if (!res.ok) {
         const content = await res.text();

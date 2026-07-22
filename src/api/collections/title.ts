@@ -17,7 +17,7 @@ const trophyRareMap: Record<TrophyType, number> = {
     [TrophyType.Rainbow]: 4,
 };
 
-export const trophyBgBasePath = "/maimai-mobile/img/trophy_{}.png";
+export const trophyBgBasePath = "https://maimaidx-eng.com/maimai-mobile/img/trophy_{}.png";
 
 export async function titleAvailableList(type: TrophyType): Promise<{
     titleList: TitleAvailableListResponse[];

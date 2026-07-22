@@ -6,12 +6,14 @@ import SupportIcon from "@mui/icons-material/Support";
 import MainView from "./views/Main";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import { extensionRuntime } from "./runtime";
+import { useAppMode } from "./app-context";
 
 const lastTitle = document.title;
 const ACCEPT_TOS_STORAGE_KEY = "bdn.disclaimer.ok";
 const TOGGLE_MESSAGE_TYPE = "betterdxnet:toggle";
 
 function App() {
+    const appModeCtx = useAppMode();
     const [show, setShow] = useState(localStorage.getItem("bdn.show") === "1");
     const [showRiskDialog, setShowRiskDialog] = useState(false);
 
@@ -33,6 +35,7 @@ function App() {
     };
 
     useEffect(() => {
+        if (appModeCtx !== "content") return;
         const listener = (message: { type?: string }) => {
             if (message.type === TOGGLE_MESSAGE_TYPE) {
                 toggle();
@@ -59,12 +62,14 @@ function App() {
 
     return (
         <>
-            {show && <MainView closeView={() => setShow(false)} />}
-            <Tooltip title="betterDXnet" placement="right" arrow>
-                <Fab color="primary" size="large" className={cls.fabControl} onClick={toggle}>
-                    <SupportIcon fontWeight="large" />
-                </Fab>
-            </Tooltip>
+            {(show || appModeCtx === "standalone") && <MainView closeView={() => setShow(false)} />}
+            {appModeCtx === "content" && (
+                <Tooltip title="betterDXnet" placement="right" arrow>
+                    <Fab color="primary" size="large" className={cls.fabControl} onClick={toggle}>
+                        <SupportIcon fontWeight="large" />
+                    </Fab>
+                </Tooltip>
+            )}
 
             <DisclaimerDialog open={showRiskDialog} onClose={() => setShowRiskDialog(false)} onAccept={acceptRisk} />
         </>
