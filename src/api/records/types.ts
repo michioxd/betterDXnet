@@ -1,4 +1,5 @@
 import { ApiMeRankType } from "../me";
+import { MaimaiSheetLookupResult } from "@/db/maimaiDataApi";
 
 export enum GameRecordSongDifficulty {
     BASIC = "basic",
@@ -9,7 +10,7 @@ export enum GameRecordSongDifficulty {
 }
 
 export enum GameRecordSongKind {
-    STANDARD = "standard",
+    STANDARD = "std",
     DX = "dx",
     UTAGE = "utage",
 }
@@ -101,6 +102,7 @@ export interface GameRecordLast50 {
     songdifficulty: GameRecordSongDifficulty;
     songLevel: string; // e.g. 12, 12+, 13, 13+, 14, 14+, 15, 15+
     songKind: GameRecordSongKind;
+    songFullDetail?: MaimaiSheetLookupResult; // this should be optional to prevent in case the song does not exist in the maimai song db
 
     achievement: number;
     newAchievement: boolean; // true if the achievement is higher than the previous record

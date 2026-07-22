@@ -10,11 +10,11 @@ import {
     PolarRadiusAxis,
     Radar,
     RadarChart,
-    ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
 } from "recharts";
+import { SafeResponsiveContainer } from "./SafeResponsiveContainer";
 
 export type AccuracyNoteType = "Tap" | "Hold" | "Slide" | "Touch" | "Break";
 
@@ -94,7 +94,7 @@ export function AccuracyRadarChart({ data, height = 320, zeroNoteBehavior = "zer
 
     return (
         <Box sx={{ width: "100%", height }}>
-            <ResponsiveContainer width="100%" height="100%">
+            <SafeResponsiveContainer width="100%" height="100%">
                 <RadarChart data={chartData} outerRadius="64%" margin={{ top: 44, right: 52, bottom: 40, left: 52 }}>
                     <PolarGrid stroke={gridColor} />
                     <PolarAngleAxis
@@ -154,10 +154,11 @@ export function AccuracyRadarChart({ data, height = 320, zeroNoteBehavior = "zer
                         stroke={radarColor}
                         fill={radarColor}
                         fillOpacity={0.35}
+                        isAnimationActive={false}
                         animationDuration={600}
                     />
                 </RadarChart>
-            </ResponsiveContainer>
+            </SafeResponsiveContainer>
         </Box>
     );
 }
@@ -172,7 +173,7 @@ export function AccuracyByNoteTypeBarChart({ data, height = 320, zeroNoteBehavio
 
     return (
         <Box sx={{ width: "100%", height }}>
-            <ResponsiveContainer width="100%" height="100%">
+            <SafeResponsiveContainer width="100%" height="100%">
                 <BarChart
                     data={chartData}
                     layout="vertical"
@@ -210,6 +211,7 @@ export function AccuracyByNoteTypeBarChart({ data, height = 320, zeroNoteBehavio
                         name="Accuracy"
                         radius={[0, 8, 8, 0]}
                         fill={barColor}
+                        isAnimationActive={false}
                         animationDuration={600}
                     >
                         <LabelList
@@ -220,7 +222,7 @@ export function AccuracyByNoteTypeBarChart({ data, height = 320, zeroNoteBehavio
                         />
                     </Bar>
                 </BarChart>
-            </ResponsiveContainer>
+            </SafeResponsiveContainer>
         </Box>
     );
 }

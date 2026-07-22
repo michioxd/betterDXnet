@@ -12,7 +12,7 @@ const I18nNavigation = {
     circles: "Circle",
     maimileShop: "Cửa hàng maimile",
     records: "Bản ghi",
-    gameRecords: "Lịch sử chơi",
+    recents: "Gần đây (50 bản ghi)",
     songScores: "Điểm bài hát",
     courses: "Course",
     worldStats: "Thống kê thế giới",
@@ -35,9 +35,11 @@ const I18nNavigation = {
     dx: "DX",
     total: "Tổng",
     settings: "Cài đặt",
+    betterDXnet: "betterDXnet",
     gameOptions: "Tùy chọn game",
     player: "Người chơi",
     favoriteSongs: "Bài hát yêu thích",
+    app: "Cài đặt extension",
 };
 
 export default I18nNavigation;

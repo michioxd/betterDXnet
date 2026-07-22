@@ -1,3 +1,4 @@
+import { maimaiApi } from "@/db/maimaiDataApi";
 import { apiHelperFetchDoc } from "../helper";
 import {
     GameRecordLast50,
@@ -154,13 +155,25 @@ export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
           ? "kaleidxscope"
           : "normal";
 
+    const songTitle = parseSongTitle(block);
+    const songLevel = normalizeText(block.querySelector(".playlog_level_icon")?.textContent);
+    const songKind = songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD;
+
+    const querySongDetails = maimaiApi.getSheet({
+        title: songTitle,
+        level: songLevel,
+        type: songKind,
+    });
+
     return {
         id: detailForm?.querySelector<HTMLInputElement>('input[name="idx"]')?.value ?? "",
-        songTitle: parseSongTitle(block),
+        songTitle: songTitle,
         songArtwork: block.querySelector<HTMLImageElement>(".music_img")?.getAttribute("src") ?? "",
         songdifficulty: difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC,
-        songLevel: normalizeText(block.querySelector(".playlog_level_icon")?.textContent),
-        songKind: songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD,
+        songLevel: songLevel,
+        songKind: songKind,
+        songFullDetail: querySongDetails,
+
         achievement,
         newAchievement: block.querySelector("img.playlog_achievement_newrecord") !== null,
         dxScore: parseDxScore(block),

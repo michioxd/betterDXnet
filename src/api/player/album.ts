@@ -1,3 +1,4 @@
+import { maimaiApi } from "@/db/maimaiDataApi";
 import { apiHelperFetchDoc } from "../helper";
 import { GameRecordSongDifficulty, GameRecordSongKind } from "../records";
 import { GetPlayerAlbum } from "./types";
@@ -46,11 +47,21 @@ function parseJapanDate(value: string) {
 export function parsePlayerAlbumBlock(block: HTMLElement): GetPlayerAlbum {
     const difficultyName = imageName(block.querySelector<HTMLImageElement>('img[src*="/img/diff_"]'));
     const songKindName = imageName(block.querySelector<HTMLImageElement>(".music_kind_icon"));
+    const songTitle = normalizeText(block.querySelector(".black_block")?.textContent);
+    const songLevel = difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC;
+    const songKind = songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD;
+
+    const querySongDetails = maimaiApi.getSheetByDifficulty({
+        title: songTitle,
+        difficulty: songLevel,
+        type: songKind,
+    });
 
     return {
-        songKind: songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD,
-        songTitle: normalizeText(block.querySelector(".black_block")?.textContent),
-        songdifficulty: difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC,
+        songKind,
+        songTitle,
+        songdifficulty: songLevel,
+        songFullDetail: querySongDetails,
         location: normalizeText(block.querySelector(".see_through_block")?.textContent),
         imageUrl: block.querySelector<HTMLAnchorElement>('a[target="_blank"]')?.href ?? "",
         date: parseJapanDate(normalizeText(block.querySelector(".block_info")?.textContent)),

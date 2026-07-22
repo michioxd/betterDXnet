@@ -40,6 +40,31 @@ const I18nRecords = {
             title: "Mức mất độ chính xác theo loại note",
             description: "Phần trăm thành tích bị mất theo từng loại note.",
         },
+        chartDetails: {
+            title: "Chi tiết chart",
+            description: "Thông tin metadata từ cơ sở dữ liệu bài maimai cho chart này.",
+            noteCounts: "Số lượng note",
+            actions: {
+                findOnYouTube: "Tìm trên YouTube",
+            },
+            chips: {
+                new: "Mới",
+                special: "Đặc biệt",
+            },
+            fields: {
+                artist: "Nghệ sĩ",
+                bpm: "BPM",
+                version: "Phiên bản",
+                category: "Danh mục",
+                songId: "ID bài hát",
+                releaseDate: "Ngày phát hành",
+                chartDesigner: "Người thiết kế chart",
+                internalLevelValue: "Giá trị level nội bộ",
+            },
+            noteTypes: {
+                total: "Tổng",
+            },
+        },
         timingBias: {
             title: "Thiên hướng căn thời điểm",
             summary: "Muộn {{late}} - Sớm {{fast}} - Độ lệch {{bias}}",

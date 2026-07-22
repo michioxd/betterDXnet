@@ -114,10 +114,10 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
         setIsPreparingOpen(true);
         setSourceTransform(transform);
 
-        requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
             imageRef.current?.getBoundingClientRect();
 
-            requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
                 setIsPreparingOpen(false);
                 setSourceTransform(null);
             });
@@ -129,7 +129,7 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
             imageRef.current = image;
 
             if (image?.complete) {
-                requestAnimationFrame(startOpenAnimation);
+                window.requestAnimationFrame(startOpenAnimation);
             }
         },
         [startOpenAnimation],

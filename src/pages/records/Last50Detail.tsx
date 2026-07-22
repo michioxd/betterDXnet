@@ -1,4 +1,4 @@
-import { GameRecordSyncStatus, type JudgeCount } from "@/api/records/types";
+import { difficultyColor, GameRecordSyncStatus, type JudgeCount } from "@/api/records/types";
 import { AccuracyLossChart, calculateAccuracyLossByNoteType } from "@/components/AccuracyLossChart";
 import { AccuracyRadarChart } from "@/components/AccuracyRadarChart";
 import type { AccuracyData, AccuracyNoteType } from "@/components/AccuracyRadarChart";
@@ -10,6 +10,7 @@ import {
 import { TimingBias } from "@/components/TimingBias";
 import { rootStore } from "@/stores/root";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
     Alert,
@@ -19,6 +20,7 @@ import {
     CardContent,
     Chip,
     CircularProgress,
+    Divider,
     Grid,
     IconButton,
     Stack,
@@ -254,6 +256,18 @@ function buildAccuracyData(detailJudge: Record<(typeof noteRows)[number]["key"],
         accuracy: getNoteAccuracy(detailJudge[note.key]),
         totalNotes: judgeLabels.reduce((total, judge) => total + detailJudge[note.key][judge.key], 0),
     }));
+}
+
+function formatOptionalValue(value: string | number | null | undefined) {
+    if (value === null || value === undefined || value === "") return "—";
+
+    return value;
+}
+
+function formatNoteCount(value: number | null | undefined) {
+    if (value === null || value === undefined) return "—";
+
+    return value.toLocaleString();
 }
 
 function PageRecordsLast50Detail() {
@@ -580,6 +594,185 @@ function PageRecordsLast50Detail() {
                             </CardContent>
                         </Card>
                     </Grid>
+
+                    {detail.detail.songFullDetail && (
+                        <Grid size={{ xs: 12, lg: 12 }}>
+                            <Card variant="outlined">
+                                <CardContent>
+                                    <Stack spacing={2}>
+                                        <Box>
+                                            <Typography variant="h6">{t("detail.chartDetails.title")}</Typography>
+                                            <Typography color="textSecondary" variant="body2">
+                                                {t("detail.chartDetails.description")}
+                                            </Typography>
+                                        </Box>
+
+                                        <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", rowGap: 1 }}>
+                                            <Chip
+                                                size="small"
+                                                sx={{
+                                                    bgcolor: difficultyColor[detail.detail.songdifficulty],
+                                                    color: "common.black",
+                                                    fontWeight: 700,
+                                                }}
+                                                label={`${detail.detail.songdifficulty.toUpperCase()} ${formatOptionalValue(detail.detail.songFullDetail.sheet.level)}/${formatOptionalValue(detail.detail.songFullDetail.sheet.internalLevel ?? detail.detail.songFullDetail.sheet.internalLevelValue)}`}
+                                            />
+                                            {detail.detail.songFullDetail.song.isNew && (
+                                                <Chip
+                                                    size="small"
+                                                    color="success"
+                                                    label={t("detail.chartDetails.chips.new")}
+                                                />
+                                            )}
+                                            {detail.detail.songFullDetail.sheet.isSpecial && (
+                                                <Chip
+                                                    size="small"
+                                                    color="secondary"
+                                                    label={t("detail.chartDetails.chips.special")}
+                                                />
+                                            )}
+                                        </Stack>
+
+                                        <Divider />
+
+                                        <Grid container spacing={2}>
+                                            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {t("detail.chartDetails.fields.artist")}
+                                                </Typography>
+                                                <Typography>
+                                                    {formatOptionalValue(detail.detail.songFullDetail.song.artist)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {t("detail.chartDetails.fields.bpm")}
+                                                </Typography>
+                                                <Typography>
+                                                    {formatOptionalValue(detail.detail.songFullDetail.song.bpm)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {t("detail.chartDetails.fields.version")}
+                                                </Typography>
+                                                <Typography>
+                                                    {formatOptionalValue(detail.detail.songFullDetail.song.version)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {t("detail.chartDetails.fields.category")}
+                                                </Typography>
+                                                <Typography>
+                                                    {formatOptionalValue(detail.detail.songFullDetail.song.category)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {t("detail.chartDetails.fields.songId")}
+                                                </Typography>
+                                                <Typography>
+                                                    {formatOptionalValue(detail.detail.songFullDetail.song.songId)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {t("detail.chartDetails.fields.releaseDate")}
+                                                </Typography>
+                                                <Typography>
+                                                    {formatOptionalValue(
+                                                        detail.detail.songFullDetail.sheet.releaseDate ??
+                                                            detail.detail.songFullDetail.song.releaseDate,
+                                                    )}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {t("detail.chartDetails.fields.chartDesigner")}
+                                                </Typography>
+                                                <Typography>
+                                                    {formatOptionalValue(
+                                                        detail.detail.songFullDetail.sheet.noteDesigner,
+                                                    )}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, md: 6, lg: 3 }}>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {t("detail.chartDetails.fields.internalLevelValue")}
+                                                </Typography>
+                                                <Typography>
+                                                    {formatOptionalValue(
+                                                        detail.detail.songFullDetail.sheet.internalLevelValue,
+                                                    )}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+
+                                        {detail.detail.songFullDetail.sheet.noteCounts && (
+                                            <>
+                                                <Divider />
+                                                <Box>
+                                                    <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                                                        {t("detail.chartDetails.noteCounts")}
+                                                    </Typography>
+                                                    <Grid container spacing={1}>
+                                                        {Object.entries(
+                                                            detail.detail.songFullDetail.sheet.noteCounts,
+                                                        ).map(([noteType, count]) => (
+                                                            <Grid key={noteType} size={{ xs: 6, sm: 4, md: 2 }}>
+                                                                <Card variant="outlined">
+                                                                    <CardContent
+                                                                        sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}
+                                                                    >
+                                                                        <Typography
+                                                                            color="textSecondary"
+                                                                            variant="caption"
+                                                                        >
+                                                                            {t(
+                                                                                `detail.chartDetails.noteTypes.${noteType}`,
+                                                                                {
+                                                                                    defaultValue:
+                                                                                        noteType
+                                                                                            .charAt(0)
+                                                                                            .toUpperCase() +
+                                                                                        noteType.slice(1),
+                                                                                },
+                                                                            )}
+                                                                        </Typography>
+                                                                        <Typography variant="h6">
+                                                                            {formatNoteCount(count)}
+                                                                        </Typography>
+                                                                    </CardContent>
+                                                                </Card>
+                                                            </Grid>
+                                                        ))}
+                                                    </Grid>
+                                                </Box>
+                                            </>
+                                        )}
+                                        <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            sx={{ flexWrap: "wrap", rowGap: 1, justifyContent: "flex-end" }}
+                                        >
+                                            <Button
+                                                component={Link}
+                                                color="error"
+                                                to={`https://www.youtube.com/results?search_query=${encodeURIComponent(`maimai ${detail.detail.songTitle} ${detail.detail.songdifficulty.toUpperCase()}`)}`}
+                                                variant="outlined"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                startIcon={<YouTubeIcon />}
+                                            >
+                                                {t("detail.chartDetails.actions.findOnYouTube")}
+                                            </Button>
+                                        </Stack>
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    )}
                 </Grid>
             )}
         </Box>

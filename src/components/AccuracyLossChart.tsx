@@ -2,7 +2,8 @@ import type { JudgeCount, JudgeTable } from "@/api/records/types";
 import { Box, Paper, type Theme, useTheme } from "@mui/material";
 import { darken } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, Tooltip, XAxis, YAxis } from "recharts";
+import { SafeResponsiveContainer } from "./SafeResponsiveContainer";
 
 export type AccuracyLossNoteType = "Tap" | "Hold" | "Slide" | "Touch" | "Break";
 
@@ -207,7 +208,7 @@ export function AccuracyLossChart({ data, height = 215 }: AccuracyLossChartProps
 
     return (
         <Box sx={{ width: "100%", height }}>
-            <ResponsiveContainer width="100%" height="100%">
+            <SafeResponsiveContainer width="100%" height="100%">
                 <BarChart
                     data={chartData}
                     layout="vertical"
@@ -239,6 +240,7 @@ export function AccuracyLossChart({ data, height = 215 }: AccuracyLossChartProps
                         name="Accuracy loss"
                         radius={[0, 10, 10, 0]}
                         barSize={24}
+                        isAnimationActive={false}
                         animationDuration={700}
                     >
                         {chartData.map((entry) => (
@@ -252,7 +254,7 @@ export function AccuracyLossChart({ data, height = 215 }: AccuracyLossChartProps
                         />
                     </Bar>
                 </BarChart>
-            </ResponsiveContainer>
+            </SafeResponsiveContainer>
         </Box>
     );
 }

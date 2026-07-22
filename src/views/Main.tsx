@@ -31,6 +31,7 @@ import Sidebar, { createSidebarSectionState } from "./Sidebar";
 import { LangSelectorComponent } from "@/components/LanguageSelector";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "@mui/material/styles";
+import { maimaiApi } from "@/db/maimaiDataApi";
 
 function MainView({ closeView }: { closeView?: () => void }) {
     const { t } = useTranslation("layout");
@@ -62,7 +63,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
             document.title = `${username} - betterDXnet`;
         } else if (!isError) {
             document.title = "betterDXnet";
-            void me.refresh();
+            void Promise.all([me.refresh(), maimaiApi.init()]);
         }
     }, [me, meLoading, isLogin, username, isError]);
 

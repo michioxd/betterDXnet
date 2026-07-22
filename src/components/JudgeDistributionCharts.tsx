@@ -1,18 +1,8 @@
 import type { JudgeCount, JudgeTable } from "@/api/records/types";
 import { Box, type Theme, useTheme } from "@mui/material";
 import { darken } from "@mui/material/styles";
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    LabelList,
-    Legend,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, Legend, Tooltip, XAxis, YAxis } from "recharts";
+import { SafeResponsiveContainer } from "./SafeResponsiveContainer";
 
 type JudgmentKey = keyof JudgeCount;
 type NoteKey = keyof JudgeTable;
@@ -122,7 +112,7 @@ export function JudgeDistributionChart({ data, height = 280 }: JudgeDistribution
 
     return (
         <Box sx={{ width: "100%", height }}>
-            <ResponsiveContainer width="100%" height="100%">
+            <SafeResponsiveContainer width="100%" height="100%">
                 <BarChart
                     data={buildNoteDistribution(data)}
                     layout="vertical"
@@ -193,11 +183,12 @@ export function JudgeDistributionChart({ data, height = 280 }: JudgeDistribution
                             barSize={24}
                             fill={getJudgeColor(judgment.key, isDarkMode)}
                             radius={index === judgments.length - 1 ? [0, 8, 8, 0] : [0, 0, 0, 0]}
+                            isAnimationActive={false}
                             animationDuration={600}
                         />
                     ))}
                 </BarChart>
-            </ResponsiveContainer>
+            </SafeResponsiveContainer>
         </Box>
     );
 }
@@ -212,7 +203,7 @@ export function OverallJudgmentDistributionChart({ data, height = 320 }: JudgeDi
 
     return (
         <Box sx={{ width: "100%", height }}>
-            <ResponsiveContainer width="100%" height="100%">
+            <SafeResponsiveContainer width="100%" height="100%">
                 <BarChart
                     data={chartData}
                     layout="vertical"
@@ -231,7 +222,13 @@ export function OverallJudgmentDistributionChart({ data, height = 320 }: JudgeDi
                             return [`${formatCount(toNumber(value))} (${formatPercent(payload?.percentage)})`, "Total"];
                         }}
                     />
-                    <Bar dataKey="total" name="Total" radius={[0, 8, 8, 0]} animationDuration={600}>
+                    <Bar
+                        dataKey="total"
+                        name="Total"
+                        radius={[0, 8, 8, 0]}
+                        isAnimationActive={false}
+                        animationDuration={600}
+                    >
                         {chartData.map((entry) => (
                             <Cell key={entry.judgment} fill={entry.fill} />
                         ))}
@@ -243,7 +240,7 @@ export function OverallJudgmentDistributionChart({ data, height = 320 }: JudgeDi
                         />
                     </Bar>
                 </BarChart>
-            </ResponsiveContainer>
+            </SafeResponsiveContainer>
         </Box>
     );
 }

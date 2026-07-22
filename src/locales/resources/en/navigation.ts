@@ -12,7 +12,7 @@ const I18nNavigation = {
     circles: "Circles",
     maimileShop: "maimile Shop",
     records: "Records",
-    gameRecords: "Game records",
+    recents: "Recents (50 records)",
     songScores: "Song scores",
     courses: "Courses",
     worldStats: "World stats",
@@ -35,9 +35,11 @@ const I18nNavigation = {
     dx: "DX",
     total: "Total",
     settings: "Settings",
+    betterDXnet: "betterDXnet",
     gameOptions: "Game options",
     player: "Player",
     favoriteSongs: "Favorite songs",
+    app: "Extension settings",
 };
 
 export default I18nNavigation;

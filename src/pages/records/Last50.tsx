@@ -30,6 +30,7 @@ import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { netImageBase } from "@/api/helper";
+import { calculateRating } from "@/utils/rating";
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -118,16 +119,57 @@ export function RecordCard({
                                     component="img"
                                     image={record.songArtwork}
                                     alt={record.songTitle}
-                                    sx={{ width: 95, height: 95, borderRadius: 1, objectFit: "cover", flexShrink: 0 }}
+                                    sx={{
+                                        width: 95,
+                                        height: 95,
+                                        borderRadius: 1,
+                                        objectFit: "cover",
+                                        flexShrink: 0,
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        filter: "blur(8px)",
+                                        opacity: 0.6,
+                                        zIndex: 0,
+                                        transform: "scale(1.05)",
+                                    }}
                                 />
+                                <CardMedia
+                                    component="img"
+                                    image={record.songArtwork}
+                                    alt={record.songTitle}
+                                    sx={{
+                                        width: 95,
+                                        height: 95,
+                                        borderRadius: 1,
+                                        objectFit: "cover",
+                                        flexShrink: 0,
+                                        zIndex: 1,
+                                        position: "relative",
+                                    }}
+                                />
+
                                 <img
-                                    src={songKindBaseImg.replace("{}", record.songKind)}
+                                    src={songKindBaseImg.replace(
+                                        "{}",
+                                        record.songKind === "std" ? "standard" : record.songKind,
+                                    )}
                                     alt={record.songKind}
-                                    style={{ position: "absolute", bottom: -5, right: -5, height: "18px" }}
+                                    style={{ position: "absolute", bottom: -5, right: -5, height: "18px", zIndex: 2 }}
                                 />
                             </Box>
 
                             <Box sx={{ minWidth: 0, flex: 1 }}>
+                                {record.songFullDetail?.song.artist && (
+                                    <Typography
+                                        variant="subtitle2"
+                                        color="textSecondary"
+                                        noWrap
+                                        sx={{ fontSize: "12px" }}
+                                    >
+                                        {record.songFullDetail?.song.artist || "untitled"}
+                                    </Typography>
+                                )}
                                 <Typography variant="subtitle1" noWrap title={record.songTitle}>
                                     {record.songTitle || t("card.untitled")}
                                 </Typography>
@@ -240,6 +282,19 @@ export function RecordCard({
                                         objectFit: "contain",
                                     }}
                                 />
+                            )}
+                            {record.songFullDetail && record.songFullDetail.sheet.internalLevelValue && (
+                                <>
+                                    <Box sx={{ flex: 1, m: "0 !important" }}></Box>
+                                    <Tooltip title={"DX Rating"} placement="top" arrow>
+                                        <Typography variant="h5">
+                                            {calculateRating(
+                                                record.achievement,
+                                                record.songFullDetail.sheet.internalLevelValue,
+                                            )}
+                                        </Typography>
+                                    </Tooltip>
+                                </>
                             )}
                         </Stack>
 

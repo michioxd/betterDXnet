@@ -40,6 +40,31 @@ const I18nRecords = {
             title: "Accuracy Loss by Note Type",
             description: "Achievement percentage lost for each note type.",
         },
+        chartDetails: {
+            title: "Chart details",
+            description: "Metadata from the maimai song database for this chart.",
+            noteCounts: "Note counts",
+            actions: {
+                findOnYouTube: "Find on YouTube",
+            },
+            chips: {
+                new: "New",
+                special: "Special",
+            },
+            fields: {
+                artist: "Artist",
+                bpm: "BPM",
+                version: "Version",
+                category: "Category",
+                songId: "Song ID",
+                releaseDate: "Release date",
+                chartDesigner: "Chart designer",
+                internalLevelValue: "Internal level value",
+            },
+            noteTypes: {
+                total: "Total",
+            },
+        },
         timingBias: {
             title: "Timing Bias",
             summary: "Late {{late}} - Fast {{fast}} - Bias {{bias}}",

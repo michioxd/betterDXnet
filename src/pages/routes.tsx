@@ -12,6 +12,7 @@ import PageSettingsPlayer from "./settings/Player";
 import PageRecordsLast50 from "./records/Last50";
 import PageRecordsLast50Detail from "./records/Last50Detail";
 import PagePlayerAlbum from "./player/Album";
+import PageSettingsApp from "./settings/App";
 
 export default function AppRoutes() {
     return (
@@ -33,6 +34,7 @@ export default function AppRoutes() {
                 <Route path="partner" element={<PageCollectionsPartner />} />
             </Route>
             <Route path="settings">
+                <Route path="app" element={<PageSettingsApp />} />
                 <Route path="game" element={<PageSettingsGame />} />
                 <Route path="player" element={<PageSettingsPlayer />} />
             </Route>

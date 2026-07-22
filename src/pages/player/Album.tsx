@@ -26,6 +26,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { songKindBaseImg } from "@/api/records/types";
+import { getSongArtworkUrl } from "@/db/maimaiDataApi";
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -80,8 +81,25 @@ function AlbumCard({
                     alt={photo.songTitle}
                     sx={{ aspectRatio: "16 / 9", objectFit: "cover", bgcolor: "action.hover" }}
                 />
+                {photo.songFullDetail && (
+                    <Box
+                        component="img"
+                        src={getSongArtworkUrl(photo.songFullDetail.song)}
+                        alt={photo.songTitle}
+                        sx={{
+                            position: "absolute",
+                            left: "10px",
+                            bottom: "-10px",
+                            height: "70px",
+                            width: "70px",
+                            objectFit: "cover",
+                            borderRadius: "4px",
+                            boxShadow: "0 0 12px #00000055",
+                        }}
+                    />
+                )}
                 <img
-                    src={songKindBaseImg.replace("{}", photo.songKind)}
+                    src={songKindBaseImg.replace("{}", photo.songKind === "std" ? "standard" : photo.songKind)}
                     alt={photo.songKind}
                     style={{ position: "absolute", bottom: 8, right: 8, height: "20px" }}
                 />
@@ -90,6 +108,11 @@ function AlbumCard({
             <CardContent sx={{ flex: 1 }}>
                 <Stack spacing={1.5}>
                     <Box>
+                        {photo.songFullDetail?.song.artist && (
+                            <Typography variant="subtitle2" color="textSecondary" noWrap sx={{ fontSize: "12px" }}>
+                                {photo.songFullDetail?.song.artist || t("album.unknownArtist")}
+                            </Typography>
+                        )}
                         <Typography variant="subtitle1" noWrap title={photo.songTitle}>
                             {photo.songTitle || t("album.untitled")}
                         </Typography>

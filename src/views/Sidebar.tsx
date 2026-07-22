@@ -65,7 +65,7 @@ const sidebarSections: SidebarSection[] = [
         icon: AssessmentIcon,
         disabled: false,
         items: [
-            { labelKey: "Recent records", to: "/records/game", icon: FormatListNumberedIcon, disabled: false },
+            { labelKey: "recents", to: "/records/game", icon: FormatListNumberedIcon, disabled: false },
             { labelKey: "songScores", to: "/records/songs", icon: MusicNoteIcon, disabled: true },
             { labelKey: "courses", to: "/records/courses", icon: FlagIcon, disabled: true },
             { labelKey: "worldStats", to: "/records/worldstats", icon: PublicIcon, disabled: true },
@@ -143,6 +143,7 @@ const sidebarSections: SidebarSection[] = [
         labelKey: "settings",
         icon: SettingsIcon,
         items: [
+            { labelKey: "app", to: "/settings/app", icon: SettingsIcon },
             { labelKey: "gameOptions", to: "/settings/game", icon: SettingsApplicationsIcon },
             { labelKey: "player", to: "/settings/player", icon: PersonIcon },
             { labelKey: "favoriteSongs", to: "/settings/favorite-songs", icon: FavoriteIcon, disabled: true },

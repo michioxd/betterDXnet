@@ -8,6 +8,7 @@ import { version } from "./package.json";
 import { execSync } from "child_process";
 import postCssRemoveComments from "postcss-discard-comments";
 import replaceManifestCss from "./scripts/replaceManifestCss";
+import patchRechartsFirefox from "./scripts/patchRechartsFirefox";
 
 const buildTime = Date.now();
 const buildDate = new Date(buildTime).toISOString();
@@ -43,6 +44,7 @@ const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
         "import.meta.url": "location.href",
     },
     plugins: [
+        patchRechartsFirefox(),
         react(),
         crx({ manifest }),
         replaceManifestCss(),
