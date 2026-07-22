@@ -24,9 +24,6 @@ export default defineManifest(({ mode }) => ({
         128: "assets/128.png",
     },
     minimum_chrome_version: "109",
-    author: {
-        email: "neko@michioxd.ch",
-    },
     homepage_url: "https://github.com/michioxd/betterDXnet",
     action: {
         default_title: "Toggle betterDXnet",
