@@ -6,6 +6,7 @@ const I18nPlayer = {
         showingPhotos: "Đang hiển thị {{count}} ảnh",
         empty: "Không tìm thấy ảnh album.",
         openImage: "Mở ảnh",
+        viewRecord: "Xem record",
         location: "Địa điểm",
         takenAt: "Chụp lúc",
         untitled: "Không tiêu đề",

@@ -1,4 +1,4 @@
-import { difficultyColor } from "@/api/records";
+import { difficultyColor, type GameRecordLast50 } from "@/api/records";
 import type { GetPlayerAlbum } from "@/api/player";
 import ImageViewer from "@/components/ImageViewer";
 import { rootStore } from "@/stores/root";
@@ -6,6 +6,7 @@ import ClockIcon from "@mui/icons-material/AccessTime";
 import LocationIcon from "@mui/icons-material/LocationOn";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import {
     Alert,
     Box,
@@ -25,6 +26,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link as RouterLink } from "react-router-dom";
 import { songKindBaseImg } from "@/api/records/types";
 import { getSongArtworkUrl } from "@/db/maimaiDataApi";
 
@@ -50,11 +52,26 @@ function formatDate(value: Date, isFull = false) {
     return dateTimeFormatter.format(value);
 }
 
+function normalizeRecordMatchText(value: string) {
+    return value.replace(/\s+/g, " ").trim();
+}
+
+function isSameAlbumRecord(photo: GetPlayerAlbum, record: GameRecordLast50) {
+    return (
+        photo.songKind === record.songKind &&
+        photo.songdifficulty === record.songdifficulty &&
+        normalizeRecordMatchText(photo.songTitle) === normalizeRecordMatchText(record.songTitle) &&
+        photo.date.getTime() === record.playDate.getTime()
+    );
+}
+
 function AlbumCard({
     photo,
+    matchedRecord,
     onViewImage,
 }: {
     photo: GetPlayerAlbum;
+    matchedRecord?: GameRecordLast50;
     onViewImage: (photo: GetPlayerAlbum, sourceRect: DOMRect) => void;
 }) {
     const { t } = useTranslation("player");
@@ -161,6 +178,15 @@ function AlbumCard({
             </CardContent>
 
             <CardActions sx={{ justifyContent: "flex-end" }}>
+                {matchedRecord && (
+                    <Button
+                        component={RouterLink}
+                        to={`/records/game/${matchedRecord.id}`}
+                        startIcon={<ReceiptLongIcon />}
+                    >
+                        {t("album.viewRecord")}
+                    </Button>
+                )}
                 <Button
                     component="a"
                     href={photo.imageUrl}
@@ -177,7 +203,7 @@ function AlbumCard({
 
 function PagePlayerAlbum() {
     const { t } = useTranslation("player");
-    const { app, player } = rootStore;
+    const { app, player, records } = rootStore;
     const loading = player.albumLoading;
     const error = player.albumError;
     const [viewerPhoto, setViewerPhoto] = useState<GetPlayerAlbum | null>(null);
@@ -195,6 +221,18 @@ function PagePlayerAlbum() {
         () => [...player.album].sort((left, right) => right.date.getTime() - left.date.getTime()),
         [player.album],
     );
+
+    const recordByPhoto = useMemo(() => {
+        if (!records.last50Loaded) {
+            return new Map<GetPlayerAlbum, GameRecordLast50>();
+        }
+
+        return new Map(
+            sortedAlbum
+                .map((photo) => [photo, records.last50.find((record) => isSameAlbumRecord(photo, record))] as const)
+                .filter((entry): entry is readonly [GetPlayerAlbum, GameRecordLast50] => entry[1] !== undefined),
+        );
+    }, [records.last50, records.last50Loaded, sortedAlbum]);
 
     const handleViewImage = (photo: GetPlayerAlbum, sourceRect: DOMRect) => {
         setViewerSourceRect(sourceRect);
@@ -244,7 +282,11 @@ function PagePlayerAlbum() {
                         <Grid container spacing={2}>
                             {sortedAlbum.map((photo, index) => (
                                 <Grid key={`${photo.imageUrl}-${index}`} size={{ xs: 12, sm: 6, lg: 4 }}>
-                                    <AlbumCard photo={photo} onViewImage={handleViewImage} />
+                                    <AlbumCard
+                                        photo={photo}
+                                        matchedRecord={recordByPhoto.get(photo)}
+                                        onViewImage={handleViewImage}
+                                    />
                                 </Grid>
                             ))}
                         </Grid>

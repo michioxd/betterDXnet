@@ -6,6 +6,7 @@ const I18nPlayer = {
         showingPhotos: "Showing {{count}} photos",
         empty: "No album photos found.",
         openImage: "Open image",
+        viewRecord: "View record",
         location: "Location",
         takenAt: "Taken at",
         untitled: "Untitled",
