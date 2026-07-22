@@ -3,8 +3,8 @@ import type { GetPlayerAlbum } from "@/api/player";
 import ImageViewer from "@/components/ImageViewer";
 import { rootStore } from "@/stores/root";
 import ClockIcon from "@mui/icons-material/AccessTime";
+import DownloadIcon from "@mui/icons-material/Download";
 import LocationIcon from "@mui/icons-material/LocationOn";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import {
@@ -63,6 +63,15 @@ function isSameAlbumRecord(photo: GetPlayerAlbum, record: GameRecordLast50) {
         normalizeRecordMatchText(photo.songTitle) === normalizeRecordMatchText(record.songTitle) &&
         photo.date.getTime() === record.playDate.getTime()
     );
+}
+
+function getAlbumPhotoFilename(photo: GetPlayerAlbum) {
+    const date = Number.isNaN(photo.date.getTime())
+        ? "unknown-date"
+        : photo.date.toISOString().slice(0, 16).replace(/[:T]/g, "-");
+    const title = normalizeRecordMatchText(photo.songTitle || "album").replace(/[\\/:*?"<>|]/g, "_");
+
+    return `${date}-${title}.jpg`;
 }
 
 function AlbumCard({
@@ -190,11 +199,10 @@ function AlbumCard({
                 <Button
                     component="a"
                     href={photo.imageUrl}
-                    target="_blank"
-                    rel="noopener"
-                    startIcon={<OpenInNewIcon />}
+                    download={getAlbumPhotoFilename(photo)}
+                    startIcon={<DownloadIcon />}
                 >
-                    {t("album.openImage")}
+                    {t("album.downloadImage")}
                 </Button>
             </CardActions>
         </Card>
