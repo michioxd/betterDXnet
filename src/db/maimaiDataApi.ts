@@ -165,6 +165,15 @@ export class MaimaiDataAPI {
     }
 
     /**
+     * Gets the version list from the loaded maimai data.
+     *
+     * @returns The raw `versions` array from current data, or an empty array before initialization.
+     */
+    getVersions() {
+        return this.data?.versions ?? [];
+    }
+
+    /**
      * Gets the current maimai data cache metadata.
      *
      * `fetchedAt` is the timestamp when betterDXnet last fetched and cached the

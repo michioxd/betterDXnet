@@ -56,7 +56,7 @@ const sidebarSections: SidebarSection[] = [
         icon: HomeIcon,
         items: [
             { labelKey: "overview", to: "/", icon: HomeIcon },
-            { labelKey: "dxRating", to: "/dx-rating", icon: StarIcon, disabled: true },
+            { labelKey: "dxRating", to: "/dx-rating", icon: StarIcon },
         ],
     },
     {

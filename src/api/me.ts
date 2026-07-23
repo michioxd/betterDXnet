@@ -62,6 +62,25 @@ export enum ApiMeRankType {
     Rainbow = "rainbow",
 }
 
+export interface RatingColorBreakpoint {
+    minRating: number;
+    rank: ApiMeRankType;
+}
+
+export const RATING_COLORS: readonly RatingColorBreakpoint[] = [
+    { minRating: 15000, rank: ApiMeRankType.Rainbow },
+    { minRating: 14500, rank: ApiMeRankType.Platinum },
+    { minRating: 14000, rank: ApiMeRankType.Gold },
+    { minRating: 13000, rank: ApiMeRankType.Silver },
+    { minRating: 12000, rank: ApiMeRankType.Bronze },
+    { minRating: 10000, rank: ApiMeRankType.Purple },
+    { minRating: 7000, rank: ApiMeRankType.Red },
+    { minRating: 4000, rank: ApiMeRankType.Yellow },
+    { minRating: 2000, rank: ApiMeRankType.Green },
+    { minRating: 1000, rank: ApiMeRankType.Blue },
+    { minRating: 0, rank: ApiMeRankType.Base },
+] as const;
+
 export const ratingBgBaseUrl = "https://maimaidx-eng.com/maimai-mobile/img/rating_base_{}.png";
 
 export async function apiMe(): Promise<ApiMe> {
@@ -153,4 +172,16 @@ export async function apiMe(): Promise<ApiMe> {
             partner: fetchCollection[4],
         },
     };
+}
+
+export function getRatingColor(rating: number): ApiMeRankType {
+    const validRating = Math.max(0, rating);
+
+    for (const breakpoint of RATING_COLORS) {
+        if (validRating >= breakpoint.minRating) {
+            return breakpoint.rank;
+        }
+    }
+
+    return ApiMeRankType.Base;
 }

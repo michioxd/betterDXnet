@@ -15,6 +15,8 @@ export enum GameRecordSongKind {
     UTAGE = "utage",
 }
 
+export type GameRecordSongDifficultyOrUtage = GameRecordSongDifficulty | GameRecordSongKind.UTAGE;
+
 export enum GameRecordStatus {
     FAILED = "failed",
     CLEARED = "cleared",
@@ -154,4 +156,31 @@ export type GameRecordPlayLogDetail = {
         current: number;
         max: number;
     };
+};
+
+export type GameRecordSong = {
+    id: string;
+
+    songTitle: string;
+    songdifficulty: GameRecordSongDifficulty;
+    songLevel: string; // e.g. 12, 12+, 13, 13+, 14, 14+, 15, 15+
+    songKind: GameRecordSongKind;
+    songFullDetail?: MaimaiSheetLookupResult; // this should be optional to prevent in case the song does not exist in the maimai song db
+
+    achievement: number;
+    dxScore: {
+        current: number;
+        max: number;
+    };
+    scoreRank: GameRecordScoreRank;
+
+    status: GameRecordStatus;
+    syncStatus: GameRecordSyncStatus;
+    syncStatusShort: GameRecordSyncStatusShort;
+
+    rating?: number; // rating, only available when songFullDetail is available, otherwise undefined
+};
+
+export type GetGameRecordSong = {
+    [diff in GameRecordSongDifficulty]: GameRecordSong[];
 };

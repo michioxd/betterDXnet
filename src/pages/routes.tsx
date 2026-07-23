@@ -12,12 +12,15 @@ import PageSettingsPlayer from "./settings/Player";
 import PageRecordsLast50 from "./records/Last50";
 import PageRecordsLast50Detail from "./records/Last50Detail";
 import PagePlayerAlbum from "./player/Album";
+import PagePlayerDXRating from "./player/DXRating";
 import PageSettingsApp from "./settings/App";
+import PageTest from "./test";
 
 export default function AppRoutes() {
     return (
         <Routes>
             <Route index element={<PageHome />} />
+            <Route path="dx-rating" element={<PagePlayerDXRating />} />
             <Route path="*" element={<NotReady />} />
             <Route path="records">
                 <Route path="game" element={<PageRecordsLast50 />} />
@@ -38,6 +41,7 @@ export default function AppRoutes() {
                 <Route path="game" element={<PageSettingsGame />} />
                 <Route path="player" element={<PageSettingsPlayer />} />
             </Route>
+            <Route path="test" element={<PageTest />} />
         </Routes>
     );
 }

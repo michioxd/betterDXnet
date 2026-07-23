@@ -12,6 +12,48 @@ const I18nPlayer = {
         takenAt: "Chụp lúc",
         untitled: "Không tiêu đề",
     },
+    dxrating: {
+        title: "DX Rating",
+        description: "Các bài hát được dùng để tính DX Rating.",
+        reload: "Tải lại",
+        showingItems: "Đang hiển thị {{count}} chart. Rating hiện tính được: {{rating}}",
+        sectionSummary: "{{count}} chart - {{rating}} rating",
+        emptySection: "Không có chart trong mục này.",
+        achievement: "Achievement",
+        rating: "Rating",
+        ratingUnavailable: "Chỉ tính rating khi tìm thấy thông tin bài hát.",
+        untitled: "Không tiêu đề",
+        tabs: {
+            manual: "Tính thủ công",
+            dxnet: "DX NET Rating",
+        },
+        export: {
+            generateImage: "Tạo ảnh",
+            title: "Đang tạo ảnh",
+            assetsLoaded: "Đã tải {{loaded}} / {{total}} asset",
+            pleaseWait: "Vui lòng chờ, ảnh sẽ tự động được tải xuống.",
+            cancel: "Hủy",
+            log: {
+                asset: "{{loaded}}/{{total}} {{message}}",
+            },
+            status: {
+                preparingCanvas: "Đang chuẩn bị canvas",
+                loadingAssets: "Đang tải asset",
+                exportingImage: "Đang xuất ảnh",
+                downloadStarted: "Đã bắt đầu tải xuống",
+                exportFailed: "Xuất ảnh thất bại",
+            },
+            error: {
+                renderFailed: "Không thể render ảnh",
+            },
+        },
+        sections: {
+            new: "Songs for Rating (New)",
+            old: "Songs for Rating (Others)",
+            selectionNew: "Songs for Rating Selection (New)",
+            selectionOld: "Songs for Rating Selection (Others)",
+        },
+    },
 };
 
 export default I18nPlayer;
