@@ -170,8 +170,14 @@ function parseSongRecordBlock(
         level: songLevel,
         type: songKind,
     });
+    const status =
+        achievement < 80 ? GameRecordStatus.FAILED : (statusByImageName[statusName] ?? GameRecordStatus.CLEARED);
     const rating = querySongDetails?.sheet.internalLevelValue
-        ? calculateRating(achievement, querySongDetails.sheet.internalLevelValue)
+        ? calculateRating(
+              achievement,
+              querySongDetails.sheet.internalLevelValue,
+              status === GameRecordStatus.ALL_PERFECT || status === GameRecordStatus.ALL_PERFECT_PLUS,
+          )
         : undefined;
 
     return {
@@ -185,8 +191,7 @@ function parseSongRecordBlock(
         achievement,
         dxScore: parseDxScore(scoreBlocks[1]?.textContent),
         scoreRank: scoreRankByImageName[scoreRankName] ?? GameRecordScoreRank.D,
-        status:
-            achievement < 80 ? GameRecordStatus.FAILED : (statusByImageName[statusName] ?? GameRecordStatus.CLEARED),
+        status,
         syncStatus: syncStatusByImageName[syncStatusName] ?? GameRecordSyncStatus.SOLO,
         syncStatusShort: syncStatusShortByImageName[syncStatusName] ?? GameRecordSyncStatusShort.SOLO,
         rating,

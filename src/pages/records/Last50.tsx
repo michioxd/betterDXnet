@@ -291,6 +291,8 @@ export function RecordCard({
                                             {calculateRating(
                                                 record.achievement,
                                                 record.songFullDetail.sheet.internalLevelValue,
+                                                record.status === GameRecordStatus.ALL_PERFECT ||
+                                                    record.status === GameRecordStatus.ALL_PERFECT_PLUS,
                                             )}
                                         </Typography>
                                     </Tooltip>

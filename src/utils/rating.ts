@@ -40,8 +40,8 @@ function getRatingCoefficient(achievement: number): number {
     return 0;
 }
 
-export function calculateRating(achievement: number, constant: number): number {
+export function calculateRating(achievement: number, constant: number, isAp: boolean): number {
     const coeff = getRatingCoefficient(achievement);
 
-    return Math.floor((coeff * constant * Math.min(achievement, 100.5)) / 100);
+    return Math.floor((coeff * constant * Math.min(achievement, 100.5)) / 100) + (isAp ? 1 : 0);
 }

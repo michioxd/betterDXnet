@@ -1,7 +1,7 @@
 import { maimaiApi } from "@/db/maimaiDataApi";
 import { calculateRating } from "@/utils/rating";
 import { apiHelperFetchDoc } from "../helper";
-import { GameRecordScoreRank, GameRecordSongDifficulty, GameRecordSongKind } from "../records";
+import { GameRecordScoreRank, GameRecordSongDifficulty, GameRecordSongKind, GameRecordStatus } from "../records";
 import { GetPlayerDXRating, GetPlayerDXRatingItem } from "./types";
 
 const DX_RATING_PATH = "/maimai-mobile/home/ratingTargetMusic/";
@@ -44,6 +44,15 @@ const scoreRankByImageName: Record<string, GameRecordScoreRank> = {
     music_icon_sssp: GameRecordScoreRank.SSS_P,
 };
 
+const statusByImageName: Record<string, GameRecordStatus> = {
+    music_icon_back: GameRecordStatus.CLEARED,
+    music_icon_clear: GameRecordStatus.CLEARED,
+    music_icon_fc: GameRecordStatus.FULL_COMBO,
+    music_icon_fcp: GameRecordStatus.FULL_COMBO_PLUS,
+    music_icon_ap: GameRecordStatus.ALL_PERFECT,
+    music_icon_app: GameRecordStatus.ALL_PERFECT_PLUS,
+};
+
 function normalizeText(value: string | null | undefined) {
     return value?.replace(/\s+/g, " ").trim() ?? "";
 }
@@ -66,7 +75,11 @@ function parseNumber(value: string | null | undefined) {
 export function parsePlayerDXRatingBlock(block: HTMLElement): GetPlayerDXRatingItem {
     const difficultyName = imageName(block.querySelector<HTMLImageElement>('img[src*="/img/diff_"]'));
     const songKindName = imageName(block.querySelector<HTMLImageElement>(".music_kind_icon"));
+    const resultIconNames = [...block.querySelectorAll<HTMLImageElement>('img[src*="/img/music_icon_"]')].map(
+        imageName,
+    );
     const scoreRankName = imageName(block.querySelector<HTMLImageElement>(".ratingtarget_scorerank_img"));
+    const statusName = resultIconNames.find((name) => name in statusByImageName) ?? "";
     const songTitle = normalizeText(block.querySelector(".music_name_block")?.textContent);
     const songLevel = normalizeText(block.querySelector(".music_lv_block")?.textContent);
     const songKind = songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD;
@@ -77,8 +90,13 @@ export function parsePlayerDXRatingBlock(block: HTMLElement): GetPlayerDXRatingI
         level: songLevel,
         type: songKind,
     });
+    const status = statusByImageName[statusName] ?? GameRecordStatus.CLEARED;
     const rating = querySongDetails?.sheet.internalLevelValue
-        ? calculateRating(achievement, querySongDetails.sheet.internalLevelValue)
+        ? calculateRating(
+              achievement,
+              querySongDetails.sheet.internalLevelValue,
+              status === GameRecordStatus.ALL_PERFECT || status === GameRecordStatus.ALL_PERFECT_PLUS,
+          )
         : undefined;
 
     return {
