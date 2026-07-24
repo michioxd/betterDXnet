@@ -48,12 +48,13 @@ const I18nPlayer = {
             error: {
                 renderFailed: "Không thể render ảnh",
             },
+            firefoxNoteOpenInNewTab: "Mở betterDXnet trong tab mới",
             firefoxNote:
-                "Vì 1 số lý do kỹ thuật, Firefox sẽ không cho phép tải ảnh ngoài nếu không chạy ở chế độ standalone. Vui lòng mở betterDXnet trong tab mới để xuất ảnh bằng cách mở tab mới sau đó nhấn icon betterDXnet ở góc trên bên phải trình duyệt.",
+                "Do giới hạn kỹ thuật, một số phiên bản Firefox không thể tải ảnh từ bên ngoài nếu không chạy ở chế độ độc lập. Để sử dụng chế độ này, hãy mở một tab mới và nhấp vào biểu tượng betterDXnet trên thanh công cụ tiện ích mở rộng.",
         },
         sections: {
-            new: "Songs for Rating (New)",
-            old: "Songs for Rating (Others)",
+            new: "Chart mới",
+            old: "Chart cũ",
             selectionNew: "Songs for Rating Selection (New)",
             selectionOld: "Songs for Rating Selection (Others)",
         },

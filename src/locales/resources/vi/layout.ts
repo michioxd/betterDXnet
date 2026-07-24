@@ -21,6 +21,7 @@ const I18nLayout = {
         close: "Đóng",
         dxVersion: "Phiên bản DX: {{version}}",
         unknownVersion: "không rõ",
+        openInNewTab: "Mở betterDXnet trong tab mới",
     },
     language: {
         fallbackName: "Tiếng Anh",

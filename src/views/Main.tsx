@@ -19,6 +19,7 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import ReplayIcon from "@mui/icons-material/Replay";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { observer } from "mobx-react-lite";
 import { rootStore } from "@/stores/root";
 import { useEffect, useRef } from "react";
@@ -33,6 +34,7 @@ import { useTranslation } from "react-i18next";
 import { useColorScheme } from "@mui/material/styles";
 import { maimaiApi } from "@/db/maimaiDataApi";
 import { useAppMode } from "@/app-context";
+import { extensionRuntime } from "@/runtime";
 
 function MainView({ closeView }: { closeView?: () => void }) {
     const appModeCtx = useAppMode();
@@ -177,19 +179,35 @@ function MainView({ closeView }: { closeView?: () => void }) {
                             </IconButton>
                         </span>
                     </Tooltip>
-
                     {appModeCtx !== "standalone" && (
-                        <Tooltip title={t("toolbar.unload")} placement="bottom" arrow>
-                            <IconButton
-                                size="large"
-                                edge="end"
-                                color="inherit"
-                                aria-label={t("toolbar.close")}
-                                onClick={closeView}
-                            >
-                                <CloseIcon fontWeight="medium" />
-                            </IconButton>
-                        </Tooltip>
+                        <>
+                            <Tooltip title={t("toolbar.openInNewTab")} placement="bottom" arrow>
+                                <IconButton
+                                    size="large"
+                                    edge="end"
+                                    color="inherit"
+                                    aria-label={t("toolbar.openInNewTab")}
+                                    onClick={() => {
+                                        extensionRuntime.sendMessage({
+                                            type: "betterdxnet.openInNewTab",
+                                        });
+                                    }}
+                                >
+                                    <OpenInNewIcon fontWeight="medium" />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={t("toolbar.unload")} placement="bottom" arrow>
+                                <IconButton
+                                    size="large"
+                                    edge="end"
+                                    color="inherit"
+                                    aria-label={t("toolbar.close")}
+                                    onClick={closeView}
+                                >
+                                    <CloseIcon fontWeight="medium" />
+                                </IconButton>
+                            </Tooltip>
+                        </>
                     )}
                 </Toolbar>
 

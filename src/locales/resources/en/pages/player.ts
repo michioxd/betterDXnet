@@ -48,12 +48,13 @@ const I18nPlayer = {
             error: {
                 renderFailed: "Failed to render image",
             },
+            firefoxNoteOpenInNewTab: "Open betterDXnet in a new tab",
             firefoxNote:
-                "Due to technical limitations, Firefox does not allow downloading external images unless running in standalone mode. Please open betterDXnet in a new tab and click the betterDXnet icon in the top-right corner of your browser to export the image.",
+                "Due to technical limitations, some Firefox versions cannot download external images unless running in standalone mode. To use standalone mode, open a new tab and click the betterDXnet icon in the extension toolbar.",
         },
         sections: {
-            new: "Songs for Rating (New)",
-            old: "Songs for Rating (Others)",
+            new: "New Charts",
+            old: "Old Charts",
             selectionNew: "Songs for Rating Selection (New)",
             selectionOld: "Songs for Rating Selection (Others)",
         },

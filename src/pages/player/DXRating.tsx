@@ -9,6 +9,7 @@ import { calculateManualDXRating, sumManualDXRating } from "@/utils/manualDxRati
 import RefreshIcon from "@mui/icons-material/Refresh";
 import StarIcon from "@mui/icons-material/Star";
 import GetAppIcon from "@mui/icons-material/GetApp";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
     Alert,
     Box,
@@ -35,6 +36,7 @@ import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppMode } from "@/app-context";
+import { extensionRuntime } from "@/runtime";
 
 function formatPercent(value: number) {
     return `${value.toFixed(4)}%`;
@@ -363,7 +365,23 @@ function PagePlayerDXRating() {
                     </Button>
 
                     {isFirefox() && appModeCtx !== "standalone" && (
-                        <Alert severity="warning">{t("dxrating.export.firefoxNote")}</Alert>
+                        <Alert severity="warning">
+                            {t("dxrating.export.firefoxNote")}
+                            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1, flex: 1 }}>
+                                <Button
+                                    color="inherit"
+                                    variant="outlined"
+                                    startIcon={<OpenInNewIcon />}
+                                    onClick={() => {
+                                        extensionRuntime.sendMessage({
+                                            type: "betterdxnet.openInNewTab",
+                                        });
+                                    }}
+                                >
+                                    {t("dxrating.export.firefoxNoteOpenInNewTab")}
+                                </Button>
+                            </Box>
+                        </Alert>
                     )}
 
                     <Dialog
