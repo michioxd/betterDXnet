@@ -8,6 +8,7 @@ import RatingCanvas, { type RatingCanvasHandle } from "@/utils/image/dx";
 import { calculateManualDXRating, sumManualDXRating } from "@/utils/manualDxRating";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import StarIcon from "@mui/icons-material/Star";
+import GetAppIcon from "@mui/icons-material/GetApp";
 import {
     Alert,
     Box,
@@ -33,6 +34,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAppMode } from "@/app-context";
 
 function formatPercent(value: number) {
     return `${value.toFixed(4)}%`;
@@ -189,7 +191,12 @@ function DXRatingSection({ title, items }: { title: string; items: DXRatingItem[
     );
 }
 
+const isFirefox = () => {
+    return navigator.userAgent.toLowerCase().includes("firefox");
+};
+
 function PagePlayerDXRating() {
+    const appModeCtx = useAppMode();
     const { t } = useTranslation("player");
     const { app, player, me } = rootStore;
     const [tab, setTab] = useState(0);
@@ -253,7 +260,8 @@ function PagePlayerDXRating() {
         canvasRef.current = null;
     };
     const handleExportProgress = useCallback(
-        (loaded: number, total: number, message?: string) => {
+        async (loaded: number, total: number, message?: string) => {
+            await new Promise((resolve) => setTimeout(resolve, 1500));
             setExportProgress({ loaded, total });
             setExportStatus(loaded < total ? "loadingAssets" : "exportingImage");
             if (message) {
@@ -345,9 +353,20 @@ function PagePlayerDXRating() {
                         {t("dxrating.showingItems", { count: manualTotalCount, rating: manualTotalRating })}
                     </Alert>
 
-                    <Button variant="contained" onClick={handleGenerateImage} disabled={manualTotalCount === 0}>
+                    <Button
+                        variant="contained"
+                        onClick={handleGenerateImage}
+                        disabled={manualTotalCount === 0 || (isFirefox() && appModeCtx !== "standalone") || exportOpen}
+                        startIcon={<GetAppIcon />}
+                    >
                         {t("dxrating.export.generateImage")}
                     </Button>
+
+                    {isFirefox() && appModeCtx !== "standalone" && (
+                        <Alert severity="warning" sx={{ mt: 2 }}>
+                            {t("dxrating.export.firefoxNote")}
+                        </Alert>
+                    )}
 
                     <Dialog
                         open={exportOpen}
@@ -362,8 +381,8 @@ function PagePlayerDXRating() {
                         <DialogTitle>{t("dxrating.export.title")}</DialogTitle>
                         <DialogContent>
                             <Stack spacing={2}>
-                                <Typography>{t(`dxrating.export.status.${exportStatus}`)}</Typography>
-                                <Typography color="textSecondary" variant="body2">
+                                <Typography>
+                                    {t(`dxrating.export.status.${exportStatus}`)} -{" "}
                                     {exportStatus === "loadingAssets"
                                         ? t("dxrating.export.assetsLoaded", exportProgress)
                                         : t("dxrating.export.pleaseWait")}
@@ -393,6 +412,9 @@ function PagePlayerDXRating() {
                                         </Box>
                                     </Alert>
                                 )}
+                                <Typography variant="body2" color="textSecondary">
+                                    {t("dxrating.export.unresponsiveNote")}
+                                </Typography>
                                 <Box sx={{ position: "fixed", left: -10000, top: 0, pointerEvents: "none" }}>
                                     <RatingCanvas
                                         ref={canvasRef}

@@ -32,6 +32,8 @@ const I18nPlayer = {
             title: "Generating image",
             assetsLoaded: "{{loaded}} / {{total}} assets loaded",
             pleaseWait: "Please wait, the image will download automatically.",
+            unresponsiveNote:
+                "If your browser becomes unresponsive, the export is still running in the background. Please wait until the download starts.",
             cancel: "Cancel",
             log: {
                 asset: "{{loaded}}/{{total}} {{message}}",
@@ -46,6 +48,8 @@ const I18nPlayer = {
             error: {
                 renderFailed: "Failed to render image",
             },
+            firefoxNote:
+                "Due to technical limitations, Firefox does not allow downloading external images unless running in standalone mode. Please open betterDXnet in a new tab and click the betterDXnet icon in the top-right corner of your browser to export the image.",
         },
         sections: {
             new: "Songs for Rating (New)",

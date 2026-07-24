@@ -32,6 +32,8 @@ const I18nPlayer = {
             title: "Đang tạo ảnh",
             assetsLoaded: "Đã tải {{loaded}} / {{total}} asset",
             pleaseWait: "Vui lòng chờ, ảnh sẽ tự động được tải xuống.",
+            unresponsiveNote:
+                "Nếu trình duyệt bị treo, quá trình xuất ảnh vẫn đang chạy trong nền. Vui lòng chờ đến khi ảnh bắt đầu tải xuống.",
             cancel: "Hủy",
             log: {
                 asset: "{{loaded}}/{{total}} {{message}}",
@@ -46,6 +48,8 @@ const I18nPlayer = {
             error: {
                 renderFailed: "Không thể render ảnh",
             },
+            firefoxNote:
+                "Vì 1 số lý do kỹ thuật, Firefox sẽ không cho phép tải ảnh ngoài nếu không chạy ở chế độ standalone. Vui lòng mở betterDXnet trong tab mới để xuất ảnh bằng cách mở tab mới sau đó nhấn icon betterDXnet ở góc trên bên phải trình duyệt.",
         },
         sections: {
             new: "Songs for Rating (New)",

@@ -3,6 +3,8 @@ const I18nLayout = {
         errorTitle: "An error occurred!",
         close: "Close",
         fetchingData: "Please wait while we are fetching your data...",
+        errorNetwork: "Unable to connect! You may need to log in again.",
+        goToLogin: "Go to Login",
     },
     toolbar: {
         openSidebar: "Open sidebar",

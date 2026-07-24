@@ -3,6 +3,8 @@ const I18nLayout = {
         errorTitle: "Đã xảy ra lỗi!",
         close: "Đóng",
         fetchingData: "Vui lòng chờ trong khi chúng tôi đang tải dữ liệu của bạn...",
+        errorNetwork: "Không thể kết nối! Có thể bạn cần phải đăng nhập lại.",
+        goToLogin: "Đi đến trang đăng nhập",
     },
     toolbar: {
         openSidebar: "Mở thanh bên",

@@ -259,8 +259,8 @@ function ProfileHeader({
             {ratingDigits.map((digit, index) => (
                 <Text
                     key={`rating-digit-${index}`}
-                    x={548 + index * 44}
-                    y={194}
+                    x={550 + index * 44}
+                    y={197}
                     width={44}
                     height={65}
                     text={digit}
@@ -514,10 +514,11 @@ const RatingCanvas = forwardRef<RatingCanvasHandle, RatingCanvasProps>(function 
 
                 <Text
                     x={1310}
-                    y={2603}
+                    y={2599}
                     width={500}
                     text={generatedAt}
-                    fontSize={30}
+                    fontSize={34}
+                    fontStyle="bold"
                     fontFamily={FONT_FAMILY}
                     fill="rgb(255,255,255)"
                     align="right"
