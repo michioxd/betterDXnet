@@ -363,9 +363,7 @@ function PagePlayerDXRating() {
                     </Button>
 
                     {isFirefox() && appModeCtx !== "standalone" && (
-                        <Alert severity="warning" sx={{ mt: 2 }}>
-                            {t("dxrating.export.firefoxNote")}
-                        </Alert>
+                        <Alert severity="warning">{t("dxrating.export.firefoxNote")}</Alert>
                     )}
 
                     <Dialog
