@@ -139,10 +139,7 @@ function songRecordsPath(diff: GameRecordSongDifficultyOrUtage) {
     return `${SONG_RECORDS_PATH}?${params.toString()}`;
 }
 
-function parseSongRecordBlock(
-    block: HTMLElement,
-    fallbackDiff: GameRecordSongDifficultyOrUtage,
-): GameRecordSong | null {
+function parseSongRecordBlock(block: HTMLElement): GameRecordSong | null {
     const scoreBlocks = [...block.querySelectorAll<HTMLElement>(".music_score_block")];
     const achievement = parseNumber(scoreBlocks[0]?.textContent);
 
@@ -160,9 +157,7 @@ function parseSongRecordBlock(
     const syncStatusName = resultIconNames.find((name) => name in syncStatusByImageName) ?? "";
     const songTitle = normalizeText(block.querySelector(".music_name_block")?.textContent);
     const songLevel = normalizeText(block.querySelector(".music_lv_block")?.textContent);
-    const songdifficulty =
-        difficultyByImageName[difficultyName] ??
-        (fallbackDiff !== GameRecordSongKind.UTAGE ? fallbackDiff : GameRecordSongDifficulty.BASIC);
+    const songdifficulty = difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC;
     const songKind = songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD;
 
     const querySongDetails = maimaiApi.getSheet({
@@ -202,7 +197,7 @@ async function fetchSongRecordsByDiff(diff: GameRecordSongDifficultyOrUtage) {
     const res = await apiHelperFetchDoc(songRecordsPath(diff));
 
     return [...res.document.querySelectorAll<HTMLElement>(".w_450.m_15.p_r.f_0")]
-        .map((block) => parseSongRecordBlock(block, diff))
+        .map((block) => parseSongRecordBlock(block))
         .filter((record): record is GameRecordSong => record !== null);
 }
 

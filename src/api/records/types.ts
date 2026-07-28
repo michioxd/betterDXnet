@@ -16,7 +16,7 @@ export enum GameRecordSongKind {
     UTAGE = "utage",
 }
 
-export type GameRecordSongDifficultyOrUtage = GameRecordSongDifficulty | GameRecordSongKind.UTAGE;
+export type GameRecordSongDifficultyOrUtage = GameRecordSongDifficulty;
 
 export enum GameRecordStatus {
     FAILED = "failed",

@@ -29,6 +29,7 @@ export class PlayerStore {
         expert: [],
         master: [],
         remaster: [],
+        utage: [],
     };
     manualDxratingLoaded = false;
     manualDxratingLoading = false;
