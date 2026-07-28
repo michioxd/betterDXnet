@@ -180,7 +180,17 @@ export function RecordCard({
                                         label={record.songdifficulty.toUpperCase()}
                                         sx={{ bgcolor: color, color: "common.black", fontWeight: 700 }}
                                     />
-                                    <Chip size="small" label={`Lv ${record.songLevel}`} />
+                                    {record.songFullDetail ? (
+                                        <Tooltip
+                                            title={"" + record.songFullDetail.sheet.internalLevelValue}
+                                            placement="top"
+                                            arrow
+                                        >
+                                            <Chip size="small" label={`Lv ${record.songLevel}`} />
+                                        </Tooltip>
+                                    ) : (
+                                        <Chip size="small" label={`Lv ${record.songLevel}`} />
+                                    )}
                                     <Chip
                                         size="small"
                                         label={t("card.trackNo", { trackNo: record.trackNo })}

@@ -120,7 +120,17 @@ function DXRatingCard({ item }: { item: DXRatingItem }) {
                                     label={item.songdifficulty.toUpperCase()}
                                     sx={{ bgcolor: color, color: "common.black", fontWeight: 700 }}
                                 />
-                                <Chip size="small" label={`Lv ${item.songLevel}`} />
+                                {item.songFullDetail ? (
+                                    <Tooltip
+                                        title={"" + item.songFullDetail.sheet.internalLevelValue}
+                                        placement="top"
+                                        arrow
+                                    >
+                                        <Chip size="small" label={`Lv ${item.songLevel}`} />
+                                    </Tooltip>
+                                ) : (
+                                    <Chip size="small" label={`Lv ${item.songLevel}`} />
+                                )}
                             </Stack>
                         </Box>
                     </Stack>
