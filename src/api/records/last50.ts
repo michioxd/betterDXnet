@@ -20,6 +20,7 @@ const difficultyByImageName: Record<string, GameRecordSongDifficulty> = {
     diff_expert: GameRecordSongDifficulty.EXPERT,
     diff_master: GameRecordSongDifficulty.MASTER,
     diff_remaster: GameRecordSongDifficulty.REMASTER,
+    diff_utage: GameRecordSongDifficulty.UTAGE,
 };
 
 const songKindByImageName: Record<string, GameRecordSongKind> = {
@@ -140,7 +141,9 @@ function parseLifeStatus(block: HTMLElement) {
 export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
     const detailForm = block.querySelector<HTMLFormElement>(`form[action="${PLAYLOG_DETAIL_PATH}"]`);
     const difficultyName = imageName(block.querySelector<HTMLImageElement>(".playlog_diff"));
-    const songKindName = imageName(block.querySelector<HTMLImageElement>(".playlog_music_kind_icon"));
+    const songKindName = imageName(
+        block.querySelector<HTMLImageElement>(".playlog_music_kind_icon, .playlog_music_kind_icon_utage img"),
+    );
     const scoreRankName = imageName(block.querySelector<HTMLImageElement>(".playlog_scorerank"));
     const resultIcons = [...block.querySelectorAll<HTMLImageElement>(".playlog_result_innerblock > img.h_35.m_5.f_l")];
     const statusName = imageName(resultIcons[0]);

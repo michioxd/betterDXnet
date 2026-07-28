@@ -13,10 +13,10 @@ const CANVAS_HEIGHT = 2670;
 const GRID_WIDTH = 1870;
 const GRID_X = (CANVAS_WIDTH - GRID_WIDTH) / 2;
 
-const BG_URL = "https://michioxd.ch/betterDXnet-resources/images/dxrate/base.png";
+const BG_URL = `https://michioxd.ch/betterDXnet-resources/images/dxrate/base.png?t=${Date.now()}&v=${import.meta.env.VITE_APP_VERSION}`;
 const GOOGLE_SANS_CSS_URL = "https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap";
 const EMPTY_IMAGE_URL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
-const DX_RATING_BG_URL = "https://michioxd.ch/betterDXnet-resources/images/dxrate/UI_CMN_DXRating_{}.png";
+const DX_RATING_BG_URL = `https://michioxd.ch/betterDXnet-resources/images/dxrate/UI_CMN_DXRating_{}.png?t=${Date.now()}&v=${import.meta.env.VITE_APP_VERSION}`;
 
 const CARD_GAP = 12;
 const CARD_HEIGHT = 205;
@@ -468,6 +468,18 @@ const RatingCanvas = forwardRef<RatingCanvasHandle, RatingCanvasProps>(function 
                 <ChartSection gridY={300} items={newItems} onAssetLoaded={handleAssetLoaded} />
                 <ChartSection gridY={1023} items={oldItems} onAssetLoaded={handleAssetLoaded} />
 
+                <Text
+                    x={10}
+                    y={2650}
+                    text={`betterDXnet v${import.meta.env.VITE_APP_VERSION} ${import.meta.env.VITE_GIT_CURRENT_BRANCH}.${import.meta.env.VITE_GIT_COMMIT}`}
+                    fontSize={13}
+                    fontFamily={FONT_FAMILY}
+                    fill="rgba(255,255,255,0.3)"
+                    align="left"
+                    shadowColor="black"
+                    shadowBlur={6}
+                    shadowOpacity={0.6}
+                />
                 <Text
                     x={1310}
                     y={2599}

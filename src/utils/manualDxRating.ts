@@ -45,7 +45,12 @@ function compareByRatingDesc(a: GameRecordSong, b: GameRecordSong) {
     const internalLevelA = a.songFullDetail?.sheet.internalLevelValue ?? 0;
     const internalLevelB = b.songFullDetail?.sheet.internalLevelValue ?? 0;
 
-    return internalLevelB - internalLevelA;
+    if (internalLevelA !== internalLevelB) return internalLevelB - internalLevelA;
+
+    const difficultyA = difficultyOrder.indexOf(a.songdifficulty);
+    const difficultyB = difficultyOrder.indexOf(b.songdifficulty);
+
+    return difficultyB - difficultyA;
 }
 
 function flattenSongRecords(records: GetGameRecordSong) {

@@ -7,6 +7,7 @@ export enum GameRecordSongDifficulty {
     EXPERT = "expert",
     MASTER = "master",
     REMASTER = "remaster",
+    UTAGE = "utage",
 }
 
 export enum GameRecordSongKind {
@@ -84,11 +85,12 @@ export enum GameRecordMode {
 }
 
 export const difficultyColor: Record<GameRecordSongDifficulty, string> = {
-    [GameRecordSongDifficulty.BASIC]: "#81D955",
-    [GameRecordSongDifficulty.ADVANCED]: "#F8B709",
-    [GameRecordSongDifficulty.EXPERT]: "#FF818D",
-    [GameRecordSongDifficulty.MASTER]: "#C346E6",
-    [GameRecordSongDifficulty.REMASTER]: "#FF6FFD",
+    [GameRecordSongDifficulty.BASIC]: "#45c124",
+    [GameRecordSongDifficulty.ADVANCED]: "#ffba01",
+    [GameRecordSongDifficulty.EXPERT]: "#ff7b7b",
+    [GameRecordSongDifficulty.MASTER]: "#9f51dc",
+    [GameRecordSongDifficulty.REMASTER]: "#dbaaff",
+    [GameRecordSongDifficulty.UTAGE]: "#FF6FFD",
 };
 
 export const playlogBaseImg = "https://maimaidx-eng.com/maimai-mobile/img/playlog/{}.png";

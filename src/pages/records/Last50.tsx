@@ -1,6 +1,7 @@
 import { difficultyColor, GameRecordStatus, type GameRecordLast50 } from "@/api/records";
 import {
     GameRecordMode,
+    GameRecordSongDifficulty,
     GameRecordSyncStatusShort,
     musicIconBaseImg,
     playlogBaseImg,
@@ -283,21 +284,23 @@ export function RecordCard({
                                     }}
                                 />
                             )}
-                            {record.songFullDetail && record.songFullDetail.sheet.internalLevelValue && (
-                                <>
-                                    <Box sx={{ flex: 1, m: "0 !important" }}></Box>
-                                    <Tooltip title={"DX Rating"} placement="top" arrow>
-                                        <Typography variant="h5">
-                                            {calculateRating(
-                                                record.achievement,
-                                                record.songFullDetail.sheet.internalLevelValue,
-                                                record.status === GameRecordStatus.ALL_PERFECT ||
-                                                    record.status === GameRecordStatus.ALL_PERFECT_PLUS,
-                                            )}
-                                        </Typography>
-                                    </Tooltip>
-                                </>
-                            )}
+                            {record.songFullDetail &&
+                                record.songFullDetail.sheet.internalLevelValue &&
+                                record.songdifficulty !== GameRecordSongDifficulty.UTAGE && (
+                                    <>
+                                        <Box sx={{ flex: 1, m: "0 !important" }}></Box>
+                                        <Tooltip title={"DX Rating"} placement="top" arrow>
+                                            <Typography variant="h5">
+                                                {calculateRating(
+                                                    record.achievement,
+                                                    record.songFullDetail.sheet.internalLevelValue,
+                                                    record.status === GameRecordStatus.ALL_PERFECT ||
+                                                        record.status === GameRecordStatus.ALL_PERFECT_PLUS,
+                                                )}
+                                            </Typography>
+                                        </Tooltip>
+                                    </>
+                                )}
                         </Stack>
 
                         <Box sx={{ flex: 1, m: "0 !important" }}></Box>

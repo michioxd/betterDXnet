@@ -1,4 +1,4 @@
-import { Box, Link, Tooltip, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { version as ReactVersion } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -35,13 +35,12 @@ export default function Footer() {
                             target="_blank"
                             href={`https://github.com/michioxd/betterDXnet/releases/tag/${import.meta.env.VITE_APP_VERSION}`}
                         />,
-                        <Tooltip title={`${import.meta.env.VITE_GIT_COMMIT_FULL}`} arrow>
-                            <Link
-                                href={`https://github.com/michioxd/betterDXnet/commit/${import.meta.env.VITE_GIT_COMMIT_FULL}`}
-                                target="_blank"
-                                color="inherit"
-                            />
-                        </Tooltip>,
+                        <Link
+                            href={`https://github.com/michioxd/betterDXnet/commit/${import.meta.env.VITE_GIT_COMMIT_FULL}`}
+                            target="_blank"
+                            color="inherit"
+                            title={import.meta.env.VITE_GIT_COMMIT_FULL}
+                        />,
                     ]}
                 />
                 <br />
