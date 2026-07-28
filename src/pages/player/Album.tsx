@@ -28,7 +28,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { songKindBaseImg } from "@/api/records/types";
-import { getSongArtworkUrl } from "@/db/maimaiDataApi";
+import { dataSource } from "@/db/maimaiDataTypes";
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -110,7 +110,7 @@ function AlbumCard({
                 {photo.songFullDetail && (
                     <Box
                         component="img"
-                        src={getSongArtworkUrl(photo.songFullDetail.song)}
+                        src={dataSource.getSongArtworkUrl(photo.songFullDetail.song)}
                         alt={photo.songTitle}
                         sx={{
                             position: "absolute",

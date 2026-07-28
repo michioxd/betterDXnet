@@ -2,7 +2,6 @@ import { difficultyColor } from "@/api/records";
 import { playlogBaseImg, songKindBaseImg } from "@/api/records/types";
 import type { GetPlayerDXRatingItem } from "@/api/player";
 import type { GameRecordSong } from "@/api/records";
-import { getSongArtworkUrl } from "@/db/maimaiDataApi";
 import { rootStore } from "@/stores/root";
 import RatingCanvas, { type RatingCanvasHandle } from "@/utils/image/dx";
 import { calculateManualDXRating, sumManualDXRating } from "@/utils/manualDxRating";
@@ -37,6 +36,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppMode } from "@/app-context";
 import { extensionRuntime } from "@/runtime";
+import { dataSource } from "@/db/maimaiDataTypes";
 
 function formatPercent(value: number) {
     return `${value.toFixed(4)}%`;
@@ -48,7 +48,7 @@ type ExportStatus = "preparingCanvas" | "loadingAssets" | "exportingImage" | "do
 function DXRatingCard({ item }: { item: DXRatingItem }) {
     const { t } = useTranslation("player");
     const color = difficultyColor[item.songdifficulty];
-    const artworkUrl = item.songFullDetail ? getSongArtworkUrl(item.songFullDetail.song) : "";
+    const artworkUrl = item.songFullDetail ? dataSource.getSongArtworkUrl(item.songFullDetail.song) : "";
 
     return (
         <Card

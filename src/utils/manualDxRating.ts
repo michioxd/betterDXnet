@@ -39,7 +39,13 @@ function getCurrentDatabaseVersions(netVersion: string | undefined) {
 }
 
 function compareByRatingDesc(a: GameRecordSong, b: GameRecordSong) {
-    return (b.rating ?? 0) - (a.rating ?? 0);
+    const ratingDiff = (b.rating ?? 0) - (a.rating ?? 0);
+    if (ratingDiff !== 0) return ratingDiff;
+
+    const internalLevelA = a.songFullDetail?.sheet.internalLevelValue ?? 0;
+    const internalLevelB = b.songFullDetail?.sheet.internalLevelValue ?? 0;
+
+    return internalLevelB - internalLevelA;
 }
 
 function flattenSongRecords(records: GetGameRecordSong) {

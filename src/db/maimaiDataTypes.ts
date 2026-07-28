@@ -1,8 +1,10 @@
 export const dataSource = {
-    baseUrl: "https://dp4p6x0xfi5o9.cloudfront.net/maimai",
+    baseUrl: "https://simaidb.michioxd.ch/public",
     dataPath: "data.json", // <baseUrl>/<dataPath>
     source: "zetaraku/arcade-songs",
     link: "https://github.com/zetaraku/arcade-songs",
+    getSongArtworkUrl: (imageName: MaimaiSong) =>
+        new URL(`${dataSource.baseUrl}/artwork/${imageName.imageName}`).toString(),
 };
 
 /**

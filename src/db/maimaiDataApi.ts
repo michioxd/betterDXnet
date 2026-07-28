@@ -438,11 +438,3 @@ export class MaimaiDataAPI {
 }
 
 export const maimaiApi = MaimaiDataAPI.getInstance();
-
-export const getSongArtworkUrl = (song: MaimaiSong) => {
-    if (!song.imageName) {
-        return "";
-    }
-
-    return new URL(`img/cover/${song.imageName}`, `${dataSource.baseUrl}/`).toString();
-};

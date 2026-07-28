@@ -1,7 +1,7 @@
 import { getRatingColor, type ApiMe, type ApiMeRankType } from "@/api/me";
 import { difficultyColor, GameRecordStatus, type GameRecordSong } from "@/api/records";
 import { GameRecordSyncStatusShort, musicIconBaseImg, playlogBaseImg, songKindBaseImg } from "@/api/records/types";
-import { getSongArtworkUrl } from "@/db/maimaiDataApi";
+import { dataSource } from "@/db/maimaiDataTypes";
 import Konva from "konva";
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { Group, Image, Layer, Rect, Stage, Text } from "react-konva";
@@ -61,34 +61,8 @@ interface RatingCardProps {
 
 type AssetLoadedHandler = (message: string) => void;
 
-function BlurredCoverImage({ image, width, height }: { image: HTMLImageElement; width: number; height: number }) {
-    const imageRef = useRef<Konva.Image>(null);
-
-    useEffect(() => {
-        const node = imageRef.current;
-
-        if (!node) return;
-
-        node.cache();
-        node.getLayer()?.batchDraw();
-
-        return () => {
-            node.clearCache();
-        };
-    }, [height, image, width]);
-
-    return (
-        <Image
-            ref={imageRef}
-            image={image}
-            width={width}
-            height={height}
-            opacity={0.9}
-            filters={[Konva.Filters.Blur]}
-            blurRadius={10}
-            crop={getCoverCrop(image, width, height)}
-        />
-    );
+function CoverImage({ image, width, height }: { image: HTMLImageElement; width: number; height: number }) {
+    return <Image image={image} width={width} height={height} crop={getCoverCrop(image, width, height)} />;
 }
 
 function fitText(value: string, maxLength: number) {
@@ -231,8 +205,8 @@ function ProfileHeader({
     return (
         <>
             {avatar && (
-                <Group x={30} y={37} clipFunc={(ctx) => ctx.roundRect(0, 0, 240, 240, 18)}>
-                    <Image image={avatar} width={240} height={240} crop={avatarCrop!} />
+                <Group x={29} y={37} clipFunc={(ctx) => ctx.roundRect(0, 0, 242, 242, 18)}>
+                    <Image image={avatar} width={242} height={242} crop={avatarCrop!} />
                 </Group>
             )}
 
@@ -281,7 +255,7 @@ function ProfileHeader({
 
 function RatingCard({ item, index, x, y, width, height, onAssetLoaded }: RatingCardProps) {
     const difficulty = difficultyColor[item.songdifficulty];
-    const artworkUrl = item.songFullDetail ? getSongArtworkUrl(item.songFullDetail.song) : "";
+    const artworkUrl = item.songFullDetail ? dataSource.getSongArtworkUrl(item.songFullDetail.song) : "";
     const rankUrl = playlogBaseImg.replace("{}", item.scoreRank.toLowerCase());
     const songKindUrl = songKindBaseImg.replace("{}", item.songKind === "std" ? "standard" : item.songKind);
     const statusUrl =
@@ -304,27 +278,16 @@ function RatingCard({ item, index, x, y, width, height, onAssetLoaded }: RatingC
     return (
         <Group x={x} y={y} clipFunc={(ctx) => ctx.roundRect(0, 0, width, height, 16)}>
             <Rect width={width} height={height} fill="rgba(0,0,0,0.55)" />
-            {artwork && <BlurredCoverImage image={artwork} width={width} height={height} />}
-            <Rect width={width} height={height} fill={difficulty} opacity={0.4} />
-            <Rect width={width} height={height} fill="rgba(0,0,0,0.38)" />
-            <Rect width={width} height={height} stroke={difficulty} strokeWidth={3} cornerRadius={16} />
+            {artwork && <CoverImage image={artwork} width={width} height={height} />}
+            <Rect width={width} height={height} fill="rgba(0,0,0,0.7)" />
+            <Rect width={width} height={height} stroke={difficulty} strokeWidth={8} cornerRadius={16} />
 
             <Text
                 x={18}
                 y={14}
-                text={`#${index + 1}`}
-                fontSize={24}
-                fontStyle="bold"
-                fontFamily={FONT_FAMILY}
-                fill="#ffffff"
-                opacity={0.8}
-            />
-            <Text
-                x={70}
-                y={12}
-                width={width - 88}
+                width={width - 36}
                 height={30}
-                text={fitText(item.songTitle || "untitled", 25)}
+                text={fitText(item.songTitle || "untitled", 32)}
                 fontSize={25}
                 fontStyle="bold"
                 fontFamily={FONT_FAMILY}
@@ -333,11 +296,11 @@ function RatingCard({ item, index, x, y, width, height, onAssetLoaded }: RatingC
                 ellipsis
             />
             <Text
-                x={70}
+                x={18}
                 y={45}
-                width={width - 88}
+                width={width - 36}
                 height={22}
-                text={fitText(artist, 31)}
+                text={fitText(artist, 38)}
                 fontSize={18}
                 fontFamily={FONT_FAMILY}
                 fill="rgba(255,255,255,0.78)"
@@ -345,30 +308,23 @@ function RatingCard({ item, index, x, y, width, height, onAssetLoaded }: RatingC
                 ellipsis
             />
 
-            <Rect x={18} y={78} width={108} height={30} fill={difficulty} cornerRadius={15} />
+            <Rect x={18} y={78} width={64} height={30} fill={difficulty} cornerRadius={15} />
             <Text
                 x={18}
                 y={84}
-                width={108}
+                width={64}
                 align="center"
-                text={item.songdifficulty.toUpperCase()}
+                text={
+                    item.songFullDetail?.sheet.internalLevelValue?.toString() ??
+                    item.songFullDetail?.sheet.internalLevel ??
+                    item.songLevel
+                }
                 fontSize={17}
                 fontStyle="bold"
                 fontFamily={FONT_FAMILY}
                 fill="#111111"
             />
-            <Rect x={136} y={78} width={75} height={30} fill="rgba(0,0,0,0.45)" cornerRadius={15} />
-            <Text
-                x={136}
-                y={84}
-                width={75}
-                align="center"
-                text={`Lv ${item.songLevel}`}
-                fontSize={17}
-                fontFamily={FONT_FAMILY}
-                fill="#ffffff"
-            />
-            {songKind && <Image image={songKind} x={222} y={80} width={70} height={24} />}
+            {songKind && <Image image={songKind} x={92} y={80} width={74} height={24} />}
 
             <Text
                 x={18}
@@ -453,8 +409,8 @@ const RatingCanvas = forwardRef<RatingCanvasHandle, RatingCanvasProps>(function 
     const [background, backgroundStatus] = useImage(BG_URL, "anonymous");
     const loadedRef = useRef(0);
     const totalRating = useMemo(
-        () => [...newItems, ...oldItems].reduce((total, item) => total + (item.rating ?? 0), 0),
-        [newItems, oldItems],
+        () => profile?.rating ?? [...newItems, ...oldItems].reduce((total, item) => total + (item.rating ?? 0), 0),
+        [newItems, oldItems, profile?.rating],
     );
     const generatedAt = useMemo(() => formatGeneratedAt(new Date()), []);
     const totalAssets = useMemo(() => {
