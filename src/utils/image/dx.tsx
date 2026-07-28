@@ -279,7 +279,7 @@ function RatingCard({ item, index, x, y, width, height, onAssetLoaded }: RatingC
         <Group x={x} y={y} clipFunc={(ctx) => ctx.roundRect(0, 0, width, height, 16)}>
             <Rect width={width} height={height} fill="rgba(0,0,0,0.55)" />
             {artwork && <CoverImage image={artwork} width={width} height={height} />}
-            <Rect width={width} height={height} fill="rgba(0,0,0,0.7)" />
+            <Rect width={width} height={height} fill="rgba(0,0,0,0.6)" />
             <Rect width={width} height={height} stroke={difficulty} strokeWidth={8} cornerRadius={16} />
 
             <Text
