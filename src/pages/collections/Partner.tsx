@@ -72,8 +72,8 @@ function PageCollectionsPartner() {
         else app.setGlobalLoading(false);
     }, [loading, backgroundLoading, app]);
 
-    const getRequiredUserToken = () => {
-        const token = me.getUserToken();
+    const getRequiredUserToken = async () => {
+        const token = await me.getUserToken();
 
         if (!token) {
             throw new Error(t("common.userTokenNotFound"));
@@ -82,12 +82,12 @@ function PageCollectionsPartner() {
         return token;
     };
 
-    const handleSetPartner = async (partner: PartnerAvailableListResponse) => {
+    const handleSetPartner = async (formValue: string) => {
         setBackgroundLoading(true);
         setError(null);
 
         try {
-            await apiCollections.partner.set(partner.formValue, getRequiredUserToken());
+            await apiCollections.partner.set(formValue, await getRequiredUserToken());
             await loadPartners(false);
         } catch (error) {
             setError(error as Error);
@@ -195,7 +195,7 @@ function PageCollectionsPartner() {
                                             variant="contained"
                                             startIcon={<CheckCircleIcon />}
                                             disabled={!partner.available || partner.using || backgroundLoading}
-                                            onClick={() => void handleSetPartner(partner)}
+                                            onClick={() => void handleSetPartner(partner.formValue)}
                                         >
                                             {t("common.set")}
                                         </Button>

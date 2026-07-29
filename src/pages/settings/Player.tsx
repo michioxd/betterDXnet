@@ -132,8 +132,8 @@ function PageSettingsPlayer() {
     const isPlayerNameChanged = trimmedPlayerName !== currentPlayerName;
     const playerNameLength = useMemo(() => Array.from(playerName).length, [playerName]);
 
-    const getRequiredUserToken = () => {
-        const token = me.getUserToken();
+    const getRequiredUserToken = async () => {
+        const token = await me.getUserToken();
 
         if (!token) {
             throw new Error(t("common.userTokenNotFound"));
@@ -160,7 +160,7 @@ function PageSettingsPlayer() {
         setSuccessMessage(null);
 
         try {
-            await apiOptions.profile.updateUserName(trimmedPlayerName, getRequiredUserToken());
+            await apiOptions.profile.updateUserName(trimmedPlayerName, await getRequiredUserToken());
             await me.refresh();
             setSuccessMessage(t("player.playerNameUpdated"));
         } catch (error) {
@@ -176,7 +176,10 @@ function PageSettingsPlayer() {
         setSuccessMessage(null);
 
         try {
-            await apiOptions.profile.updateUserFriendRegistOption(friendRegistOption === "1", getRequiredUserToken());
+            await apiOptions.profile.updateUserFriendRegistOption(
+                friendRegistOption === "1",
+                await getRequiredUserToken(),
+            );
             setSuccessMessage(t("player.friendRegistrationSkipUpdated"));
         } catch (error) {
             setError(error as Error);

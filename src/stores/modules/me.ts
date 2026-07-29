@@ -2,6 +2,7 @@ import { makeAutoObservable, observable, runInAction } from "mobx";
 
 import type { RootStore } from "../root";
 import { apiMe, type ApiMe } from "@/api/me";
+import { extensionApi } from "@/runtime";
 
 export class MeStore {
     readonly root: RootStore;
@@ -43,15 +44,28 @@ export class MeStore {
         }
     }
 
-    getUserToken(): string | null {
+    async getUserToken(): Promise<string | null> {
         const cookies = document.cookie.split(";").map((cookie) => cookie.trim());
         const tokenCookie = cookies.find((cookie) => cookie.startsWith("_t="));
 
-        if (!tokenCookie) {
-            return null;
+        if (tokenCookie) {
+            return tokenCookie.split("=")[1];
         }
 
-        return tokenCookie.split("=")[1];
+        if (typeof extensionApi !== "undefined" && extensionApi.cookies) {
+            try {
+                const cookie = await extensionApi.cookies.get({
+                    url: "https://maimaidx-eng.com",
+                    name: "_t",
+                });
+                return cookie ? cookie.value : null;
+            } catch (e) {
+                console.error("Failed to get cookie via extension API", e);
+                return null;
+            }
+        }
+
+        return null;
     }
 
     fullyReload() {

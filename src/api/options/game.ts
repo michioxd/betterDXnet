@@ -155,7 +155,7 @@ export async function currentGameOptions(): Promise<CurrentGameOptionsResponse> 
 }
 
 export async function updateGameOptions(values: GameOptionValues, token: string): Promise<void> {
-    const res = await fetch(GAME_OPTION_UPDATE_PATH, {
+    const res = await fetch(new URL(GAME_OPTION_UPDATE_PATH, "https://maimaidx-eng.com/").toString(), {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",

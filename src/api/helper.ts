@@ -75,7 +75,7 @@ function createCollectionFormBody(formValue: string, token: string, selectGenre?
 }
 
 export async function postCollectionAction(path: string, formValue: string, token: string, selectGenre?: string) {
-    const res = await fetch(path, {
+    const res = await fetch(new URL(path, "https://maimaidx-eng.com/").toString(), {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",

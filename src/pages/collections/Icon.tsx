@@ -88,8 +88,8 @@ function PageCollectionsIcon() {
         else app.setGlobalLoading(false);
     }, [loading, backgroundLoading, app]);
 
-    const getRequiredUserToken = () => {
-        const token = me.getUserToken();
+    const getRequiredUserToken = async () => {
+        const token = await me.getUserToken();
 
         if (!token) {
             throw new Error(t("common.userTokenNotFound"));
@@ -103,7 +103,7 @@ function PageCollectionsIcon() {
         setError(null);
 
         try {
-            await apiCollections.icon.set(formValue, getRequiredUserToken());
+            await apiCollections.icon.set(formValue, await getRequiredUserToken());
             await loadIcons(false);
             me.refresh();
         } catch (error) {
@@ -119,7 +119,7 @@ function PageCollectionsIcon() {
         console.log("Toggling favorite for icon:", icon);
 
         try {
-            const token = getRequiredUserToken();
+            const token = await getRequiredUserToken();
 
             if (icon.favorite) {
                 await apiCollections.icon.unfavorite(icon.formValue, token);

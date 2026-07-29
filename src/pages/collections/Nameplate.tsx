@@ -88,8 +88,8 @@ function PageCollectionsNameplate() {
         else app.setGlobalLoading(false);
     }, [loading, backgroundLoading, app]);
 
-    const getRequiredUserToken = () => {
-        const token = me.getUserToken();
+    const getRequiredUserToken = async () => {
+        const token = await me.getUserToken();
 
         if (!token) {
             throw new Error(t("common.userTokenNotFound"));
@@ -103,7 +103,7 @@ function PageCollectionsNameplate() {
         setError(null);
 
         try {
-            await apiCollections.nameplate.set(formValue, getRequiredUserToken());
+            await apiCollections.nameplate.set(formValue, await getRequiredUserToken());
             await loadNameplates(false);
         } catch (error) {
             setError(error as Error);
@@ -116,7 +116,7 @@ function PageCollectionsNameplate() {
         setError(null);
 
         try {
-            const token = getRequiredUserToken();
+            const token = await getRequiredUserToken();
 
             if (nameplate.favorite) {
                 await apiCollections.nameplate.unfavorite(nameplate.formValue, token);

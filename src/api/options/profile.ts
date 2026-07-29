@@ -12,7 +12,7 @@ function createProfileOptionBody(values: Record<string, string>, token: string) 
 }
 
 async function postProfileOption(path: string, values: Record<string, string>, token: string): Promise<void> {
-    const res = await fetch(path, {
+    const res = await fetch(new URL(path, "https://maimaidx-eng.com/").toString(), {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
