@@ -62,13 +62,13 @@ jobs:
                   client_id: ${{ secrets.CHROME_CLIENT }}
                   client_secret: ${{ secrets.CHROME_SECRET }}
                   refresh_token: ${{ secrets.CHROME_TOKEN }}
-                  extension_id: ${{ secrets.CHROME_EXTENSION_ID }}
+                  extension_id: ${{ vars.CHROME_EXTENSION_ID }}
                   zip_file: ${{ steps.chrome_zip.outputs.file }}
 
             - name: Upload to Firefox Add-ons
               uses: wdzeng/firefox-addon@v1
               with:
-                  addon-guid: ${{ secrets.FIREFOX_ADDON_GUID }}
+                  addon-guid: ${{ vars.FIREFOX_ADDON_GUID }}
                   xpi-path: ${{ steps.firefox_zip.outputs.file }}
                   self-hosted: false
                   jwt-issuer: ${{ secrets.FIREFOX_JWT_ISSUER }}

@@ -25,6 +25,8 @@ const removeCssCommentsPostcssOptions = {
     ],
 } as unknown as Exclude<NonNullable<NonNullable<UserConfig["css"]>["postcss"]>, string>;
 
+const APP_VERSION = process.env.VITE_ACTUALLY_RELEASE_VERSION || version;
+
 const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
     resolve: {
         alias: {
@@ -37,7 +39,7 @@ const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
         "import.meta.env.VITE_GIT_COMMIT": JSON.stringify(gitCommit),
         "import.meta.env.VITE_GIT_COMMIT_FULL": JSON.stringify(gitCommitFull),
         "import.meta.env.VITE_GIT_CURRENT_BRANCH": JSON.stringify(gitCurrentBranch),
-        "import.meta.env.VITE_APP_VERSION": JSON.stringify(process.env.VITE_ACTUALLY_RELEASE_VERSION || version),
+        "import.meta.env.VITE_APP_VERSION": JSON.stringify(APP_VERSION),
         "import.meta.env.VITE_VITE_VERSION": JSON.stringify(viteVersion),
         "import.meta.env.VITE_TYPESCRIPT_VERSION": JSON.stringify(typescriptVersion).replaceAll("Version ", ""),
         "import.meta.resolve": "undefined",
@@ -50,7 +52,7 @@ const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
         replaceManifestCss(),
         zip({
             outDir: "release",
-            outFileName: `betterDXnet-${mode === "firefox" ? "firefox" : "chrome"}-${version}.zip`,
+            outFileName: `betterDXnet-${mode === "firefox" ? "firefox" : "chrome"}-${APP_VERSION}.zip`,
         }),
     ],
     server: {
