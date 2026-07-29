@@ -73,4 +73,3 @@ jobs:
                   refresh_token: ${{ secrets.CHROME_TOKEN }}
                   extension_id: ${{ vars.CHROME_EXTENSION_ID }}
                   zip_file: ${{ steps.chrome_zip.outputs.file }}
-
