@@ -37,7 +37,7 @@ const createConfig = ({ mode }: ConfigEnv): UserConfig => ({
         "import.meta.env.VITE_GIT_COMMIT": JSON.stringify(gitCommit),
         "import.meta.env.VITE_GIT_COMMIT_FULL": JSON.stringify(gitCommitFull),
         "import.meta.env.VITE_GIT_CURRENT_BRANCH": JSON.stringify(gitCurrentBranch),
-        "import.meta.env.VITE_APP_VERSION": JSON.stringify(version),
+        "import.meta.env.VITE_APP_VERSION": JSON.stringify(process.env.VITE_ACTUALLY_RELEASE_VERSION || version),
         "import.meta.env.VITE_VITE_VERSION": JSON.stringify(viteVersion),
         "import.meta.env.VITE_TYPESCRIPT_VERSION": JSON.stringify(typescriptVersion).replaceAll("Version ", ""),
         "import.meta.resolve": "undefined",

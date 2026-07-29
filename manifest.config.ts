@@ -15,8 +15,8 @@ const toManifestVersion = (version: string) => {
 export default defineManifest(({ mode }) => ({
     manifest_version: 3,
     name: "betterDXnet",
-    description: "just an alternative UI for sinmaiDX :)",
-    version: toManifestVersion(pkg.version),
+    description: "just an alternative UI for simaiDX :)",
+    version: toManifestVersion(process.env.VITE_ACTUALLY_RELEASE_VERSION || pkg.version),
     icons: {
         16: "assets/16.png",
         32: "assets/32.png",

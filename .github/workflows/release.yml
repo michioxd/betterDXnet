@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*-prod'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Build for Chrome
+        run: bun run build
+        env:
+          VITE_ACTUALLY_RELEASE_VERSION: ${{ steps.get_version.outputs.VERSION }}
+
+      - name: Build for Firefox
+        run: bun run build:firefox
+        env:
+          VITE_ACTUALLY_RELEASE_VERSION: ${{ steps.get_version.outputs.VERSION }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: release/*.zip
+          generate_release_notes: true
+
+      - name: Find Chrome ZIP file
+        id: chrome_zip
+        run: |
+          ZIP_FILE=$(find release -name "betterDXnet-chrome-*.zip" | head -n 1)
+          echo "file=$ZIP_FILE" >> $GITHUB_OUTPUT
+
+      - name: Find Firefox ZIP file
+        id: firefox_zip
+        run: |
+          ZIP_FILE=$(find release -name "betterDXnet-firefox-*.zip" | head -n 1)
+          echo "file=$ZIP_FILE" >> $GITHUB_OUTPUT
+
+      - name: Upload to Chrome Web Store
+        uses: mobilefirstllc/cws-publish@latest
+        with:
+          action: 'publish'
+          client_id: ${{ secrets.CHROME_CLIENT }}
+          client_secret: ${{ secrets.CHROME_SECRET }}
+          refresh_token: ${{ secrets.CHROME_TOKEN }}
+          extension_id: ${{ secrets.CHROME_EXTENSION_ID }} 
+          zip_file: ${{ steps.chrome_zip.outputs.file }}
+
+      - name: Upload to Firefox Add-ons
+        uses: wdzeng/firefox-addon@v1
+        with:
+          addon-guid: ${{ secrets.FIREFOX_ADDON_GUID }}
+          xpi-path: ${{ steps.firefox_zip.outputs.file }}
+          self-hosted: false
+          jwt-issuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          jwt-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
