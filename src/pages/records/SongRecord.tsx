@@ -8,6 +8,7 @@ import StarIcon from "@mui/icons-material/Star";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import CloseIcon from "@mui/icons-material/Close";
+import Yot from "@mui/icons-material/YouTube";
 import {
     Alert,
     Box,
@@ -442,7 +443,7 @@ const SongRecordDetailDialog = observer(function SongRecordDetailDialog({
                                 <ImgLazyload
                                     src={artworkUrl}
                                     alt={record.songTitle}
-                                    sx={{ width: 120, height: 120, borderRadius: 2, objectFit: "cover" }}
+                                    sx={{ width: 128, height: 128, borderRadius: 1, objectFit: "cover" }}
                                 />
                             )}
                             <Box sx={{ minWidth: 0, flex: 1 }}>
@@ -469,6 +470,18 @@ const SongRecordDetailDialog = observer(function SongRecordDetailDialog({
                                         <Chip size="small" label={record.songFullDetail.song.version} />
                                     )}
                                 </Stack>
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent((record.songFullDetail?.song.artist ?? "") + " - " + (record.songTitle ?? ""))}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    startIcon={<Yot />}
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                >
+                                    YouTube
+                                </Button>
                             </Box>
                         </Stack>
 
