@@ -28,7 +28,7 @@ export default defineManifest(({ mode }) => ({
     action: {
         default_title: "Toggle betterDXnet",
     },
-    permissions: ["tabs", "cookies", ...(mode === "firefox" ? [] : ["sidePanel"])],
+    permissions: ["activeTab", "cookies", ...(mode === "firefox" ? [] : ["sidePanel"])],
     host_permissions: ["https://maimaidx-eng.com/*"],
     background:
         mode === "firefox"
