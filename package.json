@@ -9,7 +9,8 @@
         "build:firefox": "tsc -b && bunx --bun vite build --mode firefox",
         "preview": "bunx --bun vite preview",
         "format": "bunx --bun prettier --write .",
-        "format:check": "bunx --bun prettier --check ."
+        "format:check": "bunx --bun prettier --check .",
+        "types": "bunx --bun tsc -b"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",

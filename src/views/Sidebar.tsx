@@ -66,7 +66,7 @@ const sidebarSections: SidebarSection[] = [
         disabled: false,
         items: [
             { labelKey: "recents", to: "/records/game", icon: FormatListNumberedIcon, disabled: false },
-            { labelKey: "songScores", to: "/records/songs", icon: MusicNoteIcon, disabled: true },
+            { labelKey: "songScores", to: "/records/songs", icon: MusicNoteIcon, disabled: false },
             { labelKey: "courses", to: "/records/courses", icon: FlagIcon, disabled: true },
             { labelKey: "worldStats", to: "/records/worldstats", icon: PublicIcon, disabled: true },
         ],

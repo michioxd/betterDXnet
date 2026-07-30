@@ -11,6 +11,7 @@ import PageSettingsGame from "./settings/Game";
 import PageSettingsPlayer from "./settings/Player";
 import PageRecordsLast50 from "./records/Last50";
 import PageRecordsLast50Detail from "./records/Last50Detail";
+import PageRecordsSongRecord from "./records/SongRecord";
 import PagePlayerAlbum from "./player/Album";
 import PagePlayerDXRating from "./player/DXRating";
 import PageSettingsApp from "./settings/App";
@@ -25,6 +26,7 @@ export default function AppRoutes() {
             <Route path="records">
                 <Route path="game" element={<PageRecordsLast50 />} />
                 <Route path="game/:id" element={<PageRecordsLast50Detail />} />
+                <Route path="songs" element={<PageRecordsSongRecord />} />
             </Route>
             <Route path="playdata">
                 <Route path="album" element={<PagePlayerAlbum />} />

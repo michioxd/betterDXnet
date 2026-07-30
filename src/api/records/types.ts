@@ -186,3 +186,35 @@ export type GameRecordSong = {
 export type GetGameRecordSong = {
     [diff in GameRecordSongDifficulty]: GameRecordSong[];
 };
+
+export type SongRecordDetail = {
+    id: string;
+
+    songTitle: string;
+    songdifficulty: GameRecordSongDifficulty;
+    songLevel: string;
+    songKind: GameRecordSongKind;
+    songFullDetail?: MaimaiSheetLookupResult;
+
+    levels: Partial<{
+        [diff in GameRecordSongDifficulty]: {
+            achievement: number;
+            dxScore: {
+                current: number;
+                max: number;
+            };
+            dxStar: number;
+            scoreRank: GameRecordScoreRank;
+
+            status: GameRecordStatus;
+            syncStatus: GameRecordSyncStatus;
+            syncStatusShort: GameRecordSyncStatusShort;
+
+            lastPlayedDate: Date;
+            playCount: number;
+
+            sheetDetail?: MaimaiSheetLookupResult["sheet"];
+            rating?: number;
+        };
+    }>;
+};

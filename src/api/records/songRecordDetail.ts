@@ -3,44 +3,23 @@ import { calculateRating } from "@/utils/rating";
 import { apiHelperFetchDoc } from "../helper";
 import {
     GameRecordScoreRank,
-    GameRecordSong,
     GameRecordSongDifficulty,
-    GameRecordSongDifficultyOrUtage,
     GameRecordSongKind,
     GameRecordStatus,
     GameRecordSyncStatus,
     GameRecordSyncStatusShort,
-    GetGameRecordSong,
+    SongRecordDetail,
 } from "./types";
 
-const SONG_RECORDS_PATH = "/maimai-mobile/record/musicGenre/search/";
-const DEFAULT_FETCH_ALL_THRESHOLD_MS = 800;
+const SONG_RECORD_DETAIL_PATH = "/maimai-mobile/record/musicDetail/";
 
-const allDifficulties = [
-    GameRecordSongDifficulty.BASIC,
-    GameRecordSongDifficulty.ADVANCED,
-    GameRecordSongDifficulty.EXPERT,
-    GameRecordSongDifficulty.MASTER,
-    GameRecordSongDifficulty.REMASTER,
-    GameRecordSongDifficulty.UTAGE,
-];
-
-const diffQueryByDifficulty: Record<GameRecordSongDifficultyOrUtage, string> = {
-    [GameRecordSongDifficulty.BASIC]: "0",
-    [GameRecordSongDifficulty.ADVANCED]: "1",
-    [GameRecordSongDifficulty.EXPERT]: "2",
-    [GameRecordSongDifficulty.MASTER]: "3",
-    [GameRecordSongDifficulty.REMASTER]: "4",
-    [GameRecordSongDifficulty.UTAGE]: "10",
-};
-
-const difficultyByImageName: Record<string, GameRecordSongDifficulty> = {
-    diff_basic: GameRecordSongDifficulty.BASIC,
-    diff_advanced: GameRecordSongDifficulty.ADVANCED,
-    diff_expert: GameRecordSongDifficulty.EXPERT,
-    diff_master: GameRecordSongDifficulty.MASTER,
-    diff_remaster: GameRecordSongDifficulty.REMASTER,
-    diff_utage: GameRecordSongDifficulty.UTAGE,
+const difficultyById: Record<string, GameRecordSongDifficulty> = {
+    basic: GameRecordSongDifficulty.BASIC,
+    advanced: GameRecordSongDifficulty.ADVANCED,
+    expert: GameRecordSongDifficulty.EXPERT,
+    master: GameRecordSongDifficulty.MASTER,
+    remaster: GameRecordSongDifficulty.REMASTER,
+    utage: GameRecordSongDifficulty.UTAGE,
 };
 
 const songKindByImageName: Record<string, GameRecordSongKind> = {
@@ -91,12 +70,6 @@ const syncStatusShortByImageName: Record<string, GameRecordSyncStatusShort> = {
     music_icon_fsdp: GameRecordSyncStatusShort.FULL_SYNC_DX_PLUS,
 };
 
-export type SongRecordsOptions = {
-    diff?: GameRecordSongDifficultyOrUtage;
-    fetchAll?: boolean;
-    thresholdMs?: number;
-};
-
 function normalizeText(value: string | null | undefined) {
     return value?.replace(/\s+/g, " ").trim() ?? "";
 }
@@ -116,6 +89,16 @@ function parseNumber(value: string | null | undefined) {
     return Number(normalizeText(value).replace(/[,%]/g, "")) || 0;
 }
 
+function parseDate(value: string) {
+    const [, year, month, day, hour, minute] = value.match(/(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})/) ?? [];
+
+    if (!year || !month || !day || !hour || !minute) {
+        return new Date(value);
+    }
+
+    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour) - 9, Number(minute)));
+}
+
 function parseDxScore(value: string | null | undefined) {
     const [current = "0", max = "0"] = normalizeText(value)
         .replace(/^DX SCORE\s*/i, "")
@@ -128,111 +111,105 @@ function parseDxScore(value: string | null | undefined) {
     };
 }
 
-function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+function parseSongTitle(document: Document) {
+    return normalizeText(document.querySelector(".basic_block.m_15.m_t_0.p_5.t_l .m_5.f_15.break")?.textContent);
 }
 
-function songRecordsPath(diff: GameRecordSongDifficultyOrUtage) {
-    const params = new URLSearchParams({
-        genre: "99",
-        diff: diffQueryByDifficulty[diff],
-    });
+function parseSongKind(document: Document) {
+    const name = imageName(
+        document.querySelector<HTMLImageElement>(".basic_block.m_15.m_t_0.p_5.t_l img[src*='/img/music_']"),
+    );
 
-    return `${SONG_RECORDS_PATH}?${params.toString()}`;
+    return songKindByImageName[name] ?? GameRecordSongKind.STANDARD;
 }
 
-function parseSongRecordBlock(block: HTMLElement): GameRecordSong | null {
+function parseDetailBlock(block: HTMLElement, songTitle: string, songKind: GameRecordSongKind) {
+    const difficulty = difficultyById[block.id];
     const scoreBlocks = [...block.querySelectorAll<HTMLElement>(".music_score_block")];
     const achievement = parseNumber(scoreBlocks[0]?.textContent);
 
-    if (achievement <= 0) {
+    if (!difficulty || achievement <= 0) {
         return null;
     }
 
-    const difficultyName = imageName(block.querySelector<HTMLImageElement>('img[src*="/img/diff_"]'));
-    const songKindName = imageName(
-        block.querySelector<HTMLImageElement>(".music_kind_icon, .music_kind_icon_utage img"),
-    );
     const resultIconNames = [...block.querySelectorAll<HTMLImageElement>('img[src*="/img/music_icon_"]')].map(
         imageName,
     );
     const scoreRankName = resultIconNames.find((name) => name in scoreRankByImageName) ?? "";
     const statusName = resultIconNames.find((name) => name in statusByImageName) ?? "";
     const syncStatusName = resultIconNames.find((name) => name in syncStatusByImageName) ?? "";
-    const songTitle = normalizeText(block.querySelector(".music_name_block")?.textContent);
-    const songLevel = normalizeText(block.querySelector(".music_lv_block")?.textContent);
-    const songdifficulty = difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC;
-    const songKind = songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD;
-
-    const querySongDetails = maimaiApi.getSheet({
-        title: songTitle,
-        level: songLevel,
-        type: songKind,
-    });
-
-    if (!querySongDetails) {
-        console.log(`Song details not found for ${songTitle} [${songLevel}] (${songKind})`);
-    }
-
+    const rows = [...block.querySelectorAll<HTMLTableRowElement>(".black_block tr")];
+    const lastPlayedDateText = normalizeText(rows[0]?.querySelectorAll("td")[1]?.textContent);
+    const playCountText = normalizeText(rows[1]?.querySelectorAll("td")[1]?.textContent);
+    const level = normalizeText(block.querySelector(".music_lv_back")?.textContent);
     const status =
         achievement < 80 ? GameRecordStatus.FAILED : (statusByImageName[statusName] ?? GameRecordStatus.CLEARED);
+    const sheetDetail = maimaiApi.getSheet({
+        title: songTitle,
+        level,
+        type: songKind,
+    })?.sheet;
     const rating =
-        songdifficulty === GameRecordSongDifficulty.UTAGE
+        difficulty === GameRecordSongDifficulty.UTAGE
             ? undefined
-            : querySongDetails?.sheet.internalLevelValue
+            : sheetDetail?.internalLevelValue
               ? calculateRating(
                     achievement,
-                    querySongDetails.sheet.internalLevelValue,
+                    sheetDetail.internalLevelValue,
                     status === GameRecordStatus.ALL_PERFECT || status === GameRecordStatus.ALL_PERFECT_PLUS,
                 )
               : undefined;
 
     return {
-        id: block.querySelector<HTMLInputElement>('form input[name="idx"]')?.value ?? "",
-        songTitle,
-        songdifficulty,
-        songLevel,
-        songKind,
-        songFullDetail: querySongDetails,
-
+        difficulty,
+        level,
         achievement,
         dxScore: parseDxScore(scoreBlocks[1]?.textContent),
+        dxStar: parseNumber(
+            resultIconNames
+                .find((name) => name.startsWith("music_icon_dxstar_detail_"))
+                ?.replace("music_icon_dxstar_detail_", ""),
+        ),
         scoreRank: scoreRankByImageName[scoreRankName] ?? GameRecordScoreRank.D,
         status,
         syncStatus: syncStatusByImageName[syncStatusName] ?? GameRecordSyncStatus.SOLO,
         syncStatusShort: syncStatusShortByImageName[syncStatusName] ?? GameRecordSyncStatusShort.SOLO,
+        lastPlayedDate: parseDate(lastPlayedDateText),
+        playCount: parseNumber(playCountText),
+        sheetDetail,
         rating,
     };
 }
 
-async function fetchSongRecordsByDiff(diff: GameRecordSongDifficultyOrUtage) {
-    const res = await apiHelperFetchDoc(songRecordsPath(diff));
+export async function songRecordDetail(id: string): Promise<SongRecordDetail> {
+    const res = await apiHelperFetchDoc(`${SONG_RECORD_DETAIL_PATH}?idx=${encodeURIComponent(id)}`);
+    const songTitle = parseSongTitle(res.document);
+    const songKind = parseSongKind(res.document);
+    const parsedLevels = [
+        ...res.document.querySelectorAll<HTMLElement>(
+            "[id].music_basic_score_back, [id].music_advanced_score_back, [id].music_expert_score_back, [id].music_master_score_back, [id].music_remaster_score_back, [id].music_utage_score_back",
+        ),
+    ]
+        .map((block) => parseDetailBlock(block, songTitle, songKind))
+        .filter((level): level is NonNullable<ReturnType<typeof parseDetailBlock>> => level !== null);
+    const firstLevel = parsedLevels[0];
+    const songLevel = firstLevel?.level ?? "";
+    const songdifficulty = firstLevel?.difficulty ?? GameRecordSongDifficulty.BASIC;
+    const songFullDetail = maimaiApi.getSheet({
+        title: songTitle,
+        level: songLevel,
+        type: songKind,
+    });
 
-    return [...res.document.querySelectorAll<HTMLElement>(".w_450.m_15.p_r.f_0")]
-        .map((block) => parseSongRecordBlock(block))
-        .filter((record): record is GameRecordSong => record !== null);
-}
-
-export async function songRecords(
-    options: SongRecordsOptions & { diff: GameRecordSongDifficultyOrUtage },
-): Promise<GameRecordSong[]>;
-export async function songRecords(options?: SongRecordsOptions): Promise<GetGameRecordSong>;
-export async function songRecords(options: SongRecordsOptions = {}) {
-    if (options.diff) {
-        return fetchSongRecordsByDiff(options.diff);
-    }
-
-    const thresholdMs = options.thresholdMs ?? DEFAULT_FETCH_ALL_THRESHOLD_MS;
-    const difficulties: GameRecordSongDifficultyOrUtage[] = allDifficulties;
-    const result: Partial<Record<GameRecordSongDifficultyOrUtage, GameRecordSong[]>> = {};
-
-    for (const [index, diff] of difficulties.entries()) {
-        if (index > 0 && thresholdMs > 0) {
-            await sleep(thresholdMs);
-        }
-
-        result[diff] = await fetchSongRecordsByDiff(diff);
-    }
-
-    return result as GetGameRecordSong;
+    return {
+        id,
+        songTitle,
+        songdifficulty,
+        songLevel,
+        songKind,
+        songFullDetail,
+        levels: Object.fromEntries(
+            parsedLevels.map(({ difficulty, level: _level, ...detail }) => [difficulty, detail]),
+        ) as SongRecordDetail["levels"],
+    };
 }

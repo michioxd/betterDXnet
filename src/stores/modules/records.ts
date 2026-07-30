@@ -1,5 +1,11 @@
 import { apiRecords } from "@/api";
-import type { GameRecordLast50, GameRecordPlayLogDetail } from "@/api/records";
+import {
+    GameRecordSongDifficulty,
+    type GameRecordLast50,
+    type GameRecordPlayLogDetail,
+    type GameRecordSong,
+    type SongRecordDetail,
+} from "@/api/records";
 import { makeAutoObservable, observable, runInAction } from "mobx";
 
 import type { RootStore } from "../root";
@@ -16,10 +22,22 @@ export class RecordsStore {
     playLogDetailLoading: Record<string, boolean> = {};
     playLogDetailErrors: Record<string, Error | undefined> = {};
     private playLogDetailRequestIds: Record<string, number> = {};
+    songRecords: Partial<Record<GameRecordSongDifficulty, GameRecordSong[]>> = {};
+    songRecordsLoaded: Partial<Record<GameRecordSongDifficulty, boolean>> = {};
+    songRecordsLoading = false;
+    songRecordsError: Error | null = null;
+    private songRecordsRequestId = 0;
+    songRecordDetails: Record<string, SongRecordDetail> = {};
+    songRecordDetailLoading: Record<string, boolean> = {};
+    songRecordDetailErrors: Record<string, Error | undefined> = {};
+    private songRecordDetailRequestIds: Record<string, number> = {};
 
     constructor(root: RootStore) {
         this.root = root;
-        makeAutoObservable<this, "last50RequestId" | "playLogDetailRequestIds">(this, {
+        makeAutoObservable<
+            this,
+            "last50RequestId" | "playLogDetailRequestIds" | "songRecordsRequestId" | "songRecordDetailRequestIds"
+        >(this, {
             root: false,
             last50: observable.ref,
             last50RequestId: false,
@@ -27,6 +45,13 @@ export class RecordsStore {
             playLogDetailLoading: observable.ref,
             playLogDetailErrors: observable.ref,
             playLogDetailRequestIds: false,
+            songRecords: observable.ref,
+            songRecordsLoaded: observable.ref,
+            songRecordsRequestId: false,
+            songRecordDetails: observable.ref,
+            songRecordDetailLoading: observable.ref,
+            songRecordDetailErrors: observable.ref,
+            songRecordDetailRequestIds: false,
         });
     }
 
@@ -146,5 +171,122 @@ export class RecordsStore {
         if (this.playLogDetails[id] || this.playLogDetailLoading[id]) return;
 
         return this.refreshPlayLogDetail(id);
+    }
+
+    async refreshSongRecords(difficulties: GameRecordSongDifficulty[]) {
+        const requestId = ++this.songRecordsRequestId;
+
+        runInAction(() => {
+            this.songRecordsLoading = true;
+            this.songRecordsError = null;
+        });
+
+        try {
+            const entries: [GameRecordSongDifficulty, GameRecordSong[]][] = [];
+
+            for (const diff of difficulties) {
+                entries.push([diff, await apiRecords.songRecords({ diff })]);
+            }
+
+            if (requestId !== this.songRecordsRequestId) return;
+
+            runInAction(() => {
+                this.songRecords = {
+                    ...this.songRecords,
+                    ...Object.fromEntries(entries),
+                };
+                this.songRecordsLoaded = {
+                    ...this.songRecordsLoaded,
+                    ...Object.fromEntries(entries.map(([diff]) => [diff, true])),
+                };
+            });
+        } catch (error) {
+            if (requestId !== this.songRecordsRequestId) return;
+
+            runInAction(() => {
+                this.songRecordsError = error as Error;
+            });
+        } finally {
+            if (requestId !== this.songRecordsRequestId) return;
+
+            runInAction(() => {
+                this.songRecordsLoading = false;
+            });
+        }
+    }
+
+    ensureSongRecords(difficulties: GameRecordSongDifficulty[]) {
+        if (this.songRecordsLoading) return;
+
+        const unloaded = difficulties.filter((diff) => !this.songRecordsLoaded[diff]);
+
+        if (unloaded.length === 0) return;
+
+        return this.refreshSongRecords(unloaded);
+    }
+
+    getSongRecordDetail(id: string) {
+        return this.songRecordDetails[id];
+    }
+
+    isSongRecordDetailLoading(id: string) {
+        return this.songRecordDetailLoading[id] ?? false;
+    }
+
+    getSongRecordDetailError(id: string) {
+        return this.songRecordDetailErrors[id] ?? null;
+    }
+
+    async refreshSongRecordDetail(id: string) {
+        const requestId = (this.songRecordDetailRequestIds[id] ?? 0) + 1;
+        this.songRecordDetailRequestIds[id] = requestId;
+
+        runInAction(() => {
+            this.songRecordDetailLoading = {
+                ...this.songRecordDetailLoading,
+                [id]: true,
+            };
+            this.songRecordDetailErrors = {
+                ...this.songRecordDetailErrors,
+                [id]: undefined,
+            };
+        });
+
+        try {
+            const detail = await apiRecords.songRecordDetail(id);
+
+            if (requestId !== this.songRecordDetailRequestIds[id]) return;
+
+            runInAction(() => {
+                this.songRecordDetails = {
+                    ...this.songRecordDetails,
+                    [id]: detail,
+                };
+            });
+        } catch (error) {
+            if (requestId !== this.songRecordDetailRequestIds[id]) return;
+
+            runInAction(() => {
+                this.songRecordDetailErrors = {
+                    ...this.songRecordDetailErrors,
+                    [id]: error as Error,
+                };
+            });
+        } finally {
+            if (requestId !== this.songRecordDetailRequestIds[id]) return;
+
+            runInAction(() => {
+                this.songRecordDetailLoading = {
+                    ...this.songRecordDetailLoading,
+                    [id]: false,
+                };
+            });
+        }
+    }
+
+    ensureSongRecordDetail(id: string) {
+        if (this.songRecordDetails[id] || this.songRecordDetailLoading[id]) return;
+
+        return this.refreshSongRecordDetail(id);
     }
 }

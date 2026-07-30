@@ -7,6 +7,7 @@ import {
     playlogBaseImg,
     songKindBaseImg,
 } from "@/api/records/types";
+import ImgLazyload from "@/components/Img.Lazyload";
 import { rootStore } from "@/stores/root";
 import HeartIcon from "@mui/icons-material/Favorite";
 import ClockIcon from "@mui/icons-material/AccessTime";
@@ -18,7 +19,6 @@ import {
     Card,
     CardActionArea,
     CardContent,
-    CardMedia,
     Chip,
     CircularProgress,
     Grid,
@@ -116,9 +116,8 @@ export function RecordCard({
                     <Stack spacing={2} sx={{ height: "100%" }}>
                         <Stack direction="row" spacing={2}>
                             <Box sx={{ position: "relative" }}>
-                                <CardMedia
-                                    component="img"
-                                    image={record.songArtwork}
+                                <ImgLazyload
+                                    src={record.songArtwork}
                                     alt={record.songTitle}
                                     sx={{
                                         width: 95,
@@ -135,9 +134,8 @@ export function RecordCard({
                                         transform: "scale(1.05)",
                                     }}
                                 />
-                                <CardMedia
-                                    component="img"
-                                    image={record.songArtwork}
+                                <ImgLazyload
+                                    src={record.songArtwork}
                                     alt={record.songTitle}
                                     sx={{
                                         width: 95,
@@ -150,7 +148,7 @@ export function RecordCard({
                                     }}
                                 />
 
-                                <img
+                                <ImgLazyload
                                     src={songKindBaseImg.replace(
                                         "{}",
                                         record.songKind === "std" ? "standard" : record.songKind,
@@ -223,7 +221,7 @@ export function RecordCard({
                             </Stack>
 
                             <Stack>
-                                <img
+                                <ImgLazyload
                                     src={playlogBaseImg.replace("{}", record.scoreRank.toLowerCase())}
                                     alt={record.scoreRank}
                                     style={{ height: "50px" }}
@@ -253,7 +251,7 @@ export function RecordCard({
                         <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", alignItems: "center" }}>
                             {record.status !== GameRecordStatus.FAILED &&
                                 record.status !== GameRecordStatus.CLEARED && (
-                                    <img
+                                    <ImgLazyload
                                         src={musicIconBaseImg.replace("{}", record.status)}
                                         alt={record.syncPlayGrade}
                                         style={{
@@ -265,7 +263,7 @@ export function RecordCard({
                                 )}
                             {record.syncStatusShort !== GameRecordSyncStatusShort.SOLO && (
                                 <>
-                                    <img
+                                    <ImgLazyload
                                         src={musicIconBaseImg.replace("{}", record.syncStatusShort)}
                                         style={{
                                             width: "45px",
@@ -273,7 +271,7 @@ export function RecordCard({
                                             objectFit: "cover",
                                         }}
                                     />
-                                    <img
+                                    <ImgLazyload
                                         src={playlogBaseImg.replace("{}", record.syncPlayGrade)}
                                         style={{
                                             width: "45px",
@@ -285,7 +283,7 @@ export function RecordCard({
                             )}
 
                             {record.dxStar > 0 && (
-                                <img
+                                <ImgLazyload
                                     src={musicIconBaseImg.replace("{}", "dxstar_" + record.dxStar)}
                                     style={{
                                         width: "45px",
@@ -351,7 +349,7 @@ export function RecordCard({
                                     }}
                                 >
                                     {record.mode === GameRecordMode.PERFECT_CHALLENGE && (
-                                        <img
+                                        <ImgLazyload
                                             src={netImageBase.replace("{}", "icon_perfectchallenge")}
                                             style={{
                                                 width: "75px",
@@ -362,7 +360,7 @@ export function RecordCard({
                                         />
                                     )}
                                     {record.mode === GameRecordMode.KALEIDXSCOPE && (
-                                        <img
+                                        <ImgLazyload
                                             src={netImageBase.replace("{}", "icon_kaleidxscope")}
                                             style={{
                                                 width: "75px",

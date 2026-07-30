@@ -2,6 +2,7 @@ import { difficultyColor } from "@/api/records";
 import { playlogBaseImg, songKindBaseImg } from "@/api/records/types";
 import type { GetPlayerDXRatingItem } from "@/api/player";
 import type { GameRecordSong } from "@/api/records";
+import ImgLazyload from "@/components/Img.Lazyload";
 import { rootStore } from "@/stores/root";
 import RatingCanvas, { type RatingCanvasHandle } from "@/utils/image/dx";
 import { calculateManualDXRating, sumManualDXRating } from "@/utils/manualDxRating";
@@ -15,7 +16,6 @@ import {
     Button,
     Card,
     CardContent,
-    CardMedia,
     Chip,
     CircularProgress,
     Dialog,
@@ -64,9 +64,8 @@ function DXRatingCard({ item }: { item: DXRatingItem }) {
                     <Stack direction="row" spacing={2}>
                         {item.songFullDetail && (
                             <Box sx={{ position: "relative", flexShrink: 0 }}>
-                                <CardMedia
-                                    component="img"
-                                    image={artworkUrl}
+                                <ImgLazyload
+                                    src={artworkUrl}
                                     alt={item.songTitle}
                                     sx={{
                                         width: 88,
@@ -81,9 +80,8 @@ function DXRatingCard({ item }: { item: DXRatingItem }) {
                                         transform: "scale(1.05)",
                                     }}
                                 />
-                                <CardMedia
-                                    component="img"
-                                    image={artworkUrl}
+                                <ImgLazyload
+                                    src={artworkUrl}
                                     alt={item.songTitle}
                                     sx={{
                                         width: 88,
@@ -93,8 +91,7 @@ function DXRatingCard({ item }: { item: DXRatingItem }) {
                                         position: "relative",
                                     }}
                                 />
-                                <Box
-                                    component="img"
+                                <ImgLazyload
                                     src={songKindBaseImg.replace(
                                         "{}",
                                         item.songKind === "std" ? "standard" : item.songKind,
@@ -145,8 +142,7 @@ function DXRatingCard({ item }: { item: DXRatingItem }) {
                             </Typography>
                         </Box>
 
-                        <Box
-                            component="img"
+                        <ImgLazyload
                             src={playlogBaseImg.replace("{}", item.scoreRank)}
                             alt={item.scoreRank}
                             sx={{ height: 44, objectFit: "contain" }}
