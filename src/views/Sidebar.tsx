@@ -145,7 +145,7 @@ const sidebarSections: SidebarSection[] = [
         items: [
             { labelKey: "gameOptions", to: "/settings/game", icon: SettingsApplicationsIcon },
             { labelKey: "player", to: "/settings/player", icon: PersonIcon },
-            { labelKey: "favoriteSongs", to: "/settings/favorite-songs", icon: FavoriteIcon, disabled: true },
+            { labelKey: "favoriteSongs", to: "/settings/favorite-songs", icon: FavoriteIcon },
             { labelKey: "app", to: "/settings/app", icon: SettingsIcon },
         ],
     },

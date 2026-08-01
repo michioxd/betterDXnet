@@ -2,6 +2,7 @@ import { maimaiApi } from "@/db/maimaiDataApi";
 import { apiHelperFetchDoc } from "../helper";
 import { GameRecordSongDifficulty, GameRecordSongKind } from "../records";
 import { GetPlayerAlbum } from "./types";
+import { imageName, normalizeText, parsePlayDate } from "@/utils/string";
 
 const PLAYER_ALBUM_PATH = "/maimai-mobile/playerData/photo/";
 
@@ -18,31 +19,6 @@ const songKindByImageName: Record<string, GameRecordSongKind> = {
     music_dx: GameRecordSongKind.DX,
     music_utage: GameRecordSongKind.UTAGE,
 };
-
-function normalizeText(value: string | null | undefined) {
-    return value?.replace(/\s+/g, " ").trim() ?? "";
-}
-
-function imageName(image: HTMLImageElement | null | undefined) {
-    return (
-        image
-            ?.getAttribute("src")
-            ?.split("/")
-            .pop()
-            ?.split("?")[0]
-            ?.replace(/\.png$/, "") ?? ""
-    );
-}
-
-function parseJapanDate(value: string) {
-    const [, year, month, day, hour, minute] = value.match(/(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})/) ?? [];
-
-    if (!year || !month || !day || !hour || !minute) {
-        return new Date(value);
-    }
-
-    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour) - 9, Number(minute)));
-}
 
 export function parsePlayerAlbumBlock(block: HTMLElement): GetPlayerAlbum {
     const difficultyName = imageName(block.querySelector<HTMLImageElement>('img[src*="/img/diff_"]'));
@@ -66,7 +42,7 @@ export function parsePlayerAlbumBlock(block: HTMLElement): GetPlayerAlbum {
         songFullDetail: querySongDetails,
         location: normalizeText(block.querySelector(".see_through_block")?.textContent),
         imageUrl: block.querySelector<HTMLAnchorElement>('a[target="_blank"]')?.href ?? "",
-        date: parseJapanDate(normalizeText(block.querySelector(".block_info")?.textContent)),
+        date: parsePlayDate(normalizeText(block.querySelector(".block_info")?.textContent)),
     };
 }
 

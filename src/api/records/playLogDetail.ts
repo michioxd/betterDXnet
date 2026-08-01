@@ -2,6 +2,7 @@ import { ApiMeRankType, getRankTypeFromRatingImg } from "../me";
 import { apiHelperFetchDoc } from "../helper";
 import type { GameRecordPlayLogDetail, JudgeCount, JudgeTable } from "./types";
 import { parsePlaylogBlock } from "./last50";
+import { imageName, parseNumber, parsePair } from "@/utils/string";
 
 const PLAYLOG_DETAIL_PATH = "/maimai-mobile/record/playlogDetail/";
 
@@ -27,36 +28,6 @@ const rankTypeByImageName: Record<string, ApiMeRankType> = {
     rating_base_rainbow: ApiMeRankType.Rainbow,
     rating_base_rainbow_kiwami: ApiMeRankType.RainbowKiwami,
 };
-
-function normalizeText(value: string | null | undefined) {
-    return value?.replace(/\s+/g, " ").trim() ?? "";
-}
-
-function imageName(image: HTMLImageElement | null | undefined) {
-    return (
-        image
-            ?.getAttribute("src")
-            ?.split("/")
-            .pop()
-            ?.split("?")[0]
-            ?.replace(/\.png$/, "") ?? ""
-    );
-}
-
-function parseNumber(value: string | null | undefined) {
-    return Number(normalizeText(value).replace(/[,+()]/g, "")) || 0;
-}
-
-function parsePair(value: string | null | undefined) {
-    const [current = "0", max = "0"] = normalizeText(value)
-        .split("/")
-        .map((item) => item.trim());
-
-    return {
-        current: parseNumber(current),
-        max: parseNumber(max),
-    };
-}
 
 function parseJudgeCount(row: HTMLTableRowElement | null): JudgeCount {
     if (!row) return { ...emptyJudgeCount };

@@ -10,6 +10,7 @@ import {
     GameRecordSyncStatus,
     GameRecordSyncStatusShort,
 } from "./types";
+import { imageName, normalizeText, parseNumber, parsePlayDate } from "@/utils/string";
 
 const LAST_50_PATH = "/maimai-mobile/record/";
 const PLAYLOG_DETAIL_PATH = "https://maimaidx-eng.com/maimai-mobile/record/playlogDetail/";
@@ -73,35 +74,6 @@ const syncStatusShortByImageName: Record<string, GameRecordSyncStatusShort> = {
     fsd: GameRecordSyncStatusShort.FULL_SYNC_DX,
     fsdplus: GameRecordSyncStatusShort.FULL_SYNC_DX_PLUS,
 };
-
-function normalizeText(value: string | null | undefined) {
-    return value?.replace(/\s+/g, " ").trim() ?? "";
-}
-
-function imageName(image: HTMLImageElement | null | undefined) {
-    return (
-        image
-            ?.getAttribute("src")
-            ?.split("/")
-            .pop()
-            ?.split("?")[0]
-            ?.replace(/\.png$/, "") ?? ""
-    );
-}
-
-function parseNumber(value: string | null | undefined) {
-    return Number(normalizeText(value).replace(/,/g, "")) || 0;
-}
-
-function parsePlayDate(value: string) {
-    const [, year, month, day, hour, minute] = value.match(/(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})/) ?? [];
-
-    if (!year || !month || !day || !hour || !minute) {
-        return new Date(value);
-    }
-
-    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour) - 9, Number(minute)));
-}
 
 function parseSongTitle(block: HTMLElement) {
     const titleBlock = block.querySelector<HTMLElement>(".basic_block.m_5.m_t_17.m_r_60");

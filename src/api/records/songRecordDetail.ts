@@ -10,6 +10,7 @@ import {
     GameRecordSyncStatusShort,
     SongRecordDetail,
 } from "./types";
+import { imageName, normalizeText, parseDxScore, parseNumber, parsePlayDate } from "@/utils/string";
 
 const SONG_RECORD_DETAIL_PATH = "/maimai-mobile/record/musicDetail/";
 
@@ -69,47 +70,6 @@ const syncStatusShortByImageName: Record<string, GameRecordSyncStatusShort> = {
     music_icon_fsd: GameRecordSyncStatusShort.FULL_SYNC_DX,
     music_icon_fsdp: GameRecordSyncStatusShort.FULL_SYNC_DX_PLUS,
 };
-
-function normalizeText(value: string | null | undefined) {
-    return value?.replace(/\s+/g, " ").trim() ?? "";
-}
-
-function imageName(image: HTMLImageElement | null | undefined) {
-    return (
-        image
-            ?.getAttribute("src")
-            ?.split("/")
-            .pop()
-            ?.split("?")[0]
-            ?.replace(/\.png$/, "") ?? ""
-    );
-}
-
-function parseNumber(value: string | null | undefined) {
-    return Number(normalizeText(value).replace(/[,%]/g, "")) || 0;
-}
-
-function parseDate(value: string) {
-    const [, year, month, day, hour, minute] = value.match(/(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})/) ?? [];
-
-    if (!year || !month || !day || !hour || !minute) {
-        return new Date(value);
-    }
-
-    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour) - 9, Number(minute)));
-}
-
-function parseDxScore(value: string | null | undefined) {
-    const [current = "0", max = "0"] = normalizeText(value)
-        .replace(/^DX SCORE\s*/i, "")
-        .split("/")
-        .map((item) => item.trim());
-
-    return {
-        current: parseNumber(current),
-        max: parseNumber(max),
-    };
-}
 
 function parseSongTitle(document: Document) {
     return normalizeText(document.querySelector(".basic_block.m_15.m_t_0.p_5.t_l .m_5.f_15.break")?.textContent);
@@ -174,7 +134,7 @@ function parseDetailBlock(block: HTMLElement, songTitle: string, songKind: GameR
         status,
         syncStatus: syncStatusByImageName[syncStatusName] ?? GameRecordSyncStatus.SOLO,
         syncStatusShort: syncStatusShortByImageName[syncStatusName] ?? GameRecordSyncStatusShort.SOLO,
-        lastPlayedDate: parseDate(lastPlayedDateText),
+        lastPlayedDate: parsePlayDate(lastPlayedDateText),
         playCount: parseNumber(playCountText),
         sheetDetail,
         rating,

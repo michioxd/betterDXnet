@@ -15,6 +15,7 @@ import PageRecordsSongRecord from "./records/SongRecord";
 import PagePlayerAlbum from "./player/Album";
 import PagePlayerDXRating from "./player/DXRating";
 import PageSettingsApp from "./settings/App";
+import PageSettingsFavoriteSongs from "./settings/FavoriteSongs";
 import PageTest from "./test";
 
 export default function AppRoutes() {
@@ -40,6 +41,7 @@ export default function AppRoutes() {
             </Route>
             <Route path="settings">
                 <Route path="app" element={<PageSettingsApp />} />
+                <Route path="favorite-songs" element={<PageSettingsFavoriteSongs />} />
                 <Route path="game" element={<PageSettingsGame />} />
                 <Route path="player" element={<PageSettingsPlayer />} />
             </Route>

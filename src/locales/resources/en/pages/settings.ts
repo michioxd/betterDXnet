@@ -237,6 +237,21 @@ const I18nSettings = {
         friendRegistrationDescription:
             "When selecting 'Skip', friend registration screen will skip when playing 2P with a user who is not a friend.",
     },
+    favoriteSongs: {
+        title: "Settings / Favorite songs",
+        description: "Choose up to 30 favorite songs for maimai DX NET.",
+        loading: "Loading favorite songs...",
+        search: "Search songs or artists",
+        category: "Category",
+        allCategories: "All categories",
+        selectedOnly: "Selected only",
+        deselectAll: "Deselect all",
+        selectedCount: "{{count}}/{{max}} selected",
+        maxSelected: "You can select up to {{max}} songs. Deselect one to choose another song.",
+        resultCount: "Showing {{count}} of {{total}} songs",
+        empty: "No songs found.",
+        updated: "Favorite songs updated.",
+    },
 };
 
 export default I18nSettings;

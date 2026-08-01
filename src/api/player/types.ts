@@ -6,6 +6,7 @@ import {
     GameRecordSongResultBase,
     GameRecordSongKind,
 } from "../records";
+import { MaimaiSong } from "@/db/maimaiDataTypes";
 
 export interface GetPlayerAlbum extends GameRecordSongBase {
     songKind: GameRecordSongKind;
@@ -29,4 +30,12 @@ export interface GetPlayerDXRating {
     old: GetPlayerDXRatingItem[];
     selectionNew: GetPlayerDXRatingItem[];
     selectionOld: GetPlayerDXRatingItem[];
+}
+
+export interface GetPlayerFavoriteSong {
+    songTitle: GameRecordSongBase["songTitle"];
+    songFullDetail?: MaimaiSong;
+
+    selected: boolean;
+    value: string;
 }

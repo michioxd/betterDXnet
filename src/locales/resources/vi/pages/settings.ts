@@ -237,6 +237,21 @@ const I18nSettings = {
         friendRegistrationDescription:
             "Khi chọn 'Bỏ qua', màn hình đăng ký bạn bè sẽ được bỏ qua khi chơi 2P với người dùng chưa phải bạn bè.",
     },
+    favoriteSongs: {
+        title: "Cài đặt / Bài hát yêu thích",
+        description: "Chọn tối đa 30 bài hát yêu thích cho maimai DX NET.",
+        loading: "Đang tải bài hát yêu thích...",
+        search: "Tìm bài hát hoặc artist",
+        category: "Category",
+        allCategories: "Tất cả category",
+        selectedOnly: "Chỉ hiện bài đã chọn",
+        deselectAll: "Bỏ chọn tất cả",
+        selectedCount: "Đã chọn {{count}}/{{max}}",
+        maxSelected: "Bạn chỉ có thể chọn tối đa {{max}} bài. Bỏ chọn một bài để chọn bài khác.",
+        resultCount: "Đang hiện {{count}}/{{total}} bài",
+        empty: "Không tìm thấy bài nào.",
+        updated: "Đã cập nhật bài hát yêu thích.",
+    },
 };
 
 export default I18nSettings;

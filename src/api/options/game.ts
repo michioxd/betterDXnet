@@ -1,3 +1,4 @@
+import { normalizeText } from "@/utils/string";
 import { apiHelperFetchDoc } from "../helper";
 
 export type GameOptionName =
@@ -77,10 +78,6 @@ const sectionTitleByImageName: Record<string, string> = {
     title_option_design: "Design",
     title_option_sound: "Sound",
 };
-
-function normalizeText(value: string | null | undefined) {
-    return value?.replace(/\s+/g, " ").trim() ?? "";
-}
 
 function getSectionTitle(block: HTMLElement) {
     const titleImage = block.querySelector<HTMLImageElement>('img[src*="/img/title_option_"]');

@@ -3,6 +3,7 @@ import { calculateRating } from "@/utils/rating";
 import { apiHelperFetchDoc } from "../helper";
 import { GameRecordScoreRank, GameRecordSongDifficulty, GameRecordSongKind, GameRecordStatus } from "../records";
 import { GetPlayerDXRating, GetPlayerDXRatingItem } from "./types";
+import { imageName, normalizeText, parseDxScore, parseNumber } from "@/utils/string";
 
 const DX_RATING_PATH = "/maimai-mobile/home/ratingTargetMusic/";
 
@@ -52,37 +53,6 @@ const statusByImageName: Record<string, GameRecordStatus> = {
     music_icon_ap: GameRecordStatus.ALL_PERFECT,
     music_icon_app: GameRecordStatus.ALL_PERFECT_PLUS,
 };
-
-function normalizeText(value: string | null | undefined) {
-    return value?.replace(/\s+/g, " ").trim() ?? "";
-}
-
-function imageName(image: HTMLImageElement | null | undefined) {
-    return (
-        image
-            ?.getAttribute("src")
-            ?.split("/")
-            .pop()
-            ?.split("?")[0]
-            ?.replace(/\.png$/, "") ?? ""
-    );
-}
-
-function parseNumber(value: string | null | undefined) {
-    return Number(normalizeText(value).replace(/[,%]/g, "")) || 0;
-}
-
-function parseDxScore(value: string | null | undefined) {
-    const [current = "0", max = "0"] = normalizeText(value)
-        .replace(/^DX SCORE\s*/i, "")
-        .split("/")
-        .map((item) => item.trim());
-
-    return {
-        current: parseNumber(current),
-        max: parseNumber(max),
-    };
-}
 
 export function parsePlayerDXRatingBlock(block: HTMLElement): GetPlayerDXRatingItem {
     const difficultyName = imageName(block.querySelector<HTMLImageElement>('img[src*="/img/diff_"]'));

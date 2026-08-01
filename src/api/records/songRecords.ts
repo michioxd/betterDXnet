@@ -12,6 +12,7 @@ import {
     GameRecordSyncStatusShort,
     GetGameRecordSong,
 } from "./types";
+import { imageName, normalizeText, parseDxScore, parseNumber } from "@/utils/string";
 
 const SONG_RECORDS_PATH = "/maimai-mobile/record/musicGenre/search/";
 const DEFAULT_FETCH_ALL_THRESHOLD_MS = 800;
@@ -96,37 +97,6 @@ export type SongRecordsOptions = {
     fetchAll?: boolean;
     thresholdMs?: number;
 };
-
-function normalizeText(value: string | null | undefined) {
-    return value?.replace(/\s+/g, " ").trim() ?? "";
-}
-
-function imageName(image: HTMLImageElement | null | undefined) {
-    return (
-        image
-            ?.getAttribute("src")
-            ?.split("/")
-            .pop()
-            ?.split("?")[0]
-            ?.replace(/\.png$/, "") ?? ""
-    );
-}
-
-function parseNumber(value: string | null | undefined) {
-    return Number(normalizeText(value).replace(/[,%]/g, "")) || 0;
-}
-
-function parseDxScore(value: string | null | undefined) {
-    const [current = "0", max = "0"] = normalizeText(value)
-        .replace(/^DX SCORE\s*/i, "")
-        .split("/")
-        .map((item) => item.trim());
-
-    return {
-        current: parseNumber(current),
-        max: parseNumber(max),
-    };
-}
 
 function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
