@@ -36,7 +36,7 @@ const I18nLayout = {
         techStack: "{{viteVersion}} - React {{reactVersion}} - TypeScript {{typescriptVersion}}",
         buildDate: "Build date: {{time}} {{date}}",
         segaDisclaimer:
-            "SEGA and maimai are registered trademarks of SEGA Interactive Co., Ltd. This is an unofficial extension and is not affiliated with, endorsed, sponsored, or approved by SEGA Interactive Co., Ltd.",
+            "maimai is a registered trademark of SEGA Interactive Co., Ltd. This is an unofficial extension and is not affiliated with, endorsed, sponsored, or approved by SEGA Interactive Co., Ltd.",
     },
     disclaimer: {
         title: "Disclaimer",
