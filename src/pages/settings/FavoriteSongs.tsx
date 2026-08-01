@@ -78,7 +78,7 @@ function FavoriteSongRowImpl({ song, checked, disabled, onToggle }: FavoriteSong
                         height: "100%",
                     }}
                 >
-                    <Checkbox checked={checked} disabled={disabled} onChange={() => onToggle(song.value)} />
+                    <Checkbox checked={checked} disabled={disabled} />
 
                     {song.songFullDetail && (
                         <ImgLazyload
