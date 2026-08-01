@@ -63,6 +63,7 @@ jobs:
                   self-hosted: false
                   jwt-issuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
                   jwt-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
+                  license: "GPL-3.0-only"
 
             - name: Upload to Chrome Web Store
               uses: mobilefirstllc/cws-publish@latest
