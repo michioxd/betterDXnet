@@ -156,7 +156,9 @@ export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
         ? "perfect_challenge"
         : block.querySelector('img[src*="/img/icon_kaleidxscope.png"]')
           ? "kaleidxscope"
-          : "normal";
+          : block.querySelector('img[src*="/img/icon_course.png"]')
+            ? "course"
+            : "normal";
 
     const songTitle = parseSongTitle(block);
     const songLevel = normalizeText(block.querySelector(".playlog_level_icon")?.textContent);

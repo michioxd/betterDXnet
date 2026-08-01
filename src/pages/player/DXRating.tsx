@@ -32,7 +32,7 @@ import {
     Typography,
 } from "@mui/material";
 import { observer } from "mobx-react-lite";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppMode } from "@/app-context";
 import { extensionRuntime } from "@/runtime";
@@ -45,7 +45,7 @@ function formatPercent(value: number) {
 type DXRatingItem = GetPlayerDXRatingItem | GameRecordSong;
 type ExportStatus = "preparingCanvas" | "loadingAssets" | "exportingImage" | "downloadStarted" | "exportFailed";
 
-function DXRatingCard({ item }: { item: DXRatingItem }) {
+function DXRatingCardImpl({ item }: { item: DXRatingItem }) {
     const { t } = useTranslation("player");
     const color = difficultyColor[item.songdifficulty];
     const artworkUrl = item.songFullDetail ? dataSource.getSongArtworkUrl(item.songFullDetail.song) : "";
@@ -169,7 +169,9 @@ function DXRatingCard({ item }: { item: DXRatingItem }) {
     );
 }
 
-function DXRatingSection({ title, items }: { title: string; items: DXRatingItem[] }) {
+const DXRatingCard = memo(DXRatingCardImpl);
+
+function DXRatingSectionImpl({ title, items }: { title: string; items: DXRatingItem[] }) {
     const { t } = useTranslation("player");
     const totalRating = items.reduce((total, item) => total + (item.rating ?? 0), 0);
 
@@ -198,6 +200,8 @@ function DXRatingSection({ title, items }: { title: string; items: DXRatingItem[
         </Box>
     );
 }
+
+const DXRatingSection = memo(DXRatingSectionImpl);
 
 const isFirefox = () => {
     return navigator.userAgent.toLowerCase().includes("firefox");

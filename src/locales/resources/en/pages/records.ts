@@ -18,6 +18,16 @@ const I18nRecords = {
         ratingUnavailable: "Rating unavailable because chart details were not found.",
         filters: {
             difficulty: "Difficulty",
+            search: "Search title or artist",
+            ratingRange: "Rating range",
+            achievementRange: "Achievement range",
+            minRating: "Min rating",
+            maxRating: "Max rating",
+            minAchievement: "Min achievement",
+            maxAchievement: "Max achievement",
+            rank: "Rank",
+            clear: "Clear",
+            all: "All",
         },
         view: {
             card: "Cards",

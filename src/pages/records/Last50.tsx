@@ -27,7 +27,7 @@ import {
     Typography,
 } from "@mui/material";
 import { observer } from "mobx-react-lite";
-import { useEffect, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { netImageBase } from "@/api/helper";
@@ -89,7 +89,7 @@ export function colorFromSessionStart(value: Date) {
     return colorFromHue(hueFromSessionStart(value));
 }
 
-export function RecordCard({
+function RecordCardImpl({
     record,
     sessionColor,
     to = `/records/game/${record.id}`,
@@ -252,7 +252,7 @@ export function RecordCard({
                             {record.status !== GameRecordStatus.FAILED &&
                                 record.status !== GameRecordStatus.CLEARED && (
                                     <ImgLazyload
-                                        src={musicIconBaseImg.replace("{}", record.status)}
+                                        src={musicIconBaseImg.replace("{}", record.status.replace("plus", "p"))}
                                         alt={record.syncPlayGrade}
                                         style={{
                                             width: "45px",
@@ -399,6 +399,10 @@ export function RecordCard({
         </Card>
     );
 }
+
+const RecordCard = memo(RecordCardImpl);
+
+export { RecordCard };
 
 function PageRecordsLast50() {
     const { t } = useTranslation("records");

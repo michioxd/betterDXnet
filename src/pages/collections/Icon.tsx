@@ -8,7 +8,6 @@ import {
     CardActionArea,
     CardActions,
     CardContent,
-    CardMedia,
     Checkbox,
     Chip,
     CircularProgress,
@@ -25,6 +24,7 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ImgLazyload from "@/components/Img.Lazyload";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -295,9 +295,8 @@ function PageCollectionsIcon() {
                                 >
                                     <CardContent>
                                         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                                            <CardMedia
-                                                component="img"
-                                                image={icon.url}
+                                            <ImgLazyload
+                                                src={icon.url}
                                                 alt={icon.title}
                                                 sx={{ width: 80, height: 80, objectFit: "contain", flexShrink: 0 }}
                                             />

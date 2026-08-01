@@ -18,6 +18,16 @@ const I18nRecords = {
         ratingUnavailable: "Không có rating vì không tìm thấy chi tiết chart.",
         filters: {
             difficulty: "Độ khó",
+            search: "Tìm theo tên bài hoặc nghệ sĩ",
+            ratingRange: "Khoảng rating",
+            achievementRange: "Khoảng thành tích",
+            minRating: "Rating tối thiểu",
+            maxRating: "Rating tối đa",
+            minAchievement: "Thành tích tối thiểu",
+            maxAchievement: "Thành tích tối đa",
+            rank: "Rank",
+            clear: "Clear",
+            all: "Tất cả",
         },
         view: {
             card: "Thẻ",

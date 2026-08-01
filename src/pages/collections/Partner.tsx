@@ -7,7 +7,6 @@ import {
     Card,
     CardActions,
     CardContent,
-    CardMedia,
     Chip,
     CircularProgress,
     Grid,
@@ -16,6 +15,7 @@ import {
     Typography,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ImgLazyload from "@/components/Img.Lazyload";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -156,9 +156,8 @@ function PageCollectionsPartner() {
                                 >
                                     <CardContent>
                                         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                                            <CardMedia
-                                                component="img"
-                                                image={partner.url}
+                                            <ImgLazyload
+                                                src={partner.url}
                                                 alt={partner.title}
                                                 sx={{ width: 96, height: 96, objectFit: "contain", flexShrink: 0 }}
                                             />

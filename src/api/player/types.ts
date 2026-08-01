@@ -1,7 +1,13 @@
 import { MaimaiSheetLookupResult } from "@/db/maimaiDataApi";
-import { GameRecordScoreRank, GameRecordSongDifficulty, GameRecordSongKind } from "../records";
+import {
+    GameRecordScoreRank,
+    GameRecordSongBase,
+    GameRecordSongDifficulty,
+    GameRecordSongResultBase,
+    GameRecordSongKind,
+} from "../records";
 
-export interface GetPlayerAlbum {
+export interface GetPlayerAlbum extends GameRecordSongBase {
     songKind: GameRecordSongKind;
     songTitle: string;
     songdifficulty: GameRecordSongDifficulty;
@@ -12,16 +18,8 @@ export interface GetPlayerAlbum {
     date: Date;
 }
 
-export interface GetPlayerDXRatingItem {
+export interface GetPlayerDXRatingItem extends GameRecordSongBase, GameRecordSongResultBase {
     id: string;
-
-    songTitle: string;
-    songdifficulty: GameRecordSongDifficulty;
-    songLevel: string; // e.g. 12, 12+, 13, 13+, 14, 14+, 15, 15+
-    songKind: GameRecordSongKind;
-    songFullDetail?: MaimaiSheetLookupResult; // this should be optional to prevent in case the song does not exist in the maimai song db
-
-    achievement: number;
     scoreRank: GameRecordScoreRank;
     rating?: number; // rating, only available when songFullDetail is available, otherwise undefined
 }

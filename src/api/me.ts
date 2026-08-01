@@ -60,6 +60,7 @@ export enum ApiMeRankType {
     Gold = "gold",
     Platinum = "platinum",
     Rainbow = "rainbow",
+    RainbowKiwami = "rainbow_kiwami",
 }
 
 export interface RatingColorBreakpoint {
@@ -68,6 +69,7 @@ export interface RatingColorBreakpoint {
 }
 
 export const RATING_COLORS: readonly RatingColorBreakpoint[] = [
+    { minRating: 16000, rank: ApiMeRankType.RainbowKiwami },
     { minRating: 15000, rank: ApiMeRankType.Rainbow },
     { minRating: 14500, rank: ApiMeRankType.Platinum },
     { minRating: 14000, rank: ApiMeRankType.Gold },
@@ -82,6 +84,38 @@ export const RATING_COLORS: readonly RatingColorBreakpoint[] = [
 ] as const;
 
 export const ratingBgBaseUrl = "https://maimaidx-eng.com/maimai-mobile/img/rating_base_{}.png";
+
+export function getRankTypeFromRatingImg(ratingImg: string): ApiMeRankType {
+    const imageName =
+        ratingImg
+            .split("/")
+            .pop()
+            ?.split("?")[0]
+            ?.replace(/\.png$/, "") ?? "";
+
+    if (imageName === "rating_base") {
+        return ApiMeRankType.Base;
+    }
+
+    const rankTypeName = imageName.startsWith("rating_base_") ? imageName.slice("rating_base_".length) : "";
+
+    switch (rankTypeName) {
+        case ApiMeRankType.Blue:
+        case ApiMeRankType.Green:
+        case ApiMeRankType.Yellow:
+        case ApiMeRankType.Red:
+        case ApiMeRankType.Purple:
+        case ApiMeRankType.Bronze:
+        case ApiMeRankType.Silver:
+        case ApiMeRankType.Gold:
+        case ApiMeRankType.Platinum:
+        case ApiMeRankType.Rainbow:
+        case ApiMeRankType.RainbowKiwami:
+            return rankTypeName as ApiMeRankType;
+        default:
+            return ApiMeRankType.Base;
+    }
+}
 
 export async function apiMe(): Promise<ApiMe> {
     const res = await apiHelperFetchDoc("/maimai-mobile/home");
@@ -141,7 +175,7 @@ export async function apiMe(): Promise<ApiMe> {
             .querySelector("body div.wrapper .see_through_block div.basic_block div.p_r.p_3 img.h_30.f_r")
             ?.getAttribute("src") ?? "";
 
-    const rankType = ratingImg.split("/").pop()?.split("_")[2]?.split(".")[0] ?? ApiMeRankType.Base;
+    const rankType = getRankTypeFromRatingImg(ratingImg);
 
     const version = ratingImg.split("?ver=")[1] ?? "1.0";
 

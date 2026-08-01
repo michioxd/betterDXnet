@@ -82,6 +82,7 @@ export enum GameRecordMode {
     NORMAL = "normal",
     PERFECT_CHALLENGE = "perfect_challenge",
     KALEIDXSCOPE = "kaleidxscope",
+    COURSE = "course",
 }
 
 export const difficultyColor: Record<GameRecordSongDifficulty, string> = {
@@ -98,29 +99,35 @@ export const songKindBaseImg = "https://maimaidx-eng.com/maimai-mobile/img/music
 export const dxStarBaseImg = "https://maimaidx-eng.com/maimai-mobile/img/playlog/dxstar_{}.png";
 export const musicIconBaseImg = "https://maimaidx-eng.com/maimai-mobile/img/music_icon_{}.png";
 
-export interface GameRecordLast50 {
-    id: string;
-
+export interface GameRecordSongBase {
     songTitle: string;
-    songArtwork: string;
     songdifficulty: GameRecordSongDifficulty;
     songLevel: string; // e.g. 12, 12+, 13, 13+, 14, 14+, 15, 15+
     songKind: GameRecordSongKind;
     songFullDetail?: MaimaiSheetLookupResult; // this should be optional to prevent in case the song does not exist in the maimai song db
+}
 
+export interface GameRecordSongResultBase {
     achievement: number;
-    newAchievement: boolean; // true if the achievement is higher than the previous record
     dxScore: {
         current: number;
         max: number;
     };
-    dxStar: number; // 0-5
-    newDxScore: boolean; // true if the dxScore is higher than the previous record
     scoreRank: GameRecordScoreRank;
+}
 
+export interface GameRecordSongStatusBase {
     status: GameRecordStatus;
     syncStatus: GameRecordSyncStatus;
     syncStatusShort: GameRecordSyncStatusShort;
+}
+
+export interface GameRecordLast50 extends GameRecordSongBase, GameRecordSongResultBase, GameRecordSongStatusBase {
+    id: string;
+    songArtwork: string;
+    newAchievement: boolean; // true if the achievement is higher than the previous record
+    dxStar: number; // 0-5
+    newDxScore: boolean; // true if the dxScore is higher than the previous record
     syncPlayGrade: string; // 1st, 2nd, 3rd, 4th
 
     mode: GameRecordMode;
@@ -160,55 +167,29 @@ export type GameRecordPlayLogDetail = {
     };
 };
 
-export type GameRecordSong = {
+export interface GameRecordSong extends GameRecordSongBase, GameRecordSongResultBase, GameRecordSongStatusBase {
     id: string;
 
-    songTitle: string;
-    songdifficulty: GameRecordSongDifficulty;
-    songLevel: string; // e.g. 12, 12+, 13, 13+, 14, 14+, 15, 15+
-    songKind: GameRecordSongKind;
-    songFullDetail?: MaimaiSheetLookupResult; // this should be optional to prevent in case the song does not exist in the maimai song db
-
-    achievement: number;
-    dxScore: {
-        current: number;
-        max: number;
-    };
-    scoreRank: GameRecordScoreRank;
-
-    status: GameRecordStatus;
-    syncStatus: GameRecordSyncStatus;
-    syncStatusShort: GameRecordSyncStatusShort;
-
     rating?: number; // rating, only available when songFullDetail is available, otherwise undefined
-};
+}
 
 export type GetGameRecordSong = {
     [diff in GameRecordSongDifficulty]: GameRecordSong[];
 };
 
-export type SongRecordDetail = {
+export interface SongRecordDetail extends GameRecordSongBase {
     id: string;
-
-    songTitle: string;
-    songdifficulty: GameRecordSongDifficulty;
-    songLevel: string;
-    songKind: GameRecordSongKind;
-    songFullDetail?: MaimaiSheetLookupResult;
 
     levels: Partial<{
         [diff in GameRecordSongDifficulty]: {
             achievement: number;
-            dxScore: {
-                current: number;
-                max: number;
-            };
+            dxScore: GameRecordSongResultBase["dxScore"];
             dxStar: number;
-            scoreRank: GameRecordScoreRank;
+            scoreRank: GameRecordSongResultBase["scoreRank"];
 
-            status: GameRecordStatus;
-            syncStatus: GameRecordSyncStatus;
-            syncStatusShort: GameRecordSyncStatusShort;
+            status: GameRecordSongStatusBase["status"];
+            syncStatus: GameRecordSongStatusBase["syncStatus"];
+            syncStatusShort: GameRecordSongStatusBase["syncStatusShort"];
 
             lastPlayedDate: Date;
             playCount: number;
@@ -217,4 +198,4 @@ export type SongRecordDetail = {
             rating?: number;
         };
     }>;
-};
+}

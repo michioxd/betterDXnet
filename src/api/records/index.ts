@@ -10,6 +10,9 @@ export { songRecords } from "./songRecords";
 export type {
     GameRecordLast50,
     GameRecordPlayLogDetail,
+    GameRecordSongBase,
+    GameRecordSongResultBase,
+    GameRecordSongStatusBase,
     GameRecordSong,
     GameRecordSongDifficultyOrUtage,
     GetGameRecordSong,

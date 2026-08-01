@@ -1,5 +1,6 @@
 import { difficultyColor, type GameRecordLast50 } from "@/api/records";
 import type { GetPlayerAlbum } from "@/api/player";
+import ImgLazyload from "@/components/Img.Lazyload";
 import ImageViewer from "@/components/ImageViewer";
 import { rootStore } from "@/stores/root";
 import ClockIcon from "@mui/icons-material/AccessTime";
@@ -14,7 +15,6 @@ import {
     Card,
     CardActions,
     CardContent,
-    CardMedia,
     Chip,
     CircularProgress,
     Grid,
@@ -24,7 +24,7 @@ import {
     Typography,
 } from "@mui/material";
 import { observer } from "mobx-react-lite";
-import { useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { songKindBaseImg } from "@/api/records/types";
@@ -56,13 +56,12 @@ function normalizeRecordMatchText(value: string) {
     return value.replace(/\s+/g, " ").trim();
 }
 
-function isSameAlbumRecord(photo: GetPlayerAlbum, record: GameRecordLast50) {
-    return (
-        photo.songKind === record.songKind &&
-        photo.songdifficulty === record.songdifficulty &&
-        normalizeRecordMatchText(photo.songTitle) === normalizeRecordMatchText(record.songTitle) &&
-        photo.date.getTime() === record.playDate.getTime()
-    );
+function getAlbumPhotoKey(photo: GetPlayerAlbum) {
+    return `${photo.songKind}|${photo.songdifficulty}|${normalizeRecordMatchText(photo.songTitle)}|${photo.date.getTime()}`;
+}
+
+function getRecordKey(record: GameRecordLast50) {
+    return `${record.songKind}|${record.songdifficulty}|${normalizeRecordMatchText(record.songTitle)}|${record.playDate.getTime()}`;
 }
 
 function getAlbumPhotoFilename(photo: GetPlayerAlbum) {
@@ -74,7 +73,7 @@ function getAlbumPhotoFilename(photo: GetPlayerAlbum) {
     return `${date}-${title}.jpg`;
 }
 
-function AlbumCard({
+function AlbumCardImpl({
     photo,
     matchedRecord,
     onViewImage,
@@ -101,15 +100,13 @@ function AlbumCard({
                 sx={{ position: "relative", cursor: "zoom-in" }}
                 onClick={(event) => onViewImage(photo, event.currentTarget.getBoundingClientRect())}
             >
-                <CardMedia
-                    component="img"
-                    image={photo.imageUrl}
+                <ImgLazyload
+                    src={photo.imageUrl}
                     alt={photo.songTitle}
-                    sx={{ aspectRatio: "16 / 9", objectFit: "cover", bgcolor: "action.hover" }}
+                    sx={{ aspectRatio: "16 / 9", objectFit: "cover", bgcolor: "action.hover", width: "100%" }}
                 />
                 {photo.songFullDetail && (
-                    <Box
-                        component="img"
+                    <ImgLazyload
                         src={dataSource.getSongArtworkUrl(photo.songFullDetail.song)}
                         alt={photo.songTitle}
                         sx={{
@@ -124,10 +121,10 @@ function AlbumCard({
                         }}
                     />
                 )}
-                <img
+                <ImgLazyload
                     src={songKindBaseImg.replace("{}", photo.songKind === "std" ? "standard" : photo.songKind)}
                     alt={photo.songKind}
-                    style={{ position: "absolute", bottom: 8, right: 8, height: "20px" }}
+                    sx={{ position: "absolute", bottom: 8, right: 8, height: "20px", width: "auto" }}
                 />
             </Box>
 
@@ -209,6 +206,8 @@ function AlbumCard({
     );
 }
 
+const AlbumCard = memo(AlbumCardImpl);
+
 function PagePlayerAlbum() {
     const { t } = useTranslation("player");
     const { app, player, records } = rootStore;
@@ -232,20 +231,22 @@ function PagePlayerAlbum() {
 
     const recordByPhoto = useMemo(() => {
         if (!records.last50Loaded) {
-            return new Map<GetPlayerAlbum, GameRecordLast50>();
+            return new Map<string, GameRecordLast50>();
         }
 
-        return new Map(
-            sortedAlbum
-                .map((photo) => [photo, records.last50.find((record) => isSameAlbumRecord(photo, record))] as const)
-                .filter((entry): entry is readonly [GetPlayerAlbum, GameRecordLast50] => entry[1] !== undefined),
-        );
-    }, [records.last50, records.last50Loaded, sortedAlbum]);
+        const matches = new Map<string, GameRecordLast50>();
 
-    const handleViewImage = (photo: GetPlayerAlbum, sourceRect: DOMRect) => {
+        for (const record of records.last50) {
+            matches.set(getRecordKey(record), record);
+        }
+
+        return matches;
+    }, [records.last50, records.last50Loaded]);
+
+    const handleViewImage = useCallback((photo: GetPlayerAlbum, sourceRect: DOMRect) => {
         setViewerSourceRect(sourceRect);
         setViewerPhoto(photo);
-    };
+    }, []);
 
     const handleCloseViewer = () => {
         setViewerPhoto(null);
@@ -292,7 +293,7 @@ function PagePlayerAlbum() {
                                 <Grid key={`${photo.imageUrl}-${index}`} size={{ xs: 12, sm: 6, lg: 4 }}>
                                     <AlbumCard
                                         photo={photo}
-                                        matchedRecord={recordByPhoto.get(photo)}
+                                        matchedRecord={recordByPhoto.get(getAlbumPhotoKey(photo))}
                                         onViewImage={handleViewImage}
                                     />
                                 </Grid>

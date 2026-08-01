@@ -72,6 +72,18 @@ function parseNumber(value: string | null | undefined) {
     return Number(normalizeText(value).replace(/[,%]/g, "")) || 0;
 }
 
+function parseDxScore(value: string | null | undefined) {
+    const [current = "0", max = "0"] = normalizeText(value)
+        .replace(/^DX SCORE\s*/i, "")
+        .split("/")
+        .map((item) => item.trim());
+
+    return {
+        current: parseNumber(current),
+        max: parseNumber(max),
+    };
+}
+
 export function parsePlayerDXRatingBlock(block: HTMLElement): GetPlayerDXRatingItem {
     const difficultyName = imageName(block.querySelector<HTMLImageElement>('img[src*="/img/diff_"]'));
     const songKindName = imageName(block.querySelector<HTMLImageElement>(".music_kind_icon"));
@@ -108,6 +120,7 @@ export function parsePlayerDXRatingBlock(block: HTMLElement): GetPlayerDXRatingI
         songFullDetail: querySongDetails,
 
         achievement,
+        dxScore: parseDxScore(block.querySelector<HTMLElement>(".music_score_block")?.textContent),
         scoreRank: scoreRankByImageName[scoreRankName] ?? GameRecordScoreRank.D,
         rating,
     };

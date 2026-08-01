@@ -37,6 +37,7 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
     const lastDragRef = useRef<{ x: number; y: number } | null>(null);
     const lastPinchDistanceRef = useRef<number | null>(null);
     const closeTimerRef = useRef<number | null>(null);
+    const resetTimerRef = useRef<number | null>(null);
     const openAnimationStartedRef = useRef(false);
     const pointerStartedOnImageRef = useRef(false);
 
@@ -97,11 +98,42 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
 
     useEffect(() => {
         return () => {
+            if (resetTimerRef.current !== null) {
+                window.clearTimeout(resetTimerRef.current);
+            }
+
             if (closeTimerRef.current !== null) {
                 window.clearTimeout(closeTimerRef.current);
             }
         };
     }, []);
+
+    const finishClose = useCallback(() => {
+        onClose();
+        setRenderedPhoto(null);
+        setIsClosing(false);
+        setSourceTransform(null);
+        closeTimerRef.current = null;
+    }, [onClose]);
+
+    const startCloseAnimation = useCallback(() => {
+        if (isClosing) return;
+
+        const transform = getSourceTransform();
+        if (!transform) {
+            onClose();
+            setRenderedPhoto(null);
+            return;
+        }
+
+        setIsClosing(true);
+        setIsAnimating(true);
+        setSourceTransform(transform);
+
+        closeTimerRef.current = window.setTimeout(() => {
+            finishClose();
+        }, animationMs);
+    }, [finishClose, getSourceTransform, isClosing, onClose]);
 
     const startOpenAnimation = useCallback(() => {
         if (!sourceRect || isClosing || openAnimationStartedRef.current) return;
@@ -136,28 +168,23 @@ function ImageViewer({ photo, onClose, sourceRect }: ImageViewerProps) {
     );
 
     const handleClose = () => {
-        if (isClosing) return;
+        if (isClosing || resetTimerRef.current !== null) return;
 
-        const transform = getSourceTransform();
-        if (!transform) {
-            onClose();
-            setRenderedPhoto(null);
+        const shouldResetTransform = scale !== 1 || offset.x !== 0 || offset.y !== 0;
+
+        if (shouldResetTransform) {
+            setIsAnimating(true);
+            setScale(1);
+            setOffset({ x: 0, y: 0 });
+
+            resetTimerRef.current = window.setTimeout(() => {
+                resetTimerRef.current = null;
+                startCloseAnimation();
+            }, animationMs);
             return;
         }
 
-        setIsClosing(true);
-        setIsAnimating(true);
-        setScale(1);
-        setOffset({ x: 0, y: 0 });
-        setSourceTransform(transform);
-
-        closeTimerRef.current = window.setTimeout(() => {
-            onClose();
-            setRenderedPhoto(null);
-            setIsClosing(false);
-            setSourceTransform(null);
-            closeTimerRef.current = null;
-        }, animationMs);
+        startCloseAnimation();
     };
 
     const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {

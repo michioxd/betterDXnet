@@ -1,4 +1,4 @@
-import { ApiMeRankType } from "../me";
+import { ApiMeRankType, getRankTypeFromRatingImg } from "../me";
 import { apiHelperFetchDoc } from "../helper";
 import type { GameRecordPlayLogDetail, JudgeCount, JudgeTable } from "./types";
 import { parsePlaylogBlock } from "./last50";
@@ -25,6 +25,7 @@ const rankTypeByImageName: Record<string, ApiMeRankType> = {
     rating_base_gold: ApiMeRankType.Gold,
     rating_base_platinum: ApiMeRankType.Platinum,
     rating_base_rainbow: ApiMeRankType.Rainbow,
+    rating_base_rainbow_kiwami: ApiMeRankType.RainbowKiwami,
 };
 
 function normalizeText(value: string | null | undefined) {
@@ -109,7 +110,7 @@ function parseRating(document: Document) {
 
     return {
         ratingPrev: ratingResult - signedRatingDelta,
-        ratingPrevType: rankTypeByImageName[ratingImgName] ?? ApiMeRankType.Base,
+        ratingPrevType: rankTypeByImageName[ratingImgName] ?? getRankTypeFromRatingImg(ratingImgName),
         ratingResult,
         ratingDelta: signedRatingDelta,
         ratingDirection,

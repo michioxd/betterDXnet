@@ -48,19 +48,21 @@ export function parsePlayerAlbumBlock(block: HTMLElement): GetPlayerAlbum {
     const difficultyName = imageName(block.querySelector<HTMLImageElement>('img[src*="/img/diff_"]'));
     const songKindName = imageName(block.querySelector<HTMLImageElement>(".music_kind_icon"));
     const songTitle = normalizeText(block.querySelector(".black_block")?.textContent);
-    const songLevel = difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC;
+    const songLevel = normalizeText(block.querySelector(".music_lv_block")?.textContent);
+    const songdifficulty = difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC;
     const songKind = songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD;
 
     const querySongDetails = maimaiApi.getSheetByDifficulty({
         title: songTitle,
-        difficulty: songLevel,
+        difficulty: songdifficulty,
         type: songKind,
     });
 
     return {
         songKind,
         songTitle,
-        songdifficulty: songLevel,
+        songdifficulty,
+        songLevel,
         songFullDetail: querySongDetails,
         location: normalizeText(block.querySelector(".see_through_block")?.textContent),
         imageUrl: block.querySelector<HTMLAnchorElement>('a[target="_blank"]')?.href ?? "",

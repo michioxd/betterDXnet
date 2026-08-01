@@ -35,6 +35,7 @@ const RATING_BG_INDEX: Record<ApiMeRankType, string> = {
     gold: "09",
     platinum: "10",
     rainbow: "11",
+    rainbow_kiwami: "12",
 };
 
 interface RatingCanvasProps {
