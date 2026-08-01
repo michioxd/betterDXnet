@@ -48,6 +48,10 @@ function normalizeSearchText(value: string) {
     return value.toLowerCase().normalize("NFKC");
 }
 
+function trimAsciiSearchText(value: string) {
+    return value.replace(/^[ \t\r\n\f\v]+|[ \t\r\n\f\v]+$/g, "");
+}
+
 function FavoriteSongRowImpl({ song, checked, disabled, onToggle }: FavoriteSongRowProps) {
     const artist = song.songFullDetail?.artist;
     const artworkUrl = song.songFullDetail ? dataSource.getSongArtworkUrl(song.songFullDetail) : "";
@@ -219,7 +223,7 @@ function PageSettingsFavoriteSongs() {
     }, [songs]);
 
     const filteredSongs = useMemo(() => {
-        const query = normalizeSearchText(debouncedSearch.trim());
+        const query = normalizeSearchText(trimAsciiSearchText(debouncedSearch));
 
         return songs.filter((song) => {
             if (selectedOnly && !selectedValues.has(song.value)) return false;
