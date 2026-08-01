@@ -55,6 +55,8 @@ type OptionSliderProps = {
     disabled: boolean;
     value: string;
     onChange: (name: GameOptionName, value: string) => void;
+    shiftStep?: number;
+    step?: number;
 };
 
 type OptionKindCardSelectorProps = {
@@ -143,7 +145,7 @@ function OptionSelectImpl({ name, label, description, options, disabled, value, 
                 </Select>
             </FormControl>
             {description && (
-                <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
+                <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5, fontSize: "0.75rem" }}>
                     {description}
                 </Typography>
             )}
@@ -153,7 +155,17 @@ function OptionSelectImpl({ name, label, description, options, disabled, value, 
 
 const OptionSelect = memo(OptionSelectImpl);
 
-function OptionSliderImpl({ name, label, description, options, disabled, value, onChange }: OptionSliderProps) {
+function OptionSliderImpl({
+    name,
+    label,
+    description,
+    options,
+    disabled,
+    value,
+    onChange,
+    shiftStep,
+    step = 1,
+}: OptionSliderProps) {
     const sliderValue = Number(value);
     const lastOption = options[options.length - 1];
     const min = Number(options[0]?.value ?? 0);
@@ -173,13 +185,9 @@ function OptionSliderImpl({ name, label, description, options, disabled, value, 
                 value={Number.isFinite(sliderValue) ? sliderValue : min}
                 min={min}
                 max={max}
-                step={1}
-                marks={
-                    [
-                        // { value: min, label: options[0]?.label },
-                        // { value: max, label: lastOption?.label },
-                    ]
-                }
+                step={step}
+                shiftStep={shiftStep}
+                marks
                 valueLabelDisplay="auto"
                 valueLabelFormat={(sliderValue) =>
                     options.find((option) => option.value === String(sliderValue))?.label ?? sliderValue

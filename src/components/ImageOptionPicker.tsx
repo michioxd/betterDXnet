@@ -157,7 +157,15 @@ function ImageOptionPicker<Name extends string>({
                 <Box sx={{ position: "relative", minWidth: 0 }}>
                     <Box
                         ref={scrollerRef}
-                        sx={{ display: "flex", gap: 1.5, maxWidth: "100%", minWidth: 0, overflowX: "auto", pb: 1 }}
+                        sx={{
+                            display: "flex",
+                            gap: 1.5,
+                            maxWidth: "100%",
+                            minWidth: 0,
+                            overflowX: "auto",
+                            pb: 1,
+                            scrollBehavior: "smooth",
+                        }}
                     >
                         {options.map((option, index) => {
                             const selected = option.value === value;
