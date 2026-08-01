@@ -17,6 +17,10 @@ export function parseNumber(value: string | null | undefined) {
     return Number(normalizeText(value).replace(/,/g, "")) || 0;
 }
 
+export function parsePercentage(value: string | null | undefined) {
+    return Number(normalizeText(value).replace(/[,%]/g, "")) || 0;
+}
+
 export function parsePlayDate(value: string) {
     const [, year, month, day, hour, minute] = value.match(/(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})/) ?? [];
 

@@ -12,7 +12,7 @@ import {
     GameRecordSyncStatusShort,
     GetGameRecordSong,
 } from "./types";
-import { imageName, normalizeText, parseDxScore, parseNumber } from "@/utils/string";
+import { imageName, normalizeText, parseDxScore, parsePercentage } from "@/utils/string";
 
 const SONG_RECORDS_PATH = "/maimai-mobile/record/musicGenre/search/";
 const DEFAULT_FETCH_ALL_THRESHOLD_MS = 800;
@@ -113,7 +113,7 @@ function songRecordsPath(diff: GameRecordSongDifficultyOrUtage) {
 
 function parseSongRecordBlock(block: HTMLElement): GameRecordSong | null {
     const scoreBlocks = [...block.querySelectorAll<HTMLElement>(".music_score_block")];
-    const achievement = parseNumber(scoreBlocks[0]?.textContent);
+    const achievement = parsePercentage(scoreBlocks[0]?.textContent);
 
     if (achievement <= 0) {
         return null;

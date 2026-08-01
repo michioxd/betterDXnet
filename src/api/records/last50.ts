@@ -10,7 +10,7 @@ import {
     GameRecordSyncStatus,
     GameRecordSyncStatusShort,
 } from "./types";
-import { imageName, normalizeText, parseNumber, parsePlayDate } from "@/utils/string";
+import { imageName, normalizeText, parseNumber, parsePercentage, parsePlayDate } from "@/utils/string";
 
 const LAST_50_PATH = "/maimai-mobile/record/";
 const PLAYLOG_DETAIL_PATH = "https://maimaidx-eng.com/maimai-mobile/record/playlogDetail/";
@@ -122,7 +122,7 @@ export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
     const syncStatusName = imageName(resultIcons[1]);
     const subTitleText = normalizeText(block.querySelector(".sub_title")?.textContent);
     const dxStarName = imageName(block.querySelector<HTMLImageElement>(".playlog_deluxscore_star"));
-    const achievement = parseNumber(block.querySelector(".playlog_achievement_txt")?.textContent?.replace("%", ""));
+    const achievement = parsePercentage(block.querySelector(".playlog_achievement_txt")?.textContent?.replace("%", ""));
 
     const mode = block.querySelector('img[src*="/img/icon_perfectchallenge.png"]')
         ? "perfect_challenge"

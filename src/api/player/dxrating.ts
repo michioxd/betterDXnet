@@ -3,7 +3,7 @@ import { calculateRating } from "@/utils/rating";
 import { apiHelperFetchDoc } from "../helper";
 import { GameRecordScoreRank, GameRecordSongDifficulty, GameRecordSongKind, GameRecordStatus } from "../records";
 import { GetPlayerDXRating, GetPlayerDXRatingItem } from "./types";
-import { imageName, normalizeText, parseDxScore, parseNumber } from "@/utils/string";
+import { imageName, normalizeText, parseDxScore, parsePercentage } from "@/utils/string";
 
 const DX_RATING_PATH = "/maimai-mobile/home/ratingTargetMusic/";
 
@@ -65,7 +65,7 @@ export function parsePlayerDXRatingBlock(block: HTMLElement): GetPlayerDXRatingI
     const songTitle = normalizeText(block.querySelector(".music_name_block")?.textContent);
     const songLevel = normalizeText(block.querySelector(".music_lv_block")?.textContent);
     const songKind = songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD;
-    const achievement = parseNumber(block.querySelector(".music_score_block")?.textContent);
+    const achievement = parsePercentage(block.querySelector(".music_score_block")?.textContent);
 
     const querySongDetails = maimaiApi.getSheet({
         title: songTitle,
