@@ -1,4 +1,4 @@
-import { Box, Chip, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Tooltip, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 export interface TimingBiasProps {
@@ -40,63 +40,63 @@ function formatBiasLabel(value: number) {
     return `${sign}${formatPercent(value)} ${direction}`;
 }
 
-function clampTimingAdjustment(value: number) {
-    return Math.min(2, Math.max(-2, value));
-}
+// function clampTimingAdjustment(value: number) {
+//     return Math.min(2, Math.max(-2, value));
+// }
 
-function formatTimingAdjustment(value: number) {
-    return clampTimingAdjustment(value).toFixed(1);
-}
+// function formatTimingAdjustment(value: number) {
+//     return clampTimingAdjustment(value).toFixed(1);
+// }
 
-function roundTimingAdjustment(value: number) {
-    return Math.round(value * 10) / 10;
-}
+// function roundTimingAdjustment(value: number) {
+//     return Math.round(value * 10) / 10;
+// }
 
-function getTimingAdjustmentRange(value: number) {
-    const isFast = value > 0;
-    const sign = isFast ? -1 : 1;
-    const estimatedAdjustment = clampTimingAdjustment(roundTimingAdjustment(Math.abs(value) * 2));
-    const minAdjustment = clampTimingAdjustment(Math.max(0.1, roundTimingAdjustment(estimatedAdjustment - 0.2)));
-    const maxAdjustment = clampTimingAdjustment(
-        Math.max(minAdjustment, roundTimingAdjustment(estimatedAdjustment + 0.2)),
-    );
+// function getTimingAdjustmentRange(value: number) {
+//     const isFast = value > 0;
+//     const sign = isFast ? -1 : 1;
+//     const estimatedAdjustment = clampTimingAdjustment(roundTimingAdjustment(Math.abs(value) * 2));
+//     const minAdjustment = clampTimingAdjustment(Math.max(0.1, roundTimingAdjustment(estimatedAdjustment - 0.2)));
+//     const maxAdjustment = clampTimingAdjustment(
+//         Math.max(minAdjustment, roundTimingAdjustment(estimatedAdjustment + 0.2)),
+//     );
 
-    return [sign * minAdjustment, sign * maxAdjustment] as const;
-}
+//     return [sign * minAdjustment, sign * maxAdjustment] as const;
+// }
 
-function getTimingAdjustmentSuggestion(value: number) {
-    const absoluteBias = Math.abs(value);
+// function getTimingAdjustmentSuggestion(value: number) {
+//     const absoluteBias = Math.abs(value);
 
-    if (absoluteBias < 0.1) {
-        return {
-            messageKey: "detail.timingBias.suggestions.balanced",
-            range: undefined,
-        };
-    }
+//     if (absoluteBias < 0.1) {
+//         return {
+//             messageKey: "detail.timingBias.suggestions.balanced",
+//             range: undefined,
+//         };
+//     }
 
-    const isFast = value > 0;
-    const direction = isFast ? "fast" : "late";
-    const range = getTimingAdjustmentRange(value);
+//     const isFast = value > 0;
+//     const direction = isFast ? "fast" : "late";
+//     const range = getTimingAdjustmentRange(value);
 
-    if (absoluteBias < 0.25) {
-        return {
-            messageKey: `detail.timingBias.suggestions.${direction}.slight`,
-            range,
-        };
-    }
+//     if (absoluteBias < 0.25) {
+//         return {
+//             messageKey: `detail.timingBias.suggestions.${direction}.slight`,
+//             range,
+//         };
+//     }
 
-    if (absoluteBias < 0.5) {
-        return {
-            messageKey: `detail.timingBias.suggestions.${direction}.moderate`,
-            range,
-        };
-    }
+//     if (absoluteBias < 0.5) {
+//         return {
+//             messageKey: `detail.timingBias.suggestions.${direction}.moderate`,
+//             range,
+//         };
+//     }
 
-    return {
-        messageKey: `detail.timingBias.suggestions.${direction}.strong`,
-        range,
-    };
-}
+//     return {
+//         messageKey: `detail.timingBias.suggestions.${direction}.strong`,
+//         range,
+//     };
+// }
 
 export function TimingBias({ fast, late }: TimingBiasProps) {
     const { t } = useTranslation("records");
@@ -104,7 +104,7 @@ export function TimingBias({ fast, late }: TimingBiasProps) {
     const bias = calculateTimingBias(fast, late);
     const indicatorLeft = `${((bias + 1) / 2) * 100}%`;
     const biasLabel = formatBiasLabel(bias);
-    const suggestion = getTimingAdjustmentSuggestion(bias);
+    // const suggestion = getTimingAdjustmentSuggestion(bias);
     const tooltip = (
         <Box>
             <Typography variant="body2">
@@ -267,7 +267,7 @@ export function TimingBias({ fast, late }: TimingBiasProps) {
                 </Typography>
             </Box>
 
-            <Box
+            {/* <Box
                 sx={{
                     mt: 1.5,
                     p: 1.25,
@@ -296,7 +296,7 @@ export function TimingBias({ fast, late }: TimingBiasProps) {
                 <Typography variant="caption" color="textSecondary" sx={{ display: "block", mt: 0.5 }}>
                     {t("detail.timingBias.disclaimer")}
                 </Typography>
-            </Box>
+            </Box> */}
         </Box>
     );
 }

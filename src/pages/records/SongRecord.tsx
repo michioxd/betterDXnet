@@ -149,12 +149,16 @@ function PageRecordsSongRecord() {
                     }
                 }
 
-                if (minRatingValue !== undefined && (record.rating ?? -Infinity) < minRatingValue) {
+                if (!record.rating && minRatingValue > 0) {
                     return false;
-                }
+                } else if (record.rating) {
+                    if (record.rating < minRatingValue) {
+                        return false;
+                    }
 
-                if (maxRatingValue !== undefined && (record.rating ?? Infinity) > maxRatingValue) {
-                    return false;
+                    if (record.rating > maxRatingValue) {
+                        return false;
+                    }
                 }
 
                 if (minAchievementValue !== undefined && record.achievement < minAchievementValue) {

@@ -29,7 +29,7 @@ import {
     Typography,
 } from "@mui/material";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 type OptionSelectProps = {
@@ -124,7 +124,7 @@ function OptionSection({ title, children }: OptionSectionProps) {
     );
 }
 
-function OptionSelect({ name, label, description, options, disabled, value, onChange }: OptionSelectProps) {
+function OptionSelectImpl({ name, label, description, options, disabled, value, onChange }: OptionSelectProps) {
     return (
         <Box>
             <FormControl fullWidth disabled={disabled}>
@@ -151,7 +151,9 @@ function OptionSelect({ name, label, description, options, disabled, value, onCh
     );
 }
 
-function OptionSlider({ name, label, description, options, disabled, value, onChange }: OptionSliderProps) {
+const OptionSelect = memo(OptionSelectImpl);
+
+function OptionSliderImpl({ name, label, description, options, disabled, value, onChange }: OptionSliderProps) {
     const sliderValue = Number(value);
     const lastOption = options[options.length - 1];
     const min = Number(options[0]?.value ?? 0);
@@ -162,7 +164,7 @@ function OptionSlider({ name, label, description, options, disabled, value, onCh
         <Box>
             <Stack direction="row" spacing={1} sx={{ alignItems: "baseline", justifyContent: "space-between" }}>
                 <Typography variant="subtitle2">{label}</Typography>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color="textSecondary" sx={{ fontSize: "0.75rem" }}>
                     {currentOption?.label ?? value}
                 </Typography>
             </Stack>
@@ -185,7 +187,7 @@ function OptionSlider({ name, label, description, options, disabled, value, onCh
                 onChange={(_, sliderValue) => onChange(name, String(sliderValue))}
             />
             {description && (
-                <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
+                <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5, fontSize: "0.75rem" }}>
                     {description}
                 </Typography>
             )}
@@ -193,7 +195,9 @@ function OptionSlider({ name, label, description, options, disabled, value, onCh
     );
 }
 
-function OptionKindCardSelector({ name, options, disabled, value, onChange }: OptionKindCardSelectorProps) {
+const OptionSlider = memo(OptionSliderImpl);
+
+function OptionKindCardSelectorImpl({ name, options, disabled, value, onChange }: OptionKindCardSelectorProps) {
     const { t } = useTranslation("settings");
 
     return (
@@ -256,6 +260,8 @@ function OptionKindCardSelector({ name, options, disabled, value, onChange }: Op
         </Box>
     );
 }
+
+const OptionKindCardSelector = memo(OptionKindCardSelectorImpl);
 
 const defaultGameOptionValues: GameOptionValues = {
     optionKind: "3",
@@ -368,19 +374,19 @@ function PageSettingsGame() {
 
     const isChanged = useMemo(() => valuesKey(values) !== valuesKey(initialValues), [values, initialValues]);
 
-    const handleChange = (name: keyof GameOptionValues, value: string) => {
+    const handleChange = useCallback((name: keyof GameOptionValues, value: string) => {
         setValues((currentValues) => ({
             ...currentValues,
             [name]: value,
         }));
-    };
+    }, []);
 
-    const handleReset = () => {
+    const handleReset = useCallback(() => {
         setValues(initialValues);
         setSuccessMessage(null);
-    };
+    }, [initialValues]);
 
-    const handleSave = async () => {
+    const handleSave = useCallback(async () => {
         setSaving(true);
         setError(null);
         setSuccessMessage(null);
@@ -398,7 +404,7 @@ function PageSettingsGame() {
         } finally {
             setSaving(false);
         }
-    };
+    }, [initialValues, t, token, values]);
 
     const isDetailsMode = (values.optionKind ?? "3") === "3";
 
