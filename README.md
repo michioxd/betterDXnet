@@ -1,6 +1,16 @@
 # betterDXnet
 
-yet another alternative web ui for maimai DX NET. in heavy development so stay tunned! you can try prebuilt by download artifacts in [Actions](https://github.com/michioxd/betterDXnet/actions)
+yet another alternative web ui for maimai DX NET. in heavy development so stay tunned!
+
+this extension collects no data, uses no backend, and runs entirely in your browser.
+
+## installation
+
+- Chrome Web Store? soon(TM)
+- Firefox Add-ons? soon(TM)
+- Microsoft Edge Add-ons? soon(TM)
+
+just go to [release](https://github.com/michioxd/betterDXnet/releases/latest), download the .zip, extract it, enable Developer Mode and load the extracted folder on **Chrome**, or go to `about:debugging` and load the downloaded .zip on **Firefox**, then you're done!
 
 ## screenshots
 
