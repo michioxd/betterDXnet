@@ -6,9 +6,9 @@ this extension collects no data, uses no backend, and runs entirely in your brow
 
 ## installation
 
-<a href="https://chromewebstore.google.com/detail/betterdxnet/pdlmfhpfknebbjcegnmjdfhfonbpehim" target="_blank"><img src="https://github.com/user-attachments/assets/3033658a-3b91-4fd3-8f4e-28c61bc55b32" width="200" alt="Chrome Web Store"/></a>
+<a href="https://chromewebstore.google.com/detail/betterdxnet/pdlmfhpfknebbjcegnmjdfhfonbpehim" target="_blank"><img src="https://github.com/user-attachments/assets/3033658a-3b91-4fd3-8f4e-28c61bc55b32" height="60" alt="Chrome Web Store"/></a>
+<a href="https://addons.mozilla.org/en-US/firefox/addon/betterdxnet/" target="_blank"><img src="https://github.com/michioxd/sounddark/assets/80969068/9e7bac62-4b49-4754-9852-a58ee108b952" height="60" alt="Firefox"/></a>
 
-- Firefox Add-ons? soon(TM)
 - Microsoft Edge Add-ons? soon(TM)
 
 just go to [release](https://github.com/michioxd/betterDXnet/releases/latest), download the .zip, extract it, enable Developer Mode and load the extracted folder on **Chrome**, or go to `about:debugging` and load the downloaded .zip on **Firefox**, then you're done!
