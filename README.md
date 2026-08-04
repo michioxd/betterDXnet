@@ -6,7 +6,8 @@ this extension collects no data, uses no backend, and runs entirely in your brow
 
 ## installation
 
-- Chrome Web Store? soon(TM)
+<a href="https://chromewebstore.google.com/detail/betterdxnet/pdlmfhpfknebbjcegnmjdfhfonbpehim" target="_blank"><img src="https://github.com/user-attachments/assets/3033658a-3b91-4fd3-8f4e-28c61bc55b32" width="200" alt="Chrome Web Store"/></a>
+
 - Firefox Add-ons? soon(TM)
 - Microsoft Edge Add-ons? soon(TM)
 
