@@ -13,6 +13,7 @@ this extension collects no data, uses no backend, and runs entirely in your brow
 
 just go to [release](https://github.com/michioxd/betterDXnet/releases/latest), download the .zip, extract it, enable Developer Mode and load the extracted folder on **Chrome**, or go to `about:debugging` and load the downloaded .zip on **Firefox**, then you're done!
 
+after installation, go to [maimai DX NET](https://maimaidx-eng.com), login your account then enjoy!
 ## screenshots
 
 | overview | b50 generated |
