@@ -10,8 +10,6 @@ this extension collects no data, uses no backend, and runs entirely in your brow
 <a href="https://addons.mozilla.org/en-US/firefox/addon/betterdxnet/" target="_blank"><img src="https://github.com/michioxd/sounddark/assets/80969068/9e7bac62-4b49-4754-9852-a58ee108b952" height="60" alt="Firefox"/></a>
 <a href="https://microsoftedge.microsoft.com/addons/detail/betterdxnet/cgmlmbhpndggmpfokfmainhdmbjnnced" target="_blank"><img src="https://get.microsoft.com/images/en-us%20dark.svg" width="220" alt="Microsoft Edge"/></a>
 
-- Microsoft Edge Add-ons? soon(TM)
-
 just go to [release](https://github.com/michioxd/betterDXnet/releases/latest), download the .zip, extract it, enable Developer Mode and load the extracted folder on **Chrome**, or go to `about:debugging` and load the downloaded .zip on **Firefox**, then you're done!
 
 after installation, go to [maimai DX NET](https://maimaidx-eng.com), login your account then enjoy!
