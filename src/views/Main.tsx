@@ -43,6 +43,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
     const theme = useTheme();
     const { mode, setMode } = useColorScheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+    const isSidebarCollapsible = useMediaQuery("(max-width:1400px)");
     const refreshHoldTimeoutRef = useRef<number | null>(null);
     const refreshHoldTriggeredRef = useRef(false);
 
@@ -72,10 +73,10 @@ function MainView({ closeView }: { closeView?: () => void }) {
     }, [me, meLoading, isLogin, username, isError]);
 
     useEffect(() => {
-        if (!isMobile) {
+        if (!isSidebarCollapsible) {
             app.setSidebarOpen(false);
         }
-    }, [app, isMobile]);
+    }, [app, isSidebarCollapsible]);
 
     const clearRefreshHoldTimeout = () => {
         if (refreshHoldTimeoutRef.current === null) return;
@@ -127,13 +128,13 @@ function MainView({ closeView }: { closeView?: () => void }) {
         <Paper component="main" className={cls.mainView}>
             <AppBar position="sticky" color="primary">
                 <Toolbar>
-                    {isMobile && (
+                    {isSidebarCollapsible && (
                         <IconButton
                             size="large"
                             edge="start"
                             color="inherit"
                             aria-label={t("toolbar.openSidebar")}
-                            onClick={() => app.setSidebarOpen(true)}
+                            onClick={() => app.setSidebarOpen(!app.sidebarOpen)}
                             sx={{ mr: 1 }}
                         >
                             <MenuIcon fontWeight="medium" />
@@ -233,7 +234,7 @@ function MainView({ closeView }: { closeView?: () => void }) {
                     {isLogin && me.me ? (
                         <HashRouter>
                             <Box className={cls.contentLayout}>
-                                {!isMobile && (
+                                {!isMobile && (!isSidebarCollapsible || app.sidebarOpen) && (
                                     <Box className={cls.sidebarPanel} component="aside">
                                         <Sidebar
                                             profile={me.me}
@@ -248,28 +249,32 @@ function MainView({ closeView }: { closeView?: () => void }) {
                                 </Container>
                             </Box>
 
-                            <Drawer
-                                open={app.sidebarOpen}
-                                onClose={() => app.setSidebarOpen(false)}
-                                variant="temporary"
-                                ModalProps={{ keepMounted: true }}
-                                slotProps={{ paper: { className: cls.sidebarDrawerPaper } }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", p: 1 }}>
-                                    <IconButton
-                                        onClick={() => app.setSidebarOpen(false)}
-                                        aria-label={t("toolbar.closeSidebar")}
+                            {isMobile && (
+                                <Drawer
+                                    open={app.sidebarOpen}
+                                    onClose={() => app.setSidebarOpen(false)}
+                                    variant="temporary"
+                                    ModalProps={{ keepMounted: true }}
+                                    slotProps={{ paper: { className: cls.sidebarDrawerPaper } }}
+                                >
+                                    <Box
+                                        sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", p: 1 }}
                                     >
-                                        <CloseIcon />
-                                    </IconButton>
-                                </Box>
-                                <Divider />
-                                <Sidebar
-                                    profile={me.me}
-                                    sectionsOpen={app.sidebarSectionsOpen}
-                                    onToggleSection={(key) => app.toggleSidebarSection(key)}
-                                />
-                            </Drawer>
+                                        <IconButton
+                                            onClick={() => app.setSidebarOpen(false)}
+                                            aria-label={t("toolbar.closeSidebar")}
+                                        >
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </Box>
+                                    <Divider />
+                                    <Sidebar
+                                        profile={me.me}
+                                        sectionsOpen={app.sidebarSectionsOpen}
+                                        onToggleSection={(key) => app.toggleSidebarSection(key)}
+                                    />
+                                </Drawer>
+                            )}
                         </HashRouter>
                     ) : (
                         <Container className={cls.contentPanel}>
