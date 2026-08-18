@@ -74,3 +74,11 @@ jobs:
                   refresh_token: ${{ secrets.CHROME_TOKEN }}
                   extension_id: ${{ vars.CHROME_EXTENSION_ID }}
                   zip_file: ${{ steps.chrome_zip.outputs.file }}
+
+            - name: Upload to Microsoft Edge Add-ons
+              uses: wdzeng/edge-addon@v2
+              with:
+                  product-id: ${{ vars.EDGE_EXTENSION_ID }}
+                  zip-path: ${{ steps.chrome_zip.outputs.file }}
+                  api-key: ${{ secrets.EDGE_API_KEY }}
+                  client-id: ${{ secrets.EDGE_CLIENT_ID }}
