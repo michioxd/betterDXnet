@@ -33,7 +33,7 @@ const I18nPlayer = {
             assetsLoaded: "{{loaded}} / {{total}} assets loaded",
             pleaseWait: "Please wait, the image will download automatically.",
             unresponsiveNote:
-                "If your browser becomes unresponsive, the export is still running in the background. Please wait until the download starts.",
+                "Because the images are rendered directly in your browser, it may take a while. If your browser becomes unresponsive, the export is still running in the background. Please wait until the download starts.",
             cancel: "Cancel",
             log: {
                 asset: "{{loaded}}/{{total}} {{message}}",

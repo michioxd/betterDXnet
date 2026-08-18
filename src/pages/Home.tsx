@@ -6,13 +6,18 @@ import type { AccuracyData, AccuracyNoteType } from "@/components/AccuracyRadarC
 import { JudgeDistributionChart, OverallJudgmentDistributionChart } from "@/components/JudgeDistributionCharts";
 import { TimingBias } from "@/components/TimingBias";
 import { rootStore } from "@/stores/root";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import StarIcon from "@mui/icons-material/Star";
 import {
     Alert,
     AlertTitle,
     Box,
     Button,
     Card,
+    CardActionArea,
     CardContent,
     CircularProgress,
     Grid,
@@ -170,6 +175,37 @@ function PageHome() {
     const summaryProgressValue = summaryProgressTotal === 0 ? 0 : (summaryProgressDone / summaryProgressTotal) * 100;
     const summaryLoading =
         summaryGenerating || records.last50.some((record) => records.isPlayLogDetailLoading(record.id));
+    const quickAccessItems = [
+        {
+            key: "dxRating",
+            to: "/dx-rating",
+            icon: StarIcon,
+            title: t("home.quickAccess.dxRating.title"),
+            description: t("home.quickAccess.dxRating.description"),
+            highlighted: true,
+        },
+        {
+            key: "songScores",
+            to: "/records/songs",
+            icon: MusicNoteIcon,
+            title: t("home.quickAccess.songScores.title"),
+            description: t("home.quickAccess.songScores.description"),
+        },
+        {
+            key: "album",
+            to: "/playdata/album",
+            icon: CameraAltIcon,
+            title: t("home.quickAccess.album.title"),
+            description: t("home.quickAccess.album.description"),
+        },
+        {
+            key: "gameSetting",
+            to: "/settings/game",
+            icon: SettingsApplicationsIcon,
+            title: t("home.quickAccess.gameSetting.title"),
+            description: t("home.quickAccess.gameSetting.description"),
+        },
+    ];
     const loadSummary = useCallback(
         async (forceRefresh = false) => {
             setSummaryRequested(true);
@@ -207,12 +243,9 @@ function PageHome() {
             }}
         >
             <Box>
-                <Typography variant="h5">{t("home.welcome", { version: import.meta.env.VITE_APP_VERSION })}</Typography>
+                <Typography variant="h5">{t("home.welcome", { userName: me?.me?.name })}</Typography>
                 <Typography color="textSecondary">
-                    {t("home.loggedInAs")}{" "}
-                    <Typography component="span" sx={{ fontWeight: "bold" }}>
-                        {me.me?.name}
-                    </Typography>
+                    {t("home.youAreUsing", { version: import.meta.env.VITE_APP_VERSION })}
                 </Typography>
             </Box>
 
@@ -261,6 +294,42 @@ function PageHome() {
                     </Box>
                 </Box>
             )}
+
+            <Grid container spacing={2}>
+                {quickAccessItems.map((item) => {
+                    const QuickAccessIcon = item.icon;
+
+                    return (
+                        <Grid key={item.key} size={{ xs: 12, sm: 6, lg: 3 }}>
+                            <Card
+                                variant="outlined"
+                                sx={{
+                                    height: "100%",
+                                    borderColor: item.highlighted ? "primary.main" : undefined,
+                                    boxShadow: item.highlighted ? 3 : undefined,
+                                }}
+                            >
+                                <CardActionArea component={LinkRouter} to={item.to} sx={{ height: "100%" }}>
+                                    <CardContent sx={{ height: "100%" }}>
+                                        <Stack direction="row" spacing={1} sx={{ mb: 1, alignItems: "center" }}>
+                                            <QuickAccessIcon color="primary" />
+                                            <Typography variant="body1" component="div">
+                                                {item.title}
+                                            </Typography>
+                                        </Stack>
+                                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                                            {item.description}
+                                        </Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Card>
+                        </Grid>
+                    );
+                })}
+            </Grid>
+            <Typography variant="body2" color="textSecondary">
+                {t("home.quickAccessNote")}
+            </Typography>
 
             <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, alignItems: "center", mt: 1 }}>
                 <Box>

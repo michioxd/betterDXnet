@@ -1,11 +1,32 @@
 const I18nPages = {
     home: {
-        welcome: "Welcome to betterDXnet v{{version}}",
-        loggedInAs: "You are logged in as",
+        welcome: "Welcome back! {{userName}}",
+        youAreUsing: "You are using betterDXnet v{{version}}",
         recentRecords: "Recent records",
         recentRecordsDescription: "Latest plays from your Last 50.",
         reload: "Reload",
         seeAll: "See all",
+        quickAccess: {
+            title: "Quick access",
+            description: "Jump to frequently used betterDXnet pages.",
+            dxRating: {
+                title: "DX Rating (B50)",
+                description: "Review your DX Rating charts and export a rating image (B50).",
+            },
+            songScores: {
+                title: "Song scores",
+                description: "Browse and filter all song scores you've played before.",
+            },
+            album: {
+                title: "Album",
+                description: "View and download your photos saved.",
+            },
+            gameSetting: {
+                title: "Game setting",
+                description: "Adjust game options and preferences.",
+            },
+        },
+        quickAccessNote: "You can find more features in the navigation bar on the left side of the page.",
         summary: {
             title: "Summary",
             description: "Generate a summary from your last 50 plays.",

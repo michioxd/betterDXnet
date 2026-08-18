@@ -33,7 +33,7 @@ const I18nPlayer = {
             assetsLoaded: "Đã tải {{loaded}} / {{total}} asset",
             pleaseWait: "Vui lòng chờ, ảnh sẽ tự động được tải xuống.",
             unresponsiveNote:
-                "Nếu trình duyệt bị treo, quá trình xuất ảnh vẫn đang chạy trong nền. Vui lòng chờ đến khi ảnh bắt đầu tải xuống.",
+                "Vì hình ảnh được xử lý trực tiếp trên trình duyệt của bạn nên quá trình này có thể mất một lúc. Nếu trình duyệt trở nên không phản hồi, quá trình xuất vẫn đang chạy ở chế độ nền. Vui lòng chờ cho đến khi quá trình tải xuống bắt đầu.",
             cancel: "Hủy",
             log: {
                 asset: "{{loaded}}/{{total}} {{message}}",

@@ -369,7 +369,11 @@ function PagePlayerDXRating() {
                         variant="contained"
                         onClick={handleGenerateImage}
                         disabled={manualTotalCount === 0 || (isFirefox() && appModeCtx !== "standalone") || exportOpen}
-                        startIcon={<GetAppIcon />}
+                        startIcon={<GetAppIcon sx={{ fontSize: "25px !important" }} />}
+                        sx={{
+                            height: 50,
+                            fontSize: 18,
+                        }}
                     >
                         {t("dxrating.export.generateImage")}
                     </Button>
