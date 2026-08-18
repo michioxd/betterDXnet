@@ -35,7 +35,9 @@ export default function LoadingView({ error, closeView }: { error?: Error | null
                         {t("loading.errorTitle")}
                     </Typography>
                     <Typography align="center" variant="body2" color="textSecondary" sx={{ maxWidth: 500 }}>
-                        {isNetworkError ? t("loading.errorNetwork") : error.message}
+                        {isNetworkError && !error?.message?.includes("login again")
+                            ? t("loading.errorNetwork")
+                            : error.message}
                     </Typography>
                     <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
                         {isNetworkError && (
