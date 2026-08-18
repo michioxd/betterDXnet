@@ -55,16 +55,6 @@ jobs:
                   ZIP_FILE=$(find release -name "betterDXnet-firefox-*.zip" | head -n 1)
                   echo "file=$ZIP_FILE" >> $GITHUB_OUTPUT
 
-            - name: Upload to Firefox Add-ons
-              uses: wdzeng/firefox-addon@v1
-              with:
-                  addon-guid: ${{ vars.FIREFOX_ADDON_GUID }}
-                  xpi-path: ${{ steps.firefox_zip.outputs.file }}
-                  self-hosted: false
-                  jwt-issuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
-                  jwt-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
-                  license: "GPL-3.0-only"
-
             - name: Upload to Chrome Web Store
               uses: mobilefirstllc/cws-publish@latest
               with:
@@ -82,3 +72,13 @@ jobs:
                   zip-path: ${{ steps.chrome_zip.outputs.file }}
                   api-key: ${{ secrets.EDGE_API_KEY }}
                   client-id: ${{ secrets.EDGE_CLIENT_ID }}
+
+            - name: Upload to Firefox Add-ons
+              uses: wdzeng/firefox-addon@v1
+              with:
+                  addon-guid: ${{ vars.FIREFOX_ADDON_GUID }}
+                  xpi-path: ${{ steps.firefox_zip.outputs.file }}
+                  self-hosted: false
+                  jwt-issuer: ${{ secrets.FIREFOX_JWT_ISSUER }}
+                  jwt-secret: ${{ secrets.FIREFOX_JWT_SECRET }}
+                  license: "GPL-3.0-only"
