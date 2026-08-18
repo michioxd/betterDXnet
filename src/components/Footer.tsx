@@ -9,11 +9,7 @@ export default function Footer() {
     return (
         <>
             <Box sx={{ flex: "1", minWidth: 0 }}></Box>
-            <Typography
-                variant="body2"
-                color="textSecondary"
-                sx={{ p: 1, fontSize: 12, opacity: 0.5, transition: "opacity 0.2s", "&:hover": { opacity: 1 } }}
-            >
+            <Typography variant="body2" color="textSecondary" sx={{ p: 1, fontSize: 12, opacity: 0.4 }}>
                 <Trans
                     ns="layout"
                     i18nKey="footer.source"
