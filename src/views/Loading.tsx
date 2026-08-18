@@ -9,6 +9,12 @@ export default function LoadingView({ error, closeView }: { error?: Error | null
     const appModeCtx = useAppMode();
     const { t } = useTranslation("layout");
 
+    const isNetworkError =
+        error?.message === "Failed to fetch" ||
+        error?.message?.includes("NetworkError") ||
+        error?.message?.includes("network error") ||
+        error?.message?.includes("login again");
+
     return (
         <>
             {error ? (
@@ -29,10 +35,10 @@ export default function LoadingView({ error, closeView }: { error?: Error | null
                         {t("loading.errorTitle")}
                     </Typography>
                     <Typography align="center" variant="body2" color="textSecondary" sx={{ maxWidth: 500 }}>
-                        {error.message === "Failed to fetch" ? t("loading.errorNetwork") : error.message}
+                        {isNetworkError ? t("loading.errorNetwork") : error.message}
                     </Typography>
                     <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                        {error.message === "Failed to fetch" && (
+                        {isNetworkError && (
                             <Button
                                 component="a"
                                 href="https://lng-tgk-aime-gw.am-all.net/common_auth/login?site_id=maimaidxex&redirect_url=https://maimaidx-eng.com/maimai-mobile/&back_url=https://maimai.sega.com/"
