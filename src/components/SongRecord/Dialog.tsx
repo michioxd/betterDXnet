@@ -154,14 +154,8 @@ const SongRecordDetailDialog = observer(function SongRecordDetailDialog({
                                                     />
                                                     <Chip
                                                         size="small"
-                                                        label={`Lv ${level.sheetDetail?.level ?? record.songLevel}`}
+                                                        label={`Lv ${level.sheetDetail?.level ?? record.songLevel}${level.sheetDetail?.internalLevelValue ? ` (${level.sheetDetail.internalLevelValue})` : ""}`}
                                                     />
-                                                    {level.sheetDetail?.internalLevelValue && (
-                                                        <Chip
-                                                            size="small"
-                                                            label={`${t("songRecords.detail.chart")} ${level.sheetDetail.internalLevelValue}`}
-                                                        />
-                                                    )}
                                                     <Chip
                                                         size="small"
                                                         icon={<StarIcon />}
