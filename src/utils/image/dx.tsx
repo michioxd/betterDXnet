@@ -17,6 +17,7 @@ const BG_URL = `https://michioxd.ch/betterDXnet-resources/images/dxrate/base.png
 const GOOGLE_SANS_CSS_URL = "https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap";
 const EMPTY_IMAGE_URL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 const DX_RATING_BG_URL = `https://michioxd.ch/betterDXnet-resources/images/dxrate/UI_CMN_DXRating_{}.png?t=${Date.now()}&v=${import.meta.env.VITE_APP_VERSION}`;
+const DX_RATING_STAR_URL = `https://michioxd.ch/betterDXnet-resources/images/dxrate/star/UI_CMN_DXRating_Star_0{}.png?t=${Date.now()}&v=${import.meta.env.VITE_APP_VERSION}`;
 
 const CARD_GAP = 12;
 const CARD_HEIGHT = 205;
@@ -189,6 +190,27 @@ function getRatingBgUrl(rating: number) {
     return DX_RATING_BG_URL.replace("{}", RATING_BG_INDEX[getRatingColor(rating)]);
 }
 
+function getRatingStarCount(rating: number) {
+    if (rating >= 16750) return 4;
+    if (rating >= 16500) return 3;
+    if (rating >= 16250) return 2;
+    if (rating >= 16000) return 1;
+    if (rating >= 15750) return 4;
+    if (rating >= 15500) return 3;
+    if (rating >= 15250) return 2;
+    if (rating >= 15000) return 1;
+    if (rating >= 14750) return 2;
+    if (rating >= 14500) return 1;
+    if (rating >= 14250) return 2;
+    if (rating >= 14000) return 1;
+
+    return 0;
+}
+
+function getRatingStarUrl(starCount: number) {
+    return DX_RATING_STAR_URL.replace("{}", starCount.toString());
+}
+
 function ProfileHeader({
     profile,
     rating,
@@ -200,6 +222,8 @@ function ProfileHeader({
 }) {
     const avatar = useTrackedImage(profile?.collections.icon.url ?? "", onAssetLoaded, "current user icon");
     const ratingBg = useTrackedImage(getRatingBgUrl(rating), onAssetLoaded, "rating plate");
+    const starCount = getRatingStarCount(rating);
+    const ratingStar = useTrackedImage(starCount ? getRatingStarUrl(starCount) : "", onAssetLoaded, "rating star");
     const avatarCrop = avatar ? getCoverCrop(avatar, 240, 240) : null;
     const ratingDigits = rating.toString().padStart(5, " ").slice(-5).split("");
 
@@ -231,6 +255,7 @@ function ProfileHeader({
             />
 
             {ratingBg && <Image image={ratingBg} x={296} y={176} width={546} height={103} />}
+            {ratingStar && <Image image={ratingStar} x={788} y={176} width={59} height={99} />}
             {ratingDigits.map((digit, index) => (
                 <Text
                     key={`rating-digit-${index}`}
@@ -425,8 +450,8 @@ const RatingCanvas = forwardRef<RatingCanvasHandle, RatingCanvasProps>(function 
             return total + count;
         }, 2);
 
-        return itemAssets + (profile?.collections.icon.url ? 1 : 0) + 1;
-    }, [newItems, oldItems, profile?.collections.icon.url]);
+        return itemAssets + (profile?.collections.icon.url ? 1 : 0) + 1 + (getRatingStarCount(totalRating) ? 1 : 0);
+    }, [newItems, oldItems, profile?.collections.icon.url, totalRating]);
 
     useEffect(() => {
         loadedRef.current = 0;
