@@ -47,7 +47,7 @@ This is an unofficial extension and is not affiliated with, endorsed, sponsored,
 
 If you are unsure whether using this extension complies with SEGA's policies, or if you are not comfortable accepting the risks described above, please refrain from using betterDXnet.
 
-maimai is a registered trademark of SEGA Interactive Co., Ltd.
+maimai is a trademark of SEGA Interactive Co., Ltd.
 
 ## License
 

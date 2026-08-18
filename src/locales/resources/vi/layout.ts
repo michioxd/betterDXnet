@@ -36,7 +36,7 @@ const I18nLayout = {
         techStack: "{{viteVersion}} - React {{reactVersion}} - TypeScript {{typescriptVersion}}",
         buildDate: "Ngày build: {{time}} {{date}}",
         segaDisclaimer:
-            "maimai là nhãn hiệu đã đăng ký của SEGA. Extension này là không chính thức và không liên kết, được xác nhận, tài trợ hoặc phê duyệt bởi SEGA.",
+            "maimai là nhãn hiệu thương mại của SEGA Interactive Co., Ltd. Đây là một tiện ích mở rộng không chính thức và không liên kết, không được SEGA Interactive Co., Ltd. chứng thực, tài trợ hoặc phê duyệt.",
     },
     disclaimer: {
         title: "Miễn trừ trách nhiệm",
