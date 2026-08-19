@@ -41,6 +41,11 @@ _sorry im noob `｡ﾟ･ (>﹏<) ･ﾟ｡`_
 | --- | --- | --- |
 | ![game setting](https://github.com/user-attachments/assets/781470c5-e860-473b-8cf9-e2155561c389) | ![favorite](https://github.com/user-attachments/assets/4d4b6605-0ec3-4db1-996f-b33567c0b492) | ![player setting](https://github.com/user-attachments/assets/3fffdf21-919e-47ba-a537-5ad03621238f) |
 
+## sub-repo
+
+- Default database: [michioxd/simaidb](https://github.com/michioxd/simaidb)
+- Resources: [michioxd/betterDXnet-resources](https://github.com/michioxd/betterDXnet-resources)
+
 ## Disclaimer
 
 This is an unofficial extension and is not affiliated with, endorsed, sponsored, or approved by SEGA Interactive Co., Ltd. Provided as-is, without any warranty of any kind. By installing or continuing to use betterDXnet, you acknowledge that you do so entirely at your own risk and accept full responsibility for any issues, unexpected behavior, data loss, account-related consequences, or other damages that may arise from its use.
