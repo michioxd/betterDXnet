@@ -13,7 +13,7 @@ export default function LoadingView({ error, closeView }: { error?: Error | null
         error?.message === "Failed to fetch" ||
         error?.message?.includes("NetworkError") ||
         error?.message?.includes("network error") ||
-        error?.message?.includes("login again");
+        error?.message?.includes("log in again");
 
     return (
         <>
@@ -35,7 +35,7 @@ export default function LoadingView({ error, closeView }: { error?: Error | null
                         {t("loading.errorTitle")}
                     </Typography>
                     <Typography align="center" variant="body2" color="textSecondary" sx={{ maxWidth: 500 }}>
-                        {isNetworkError && !error?.message?.includes("login again")
+                        {isNetworkError && !error?.message?.includes("log in again")
                             ? t("loading.errorNetwork")
                             : error.message}
                     </Typography>
