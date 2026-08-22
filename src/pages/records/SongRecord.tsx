@@ -147,6 +147,8 @@ function PageRecordsSongRecord() {
                 const parts = [record.songTitle, record.songFullDetail?.song.artist ?? ""];
                 const romaji = record.songFullDetail?.song.romajiTitle;
                 if (romaji) parts.push(romaji);
+                const romajiArtist = record.songFullDetail?.song.romajiArtist;
+                if (romajiArtist) parts.push(romajiArtist);
                 return parts.join(" ");
             });
 

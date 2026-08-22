@@ -226,6 +226,8 @@ function PageSettingsFavoriteSongs() {
                 const parts = [song.songTitle, song.songFullDetail?.artist ?? ""];
                 const romaji = song.songFullDetail?.romajiTitle;
                 if (romaji) parts.push(romaji);
+                const romajiArtist = song.songFullDetail?.romajiArtist;
+                if (romajiArtist) parts.push(romajiArtist);
                 return parts.join(" ");
             });
 
