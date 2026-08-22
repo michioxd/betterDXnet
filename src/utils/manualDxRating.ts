@@ -42,15 +42,13 @@ function compareByRatingDesc(a: GameRecordSong, b: GameRecordSong) {
     const ratingDiff = (b.rating ?? 0) - (a.rating ?? 0);
     if (ratingDiff !== 0) return ratingDiff;
 
+    const achievementDiff = (b.achievement ?? 0) - (a.achievement ?? 0);
+    if (achievementDiff !== 0) return achievementDiff;
+
     const internalLevelA = a.songFullDetail?.sheet.internalLevelValue ?? 0;
     const internalLevelB = b.songFullDetail?.sheet.internalLevelValue ?? 0;
 
-    if (internalLevelA !== internalLevelB) return internalLevelB - internalLevelA;
-
-    const difficultyA = difficultyOrder.indexOf(a.songdifficulty);
-    const difficultyB = difficultyOrder.indexOf(b.songdifficulty);
-
-    return difficultyB - difficultyA;
+    return internalLevelB - internalLevelA;
 }
 
 function flattenSongRecords(records: GetGameRecordSong) {

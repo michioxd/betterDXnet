@@ -2,12 +2,6 @@ import { dataSource, type MaimaiData, type MaimaiSheet, type MaimaiSong } from "
 
 export type MaimaiSheetLookupInput = {
     title: string;
-    level: string;
-    type: string;
-};
-
-export type MaimaiSheetDifficultyLookupInput = {
-    title: string;
     difficulty: string;
     type: string;
 };
@@ -48,11 +42,6 @@ const DATA_URL_STORAGE_KEY = "betterDXnet.maimaiData.url";
  * const songByTitle = maimaiApi.getSongByTitle("系ぎて");
  * const chart = maimaiApi.getSheet({
  *     title: "系ぎて",
- *     level: "14+",
- *     type: "dx",
- * });
- * const expertChart = maimaiApi.getSheetByDifficulty({
- *     title: "系ぎて",
  *     difficulty: "expert",
  *     type: "dx",
  * });
@@ -76,7 +65,6 @@ export class MaimaiDataAPI {
     private fetchedAt?: number;
     private bySongId = new Map<string, MaimaiSong>();
     private byTitle = new Map<string, MaimaiSong>();
-    private byTitleLevelType = new Map<string, MaimaiSheetLookupResult>();
     private byTitleDifficultyType = new Map<string, MaimaiSheetLookupResult>();
 
     private constructor() {}
@@ -131,27 +119,12 @@ export class MaimaiDataAPI {
     }
 
     /**
-     * Gets a sheet by exact title, level, and type.
-     *
-     * The lookup key is built as `title + "\\0" + level + "\\0" + type`.
+     * Gets a sheet by exact title, difficulty name, and type.
      *
      * @param input Exact sheet lookup fields.
      * @returns The matching song and sheet references, or `undefined` if not found.
      */
     getSheet(input: MaimaiSheetLookupInput) {
-        return this.byTitleLevelType.get(this.buildKey(input.title, input.level, input.type));
-    }
-
-    /**
-     * Gets a sheet by exact title, difficulty name, and type.
-     *
-     * Use this when the source only has a difficulty name such as `expert`,
-     * `master`, or `remaster` instead of a level value like `13+`.
-     *
-     * @param input Exact sheet lookup fields.
-     * @returns The matching song and sheet references, or `undefined` if not found.
-     */
-    getSheetByDifficulty(input: MaimaiSheetDifficultyLookupInput) {
         return this.byTitleDifficultyType.get(this.buildKey(input.title, input.difficulty, input.type));
     }
 
@@ -380,7 +353,6 @@ export class MaimaiDataAPI {
     private buildIndexes(data: MaimaiData) {
         const bySongId = new Map<string, MaimaiSong>();
         const byTitle = new Map<string, MaimaiSong>();
-        const byTitleLevelType = new Map<string, MaimaiSheetLookupResult>();
         const byTitleDifficultyType = new Map<string, MaimaiSheetLookupResult>();
 
         for (const song of data.songs) {
@@ -395,13 +367,6 @@ export class MaimaiDataAPI {
             for (const sheet of song.sheets) {
                 if (!song.title || !sheet.type) continue;
 
-                if (sheet.level) {
-                    byTitleLevelType.set(this.buildKey(song.title, sheet.level, sheet.type), {
-                        song,
-                        sheet,
-                    });
-                }
-
                 if (sheet.difficulty) {
                     byTitleDifficultyType.set(this.buildKey(song.title, sheet.difficulty, sheet.type), {
                         song,
@@ -413,7 +378,6 @@ export class MaimaiDataAPI {
 
         this.bySongId = bySongId;
         this.byTitle = byTitle;
-        this.byTitleLevelType = byTitleLevelType;
         this.byTitleDifficultyType = byTitleDifficultyType;
     }
 

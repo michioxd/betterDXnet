@@ -138,7 +138,7 @@ export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
 
     const querySongDetails = maimaiApi.getSheet({
         title: songTitle,
-        level: songLevel,
+        difficulty: difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC,
         type: songKind,
     });
 

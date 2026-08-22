@@ -136,7 +136,7 @@ function parseSongRecordBlock(block: HTMLElement): GameRecordSong | null {
 
     const querySongDetails = maimaiApi.getSheet({
         title: songTitle,
-        level: songLevel,
+        difficulty: songdifficulty,
         type: songKind,
     });
 

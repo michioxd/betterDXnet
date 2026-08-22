@@ -28,7 +28,7 @@ export function parsePlayerAlbumBlock(block: HTMLElement): GetPlayerAlbum {
     const songdifficulty = difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC;
     const songKind = songKindByImageName[songKindName] ?? GameRecordSongKind.STANDARD;
 
-    const querySongDetails = maimaiApi.getSheetByDifficulty({
+    const querySongDetails = maimaiApi.getSheet({
         title: songTitle,
         difficulty: songdifficulty,
         type: songKind,

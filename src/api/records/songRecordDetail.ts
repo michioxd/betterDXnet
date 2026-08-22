@@ -106,7 +106,7 @@ function parseDetailBlock(block: HTMLElement, songTitle: string, songKind: GameR
         achievement < 80 ? GameRecordStatus.FAILED : (statusByImageName[statusName] ?? GameRecordStatus.CLEARED);
     const sheetDetail = maimaiApi.getSheet({
         title: songTitle,
-        level,
+        difficulty,
         type: songKind,
     })?.sheet;
     const rating =
@@ -157,7 +157,7 @@ export async function songRecordDetail(id: string): Promise<SongRecordDetail> {
     const songdifficulty = firstLevel?.difficulty ?? GameRecordSongDifficulty.BASIC;
     const songFullDetail = maimaiApi.getSheet({
         title: songTitle,
-        level: songLevel,
+        difficulty: songdifficulty,
         type: songKind,
     });
 

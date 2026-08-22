@@ -69,7 +69,7 @@ export function parsePlayerDXRatingBlock(block: HTMLElement): GetPlayerDXRatingI
 
     const querySongDetails = maimaiApi.getSheet({
         title: songTitle,
-        level: songLevel,
+        difficulty: difficultyByImageName[difficultyName] ?? GameRecordSongDifficulty.BASIC,
         type: songKind,
     });
     const status = statusByImageName[statusName] ?? GameRecordStatus.CLEARED;
