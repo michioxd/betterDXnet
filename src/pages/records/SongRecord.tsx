@@ -7,9 +7,9 @@ import {
     difficulties,
     formatClearLabel,
     formatRankLabel,
-    normalizeSearchText,
     ranks,
 } from "@/components/SongRecord";
+import uFuzzy from "@leeoniya/ufuzzy";
 import { rootStore } from "@/stores/root";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ViewListIcon from "@mui/icons-material/ViewList";
@@ -132,23 +132,39 @@ function PageRecordsSongRecord() {
         return () => window.clearTimeout(timer);
     }, [selectedClearStatusesDraft]);
 
+    const uf = useMemo(() => new uFuzzy({ unicode: true }), []);
+
     const visibleRecords = useMemo(() => {
-        const normalizedSearch = normalizeSearchText(searchText);
         const [minRatingValue, maxRatingValue] = ratingRange;
         const [minAchievementValue, maxAchievementValue] = achievementRange;
 
-        return selectedDifficulties
-            .flatMap((diff) => records.songRecords[diff] ?? [])
+        const allRecords = selectedDifficulties.flatMap((diff) => records.songRecords[diff] ?? []);
+
+        let filteredRecords: GameRecordSong[];
+
+        if (searchText.trim()) {
+            const haystack = allRecords.map((record) => {
+                const parts = [record.songTitle, record.songFullDetail?.song.artist ?? ""];
+                const romaji = record.songFullDetail?.song.romajiTitle;
+                if (romaji) parts.push(romaji);
+                return parts.join(" ");
+            });
+
+            const [idxs, info, order] = uf.search(haystack, searchText.trim(), 1);
+
+            if (!idxs || idxs.length === 0) {
+                filteredRecords = [];
+            } else if (info && order) {
+                filteredRecords = order.map((o) => allRecords[info.idx[o]]);
+            } else {
+                filteredRecords = idxs.map((i) => allRecords[i]);
+            }
+        } else {
+            filteredRecords = allRecords;
+        }
+
+        return filteredRecords
             .filter((record) => {
-                if (normalizedSearch) {
-                    const title = normalizeSearchText(record.songTitle);
-                    const artist = normalizeSearchText(record.songFullDetail?.song.artist ?? "");
-
-                    if (!title.includes(normalizedSearch) && !artist.includes(normalizedSearch)) {
-                        return false;
-                    }
-                }
-
                 if (!record.rating && minRatingValue > 0) {
                     return false;
                 } else if (record.rating) {
@@ -179,7 +195,11 @@ function PageRecordsSongRecord() {
 
                 return true;
             })
-            .sort((left, right) => (right.rating ?? 0) - (left.rating ?? 0) || right.achievement - left.achievement);
+            .sort((left, right) =>
+                searchText.trim()
+                    ? 0
+                    : (right.rating ?? 0) - (left.rating ?? 0) || right.achievement - left.achievement,
+            );
     }, [
         achievementRange,
         records.songRecords,
@@ -188,6 +208,7 @@ function PageRecordsSongRecord() {
         selectedClearStatuses,
         selectedDifficulties,
         selectedRanks,
+        uf,
     ]);
 
     const handleDifficultyChange = (event: SelectChangeEvent<GameRecordSongDifficulty[]>) => {
