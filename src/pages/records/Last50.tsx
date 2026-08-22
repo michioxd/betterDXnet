@@ -370,6 +370,17 @@ function RecordCardImpl({
                                             }}
                                         />
                                     )}
+                                    {record.mode === GameRecordMode.COURSE && (
+                                        <ImgLazyload
+                                            src={netImageBase.replace("{}", "course/icon_course")}
+                                            style={{
+                                                width: "75px",
+                                                height: "30px",
+                                                objectFit: "contain",
+                                                objectPosition: "center",
+                                            }}
+                                        />
+                                    )}
                                     <Chip
                                         size="small"
                                         color={record.liveStatus.current <= 0 ? "error" : "secondary"}

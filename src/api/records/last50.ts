@@ -128,7 +128,7 @@ export function parsePlaylogBlock(block: HTMLElement): GameRecordLast50 {
         ? "perfect_challenge"
         : block.querySelector('img[src*="/img/icon_kaleidxscope.png"]')
           ? "kaleidxscope"
-          : block.querySelector('img[src*="/img/icon_course.png"]')
+          : block.querySelector('img[src*="/img/course/icon_course.png"]')
             ? "course"
             : "normal";
 
