@@ -2,6 +2,7 @@ import { apiPlayer, type GetPlayerFavoriteSong } from "@/api/player";
 import ImgLazyload from "@/components/Img.Lazyload";
 import { dataSource } from "@/db/maimaiDataTypes";
 import { rootStore } from "@/stores/root";
+import uFuzzy from "@leeoniya/ufuzzy";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -43,14 +44,6 @@ type FavoriteSongRowProps = {
     disabled: boolean;
     onToggle: (value: string) => void;
 };
-
-function normalizeSearchText(value: string) {
-    return value.toLowerCase().normalize("NFKC");
-}
-
-function trimAsciiSearchText(value: string) {
-    return value.replace(/^[ \t\r\n\f\v]+|[ \t\r\n\f\v]+$/g, "");
-}
 
 function FavoriteSongRowImpl({ song, checked, disabled, onToggle }: FavoriteSongRowProps) {
     const artist = song.songFullDetail?.artist;
@@ -222,20 +215,39 @@ function PageSettingsFavoriteSongs() {
         return [...categorySet].sort((a, b) => a.localeCompare(b));
     }, [songs]);
 
-    const filteredSongs = useMemo(() => {
-        const query = normalizeSearchText(trimAsciiSearchText(debouncedSearch));
+    const uf = useMemo(() => new uFuzzy({ unicode: true }), []);
 
-        return songs.filter((song) => {
+    const filteredSongs = useMemo(() => {
+        let searchedSongs: GetPlayerFavoriteSong[];
+        const query = debouncedSearch.trim();
+
+        if (query) {
+            const haystack = songs.map((song) => {
+                const parts = [song.songTitle, song.songFullDetail?.artist ?? ""];
+                const romaji = song.songFullDetail?.romajiTitle;
+                if (romaji) parts.push(romaji);
+                return parts.join(" ");
+            });
+
+            const [idxs, info, order] = uf.search(haystack, query, 1);
+
+            if (!idxs || idxs.length === 0) {
+                searchedSongs = [];
+            } else if (info && order) {
+                searchedSongs = order.map((o) => songs[info.idx[o]]);
+            } else {
+                searchedSongs = idxs.map((i) => songs[i]);
+            }
+        } else {
+            searchedSongs = songs;
+        }
+
+        return searchedSongs.filter((song) => {
             if (selectedOnly && !selectedValues.has(song.value)) return false;
             if (category !== ALL_CATEGORIES && song.songFullDetail?.category !== category) return false;
-            if (!query) return true;
-
-            const title = normalizeSearchText(song.songTitle);
-            const artist = normalizeSearchText(song.songFullDetail?.artist ?? "");
-
-            return title.includes(query) || artist.includes(query);
+            return true;
         });
-    }, [category, debouncedSearch, selectedOnly, selectedValues, songs]);
+    }, [category, debouncedSearch, selectedOnly, selectedValues, songs, uf]);
 
     const selectedCount = selectedValues.size;
     const hasChanges = useMemo(() => {
