@@ -385,7 +385,7 @@ function PageHome() {
                     loading={summaryLoading}
                     disabled={records.last50Loading || summaryLoading || summaryProgressTotal === 0}
                 >
-                    {last50Details.length > 0 ? t("home.summary.reload") : t("home.summary.generate")}
+                    {last50Details.length > 1 ? t("home.summary.reload") : t("home.summary.generate")}
                 </Button>
             </Box>
 
@@ -410,7 +410,7 @@ function PageHome() {
                 </Alert>
             )}
 
-            {last50Details.length > 0 && (
+            {last50Details.length > 1 ? (
                 <Grid container spacing={2}>
                     <Grid size={{ xs: 12, lg: 4 }}>
                         <Card variant="outlined">
@@ -492,6 +492,33 @@ function PageHome() {
                         </Card>
                     </Grid>
                 </Grid>
+            ) : (
+                <>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            py: 4,
+                            flexDirection: "column",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Typography variant="h5">No data available</Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            Please click Generate Summary to view your summary.
+                        </Typography>
+
+                        <Button
+                            variant="outlined"
+                            onClick={() => void loadSummary(last50Details.length > 0)}
+                            loading={summaryLoading}
+                            sx={{ mt: 2 }}
+                            disabled={records.last50Loading || summaryLoading || summaryProgressTotal === 0}
+                        >
+                            {t("home.summary.generate")}
+                        </Button>
+                    </Box>
+                </>
             )}
         </Box>
     );
